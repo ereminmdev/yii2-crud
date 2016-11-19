@@ -1,0 +1,17 @@
+.cms-crud-form .tab-content > .tab-pane {
+    margin: 1em 0 2em;
+}
+
+.cms-crud-grid tr.filters {
+    display: none;
+}
+
+.hide_caret .caret {
+    display:none;
+}
+
+@media (min-width: 992px) {
+    .cms-crud-grid.table-responsive {
+        overflow: visible;
+    }
+}

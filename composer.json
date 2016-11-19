@@ -1,0 +1,24 @@
+{
+  "name": "ereminmdev/yii2-crud",
+  "description": "Crud module for Yii framework.",
+  "keywords": ["yii2","module","crud"],
+  "homepage": "https://bitbucket.org/ereminmdev/yii2-crud",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Michael Eremin",
+      "email": "ereminmdev@gmail.com",
+      "role": "developer"
+    }
+  ],
+  "require": {
+    "php": ">=5.4.0",
+    "yiisoft/yii2": "~2.0",
+    "phpoffice/phpexcel": "^1.8"
+  },
+  "autoload": {
+    "psr-4": {
+      "ereminmdev\\yii2\\crud\\": ""
+    }
+  }
+}
