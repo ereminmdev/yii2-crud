@@ -8,6 +8,7 @@ use ereminmdev\yii2\crud\grid\DropDownButtonColumn;
 use ereminmdev\yii2\crud\models\CrudExportForm;
 use ereminmdev\yii2\crud\models\CrudImportForm;
 use ereminmdev\yii2\tinymce\TinyMce;
+use mongosoft\file\UploadImageBehavior;
 use Yii;
 use yii\base\DynamicModel;
 use yii\base\Object;
@@ -367,6 +368,17 @@ class Crud extends Object
                     case 'image':
                         $columns[$key] = $field . ':image';
                         break;
+                    case 'upload-image':
+                        /* @see \mongosoft\file\UploadImageBehavior */
+                        $columns[$key] = [
+                            'attribute' => $field,
+                            'format' => 'html',
+                            'content' => function ($model, $key, $index, $column) use ($field) {
+                                return Html::a(Html::img($model->getThumbUploadUrl($field), ['class' => 'img-responsive']),
+                                    $model->getUploadUrl($field));
+                            },
+                        ];
+                        break;
                     case 'sort':
                         $columns[$key] = [
                             'attribute' => $field,
@@ -611,6 +623,10 @@ class Crud extends Object
                             '<div>' . Html::img($model->$field, ['class' => 'img-responsive']) . '</div>' .
                             '</div>';
                     }
+                    break;
+                case 'upload-image':
+                    $hint = $model->$field ? Html::a(Html::img($model->getThumbUploadUrl($field), ['class' => 'img-responsive']), $model->getUploadUrl($field)) : '';
+                    $formField = $form->field($model, $field)->fileInput(['accept' => 'image/*'])->hint($hint);
                     break;
                 case 'array':
                     $itemList = is_callable($schema['itemList']) ? call_user_func($schema['itemList']) : $schema['itemList'];
