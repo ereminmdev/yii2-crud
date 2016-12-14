@@ -46,9 +46,11 @@
             oldCrudFormData = $crudForm.serialize()
         });
 
-        $(window).on("beforeunload", function () {
+        $(window).on("beforeunload", function (e) {
             if (oldCrudFormData != $crudForm.serialize()) {
-                return "Изменения не сохранены. Вы можете потерять данные!";
+                var message = "Изменения не сохранены. Вы можете потерять данные!";
+                e.returnValue = message;
+                return message;
             }
         });
     }
