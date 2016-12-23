@@ -375,7 +375,7 @@ class Crud extends Object
                             'format' => 'html',
                             'content' => function ($model, $key, $index, $column) use ($field) {
                                 /* @var UploadImageBehavior $behavior */
-                                $behavior = in_array($field, array_keys($model->getBehaviors())) ? $model->getBehavior($field) : $model;
+                                $behavior = in_array($field, array_keys($model->getBehaviors()), true) ? $model->getBehavior($field) : $model;
                                 return Html::a(Html::img($behavior->getThumbUploadUrl($field), ['class' => 'img-responsive']),
                                     $behavior->getUploadUrl($field));
                             },
@@ -628,7 +628,7 @@ class Crud extends Object
                     break;
                 case 'upload-image':
                     /* @var UploadImageBehavior $behavior */
-                    $behavior = in_array($field, array_keys($model->getBehaviors())) ? $model->getBehavior($field) : $model;
+                    $behavior = in_array($field, array_keys($model->getBehaviors()), true) ? $model->getBehavior($field) : $model;
                     $hint = $model->$field ? Html::a(Html::img($behavior->getThumbUploadUrl($field), ['class' => 'img-responsive']), $behavior->getUploadUrl($field)) : '';
                     $formField = $form->field($model, $field)->fileInput(['accept' => 'image/*'])->hint($hint);
                     break;
