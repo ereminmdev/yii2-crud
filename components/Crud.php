@@ -602,7 +602,8 @@ class Crud extends Object
                     $formField = $form->field($model, $field)->input('time');
                     break;
                 case Schema::TYPE_DATETIME:
-                    $formField = $form->field($model, $field)->input('datetime-local');
+                    $value = $model->$field ? date('Y-m-d\TH:i:s', strtotime($model->$field)) : '';
+                    $formField = $form->field($model, $field)->input('datetime-local', ['value' => $value]);
                     break;
                 case 'url':
                     $url = $model->$field;
