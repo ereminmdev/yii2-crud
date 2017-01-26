@@ -53,6 +53,19 @@
                 return message;
             }
         });
+
+        $(document).on("click", ".js-delete-image", function () {
+            var that = this,
+                message = $(this).data('message');
+
+            if (window.confirm(message)) {
+                $.get($(this).attr("href"), function () {
+                    $(that).closest(".form-group").find(".help-block").remove();
+                });
+            }
+
+            return false;
+        });
     }
 
     // components/Crud:renderFormSetvals

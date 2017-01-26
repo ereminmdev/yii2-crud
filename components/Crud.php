@@ -21,6 +21,7 @@ use yii\grid\CheckboxColumn;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\StringHelper;
+use yii\helpers\Url;
 use yii\web\NotFoundHttpException;
 use yii\web\UploadedFile;
 use yii\widgets\ActiveField;
@@ -630,7 +631,10 @@ class Crud extends Object
                 case 'upload-image':
                     /* @var UploadImageBehavior $behavior */
                     $behavior = in_array($field, array_keys($model->getBehaviors()), true) ? $model->getBehavior($field) : $model;
-                    $hint = $model->$field ? Html::a(Html::img($behavior->getThumbUploadUrl($field), ['class' => 'img-responsive']), $behavior->getUploadUrl($field)) : '';
+                    $hint = $model->$field ? Html::a(Html::img($behavior->getThumbUploadUrl($field), ['class' => 'img-responsive']), $behavior->getUploadUrl($field), ['target' => '_blank']) : '';
+                    $hint .= $model->$field ? '<p class="help-block">' .
+                        Html::a('<i class="fa fa-remove"></i> ' . Yii::t('crud', 'Delete image'), $this->columnUrlCreator('delete-upload-image', $model, $model->id, ['field' => $field, 'returnUrl' => Url::current()]),
+                            ['class' => 'btn btn-default btn-xs js-delete-image', 'data-message' => Yii::t('crud', 'Are you sure you want to delete this image?')]) . '</p>' : '';
                     $formField = $form->field($model, $field)->fileInput(['accept' => 'image/*'])->hint($hint);
                     break;
                 case 'array':

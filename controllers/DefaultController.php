@@ -248,6 +248,31 @@ class DefaultController extends Controller
     }
 
     /**
+     * Delete image for mongosoft/yii2-upload-behavior behavior
+     * @param integer $id
+     * @param string $field attribute name
+     * @return \yii\web\Response
+     */
+    public function actionDeleteUploadImage($id, $field)
+    {
+        $crud = $this->getCrud();
+        $model = $crud->findModel($id, 'update');
+
+        if (in_array($field, array_keys($model->getBehaviors()), true) && ($behavior = $model->getBehavior($field))) {
+            $behavior->beforeDelete();
+        }
+
+        $model->updateAttributes([$field => '']);
+
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->content = true;
+            return Yii::$app->response;
+        } else {
+            return $this->redirect($this->getReturnUrl());
+        }
+    }
+
+    /**
      * Create url for crud
      * @param array $params
      * @param bool $scheme
