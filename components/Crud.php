@@ -379,7 +379,7 @@ class Crud extends Object
                                 /* @var UploadImageBehavior $behavior */
                                 $behavior = in_array($field, array_keys($model->getBehaviors()), true) ? $model->getBehavior($field) : $model;
                                 $url = $behavior->getUploadUrl($field);
-                                return Html::a(Html::img($url, ['class' => 'img-responsive']), $url;
+                                return Html::a(Html::img($url, ['class' => 'img-responsive']), $url);
                             },
                         ];
                         break;
