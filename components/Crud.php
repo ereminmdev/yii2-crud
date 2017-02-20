@@ -370,7 +370,7 @@ class Crud extends Object
                         $columns[$key] = $field . ':image';
                         break;
                     case 'upload-image':
-                    case 'crop-upload-image':
+                    case 'crop-image-upload':
                         /* @see \mongosoft\file\UploadImageBehavior */
                         $columns[$key] = [
                             'attribute' => $field,
@@ -378,8 +378,8 @@ class Crud extends Object
                             'content' => function ($model, $key, $index, $column) use ($field) {
                                 /* @var UploadImageBehavior $behavior */
                                 $behavior = in_array($field, array_keys($model->getBehaviors()), true) ? $model->getBehavior($field) : $model;
-                                return Html::a(Html::img($behavior->getThumbUploadUrl($field), ['class' => 'img-responsive']),
-                                    $behavior->getUploadUrl($field));
+                                $url = $behavior->getUploadUrl($field);
+                                return Html::a(Html::img($url, ['class' => 'img-responsive']), $url;
                             },
                         ];
                         break;
@@ -630,16 +630,16 @@ class Crud extends Object
                     }
                     break;
                 case 'upload-image':
-                case 'crop-upload-image':
+                case 'crop-image-upload':
                     /* @var UploadImageBehavior $behavior */
                     $behavior = in_array($field, array_keys($model->getBehaviors()), true) ? $model->getBehavior($field) : $model;
-                    $hint = $model->$field ? Html::a(Html::img($behavior->getThumbUploadUrl($field), ['class' => 'img-responsive']), $behavior->getUploadUrl($field), ['target' => '_blank']) : '';
+                    $hint = $model->$field ? Html::a(Html::img($behavior->getUploadUrl($field), ['class' => 'img-responsive']), $behavior->getUploadUrl($field), ['target' => '_blank']) : '';
                     $hint .= $model->$field ? '<p class="help-block">' .
                         Html::a('<i class="fa fa-remove"></i> ' . Yii::t('crud', 'Delete image'), $this->columnUrlCreator('delete-upload-image', $model, $model->id, ['field' => $field, 'returnUrl' => Url::current()]),
                             ['class' => 'btn btn-default btn-xs js-delete-image', 'data-message' => Yii::t('crud', 'Are you sure you want to delete this image?')]) . '</p>' : '';
                     $formField = $form->field($model, $field)->fileInput(['accept' => 'image/*'])->hint($hint);
-                    if ($schema['type'] == 'crop-upload-image') {
-                        $formField->widget(\karpoff\icrop\CropImageUpload::className());
+                    if ($schema['type'] == 'crop-image-upload') {
+                        $formField->widget(\ereminmdev\yii2\cropimageupload\CropImageUploadWidget::className());
                     }
                     break;
                 case 'array':
