@@ -508,6 +508,10 @@ class Crud extends Object
                         }
                         break;
                 }
+
+                if (is_array($columns[$key]) && isset($schema['gridColumnOptions'])) {
+                    $columns[$key] = ArrayHelper::merge($columns[$key], (array)$schema['gridColumnOptions']);
+                }
             }
         }
 

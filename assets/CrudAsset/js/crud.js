@@ -1,5 +1,6 @@
-(function (document, $, undefined) {
-    'use strict';
+'use strict';
+
+jQuery(function ($) {
 
     // views/_grid_toolbar
     if ($(".cms-crud-index").length) {
@@ -26,12 +27,13 @@
         });
 
         $(document).on("click", ".js-ajax-dropdown-list", function (event) {
-            var $that = $(this);
+            var $this = $(this);
             $.post({
-                url: $that.attr("href"),
-                data: $that.data('params')
+                url: $this.attr("href"),
+                data: $this.data('params')
             });
-            $that.closest(".btn-group").find(".dropdown-toggle").html($that.text() + ' <span class="caret"></span>');
+            var html = $this.data('title') || $this.text();
+            $this.closest(".btn-group").find(".dropdown-toggle").html(html + ' <span class="caret"></span>');
             event.preventDefault();
         });
     }
@@ -81,4 +83,4 @@
         }).trigger("change");
     }
 
-})(document, jQuery);
+});
