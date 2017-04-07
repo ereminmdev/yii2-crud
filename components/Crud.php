@@ -379,7 +379,7 @@ class Crud extends Object
                                 /* @var UploadImageBehavior $behavior */
                                 $behavior = in_array($field, array_keys($model->getBehaviors()), true) ? $model->getBehavior($field) : $model;
                                 $url = $behavior->getUploadUrl($field);
-                                return Html::a(Html::img($url, ['class' => 'img-responsive']), $url);
+                                return Html::a(Html::img($url, ['class' => 'img-responsive crud-column-img']), $url);
                             },
                         ];
                         break;
@@ -629,7 +629,7 @@ class Crud extends Object
                     if ($model->$field) {
                         $formField .= '<div class="form-group field-' . Html::getInputId($model, $field) . '">' .
                             '<div>' . Html::checkbox($field . '__delete', false, ['label' => Yii::t('crud', 'delete')]) . '</div>' .
-                            '<div>' . Html::img($model->$field, ['class' => 'img-responsive']) . '</div>' .
+                            '<div>' . Html::img($model->$field, ['class' => 'img-responsive crud-field-img']) . '</div>' .
                             '</div>';
                     }
                     break;
@@ -637,7 +637,7 @@ class Crud extends Object
                 case 'crop-image-upload':
                     /* @var UploadImageBehavior $behavior */
                     $behavior = in_array($field, array_keys($model->getBehaviors()), true) ? $model->getBehavior($field) : $model;
-                    $hint = $model->$field ? Html::a(Html::img($behavior->getUploadUrl($field), ['class' => 'img-responsive']), $behavior->getUploadUrl($field), ['target' => '_blank']) : '';
+                    $hint = $model->$field ? Html::a(Html::img($behavior->getUploadUrl($field), ['class' => 'img-responsive crud-field-img']), $behavior->getUploadUrl($field), ['target' => '_blank']) : '';
                     $hint .= $model->$field ? '<p class="help-block">' .
                         Html::a('<i class="fa fa-remove"></i> ' . Yii::t('crud', 'Delete image'), $this->columnUrlCreator('delete-upload-image', $model, $model->id, ['field' => $field, 'returnUrl' => Url::current()]),
                             ['class' => 'btn btn-default btn-xs js-delete-image', 'data-message' => Yii::t('crud', 'Are you sure you want to delete this image?')]) . '</p>' : '';

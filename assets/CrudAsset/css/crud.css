@@ -7,11 +7,21 @@
 }
 
 .hide_caret .caret {
-    display:none;
+    display: none;
+}
+
+.crud-field-img {
+    max-width: 30%;
 }
 
 @media (min-width: 992px) {
     .cms-crud-grid.table-responsive {
         overflow: visible;
+    }
+}
+
+@media (max-width: 767px) {
+    .crud-field-img {
+        max-width: 100%;
     }
 }
