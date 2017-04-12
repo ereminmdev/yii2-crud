@@ -8,7 +8,6 @@ use ereminmdev\yii2\crud\grid\DropDownButtonColumn;
 use ereminmdev\yii2\crud\models\CrudExportForm;
 use ereminmdev\yii2\crud\models\CrudImportForm;
 use ereminmdev\yii2\tinymce\TinyMce;
-use mongosoft\file\UploadImageBehavior;
 use Yii;
 use yii\base\DynamicModel;
 use yii\base\Object;
@@ -371,14 +370,13 @@ class Crud extends Object
                         break;
                     case 'upload-image':
                     case 'crop-image-upload':
-                        /* @see \mongosoft\file\UploadImageBehavior */
+                        /* @see \ereminmdev\yii2\cropimageupload\CropImageUploadBehavior */
                         $columns[$key] = [
                             'attribute' => $field,
                             'format' => 'html',
                             'content' => function ($model, $key, $index, $column) use ($field) {
-                                /* @var UploadImageBehavior $behavior */
-                                $behavior = in_array($field, array_keys($model->getBehaviors()), true) ? $model->getBehavior($field) : $model;
-                                $url = $behavior->getUploadUrl($field);
+                                $thumb = isset($schema['thumb']) ? $schema['thumb'] : 'thumb';
+                                $url = $model->getImageUrl($field, $thumb);
                                 return Html::a(Html::img($url, ['class' => 'img-responsive crud-column-img']), $url);
                             },
                         ];
@@ -635,9 +633,10 @@ class Crud extends Object
                     break;
                 case 'upload-image':
                 case 'crop-image-upload':
-                    /* @var UploadImageBehavior $behavior */
-                    $behavior = in_array($field, array_keys($model->getBehaviors()), true) ? $model->getBehavior($field) : $model;
-                    $hint = $model->$field ? Html::a(Html::img($behavior->getUploadUrl($field), ['class' => 'img-responsive crud-field-img']), $behavior->getUploadUrl($field), ['target' => '_blank']) : '';
+                    /* @see \ereminmdev\yii2\cropimageupload\CropImageUploadBehavior */
+                    $thumb = isset($schema['thumb']) ? $schema['thumb'] : 'thumb';
+                    $url = $model->getImageUrl($field, $thumb);
+                    $hint = $model->$field ? Html::a(Html::img($url, ['class' => 'img-responsive crud-field-img']), $url, ['target' => '_blank']) : '';
                     $hint .= $model->$field ? '<p class="help-block">' .
                         Html::a('<i class="fa fa-remove"></i> ' . Yii::t('crud', 'Delete image'), $this->columnUrlCreator('delete-upload-image', $model, $model->id, ['field' => $field, 'returnUrl' => Url::current()]),
                             ['class' => 'btn btn-default btn-xs js-delete-image', 'data-message' => Yii::t('crud', 'Are you sure you want to delete this image?')]) . '</p>' : '';
