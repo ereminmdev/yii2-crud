@@ -374,7 +374,7 @@ class Crud extends Object
                         $columns[$key] = [
                             'attribute' => $field,
                             'format' => 'html',
-                            'content' => function ($model, $key, $index, $column) use ($field) {
+                            'content' => function ($model, $key, $index, $column) use ($field, $schema) {
                                 $thumb = isset($schema['thumb']) ? $schema['thumb'] : 'thumb';
                                 $url = $model->getImageUrl($field, $thumb);
                                 return Html::a(Html::img($url, ['class' => 'img-responsive crud-column-img']), $url);
