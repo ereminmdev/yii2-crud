@@ -887,13 +887,15 @@ class Crud extends Object
         }
 
         $this->context->view->registerJs('
-$(".js-checked-action").on("click", function() {
+$(".js-checked-action").on("click", function () {
     var keys = $("#' . $gridId . '").yiiGridView("getSelectedRows");
-    if (keys.length === 0){
+    if (keys.length === 0) {
         alert("' . Yii::t('crud', 'Please select a one entry at least.') . '");
         return false;
     } else {
-        $(this).attr("href", $(this).attr("href") + "&id=" + keys.toString());
+        var url = $(this).attr("href");
+        url += url.indexOf("?") === -1 ? "?" : "&";
+        $(this).attr("href", url + "id=" + keys.toString());
     }
 });
         ');
