@@ -849,21 +849,21 @@ class Crud extends Object
         return ArrayHelper::getValue($this->config, $key, $default);
     }
 
-    public function checksActions()
+    public function checkedActions()
     {
-        return [
+        return ArrayHelper::merge(ArrayHelper::getValue($this->config, 'gridCheckedActions', []), [
             [
                 'label' => Yii::t('crud', 'Set values'),
                 'url' => $this->context->urlCreate(['setvals'], true),
             ],
+            '<li role="presentation" class="divider"></li>',
+            [
+                'label' => Yii::t('crud', 'Duplicate'),
+                'url' => $this->context->urlCreate(['duplicate'], true),
+            ],
             [
                 'label' => Yii::t('crud', 'Export'),
                 'url' => $this->context->urlCreate(['export'], true),
-            ],
-            '<li role="presentation" class="divider"></li>',
-            [
-                'label' => Yii::t('crud', 'Duplicate data'),
-                'url' => $this->context->urlCreate(['duplicate'], true),
             ],
             '<li role="presentation" class="divider"></li>',
             [
@@ -873,37 +873,36 @@ class Crud extends Object
                     'data-confirm' => Yii::t('crud', 'Are you sure you want to delete this items?'),
                 ],
             ],
-        ];
+        ]);
     }
 
-    public function renderChecksActions($gridId)
+    public function renderCheckedActions($gridId)
     {
-        $this->context->view->registerJs('
-jQuery(".js-checks-action").on("click", function(e) {
-    var keys = jQuery("#' . $gridId . '").yiiGridView("getSelectedRows");
-
-    if (keys.length == 0){
-        alert("' . Yii::t('crud', 'No one item selected!') . '");
-        return false;
-    }
-
-    jQuery(this).attr("href", jQuery(this).attr("href") + "&id=" + keys.toString());
-});
-        ');
-
-        $checks = $this->checksActions();
-        foreach ($checks as &$check) {
+        $checked = $this->checkedActions();
+        foreach ($checked as &$check) {
             if (is_array($check)) {
                 $check['linkOptions']['class'] = isset($check['linkOptions']['class']) ?
-                    $check['linkOptions']['class'] . ' js-checks-action' : 'js-checks-action';
+                    $check['linkOptions']['class'] . ' js-checked-action' : 'js-checked-action';
             }
         }
+
+        $this->context->view->registerJs('
+$(".js-checked-action").on("click", function() {
+    var keys = $("#' . $gridId . '").yiiGridView("getSelectedRows");
+    if (keys.length === 0){
+        alert("' . Yii::t('crud', 'Please select a one entry at least.') . '");
+        return false;
+    } else {
+        $(this).attr("href", $(this).attr("href") + "&id=" + keys.toString());
+    }
+});
+        ');
 
         return ButtonDropdown::widget([
             'label' => '<span class="glyphicon glyphicon-check"></span>',
             'encodeLabel' => false,
             'dropdown' => [
-                'items' => $checks,
+                'items' => $checked,
             ],
             'options' => [
                 'class' => 'btn-default',

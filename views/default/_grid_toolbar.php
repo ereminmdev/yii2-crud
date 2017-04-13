@@ -11,12 +11,8 @@ $crud = $this->context->crud;
 ?>
 
 <div class="btn-toolbar" role="toolbar">
-    <div class="btn-group" role="group">
-        <?= Html::a(Yii::t('crud', 'Create'), $this->context->urlCreate(['create']), ['class' => 'btn btn-success']) ?>
-    </div>
-
     <?php if ($crud->getConfig('access.delete', true)): ?>
-        <?= $crud->renderChecksActions($gridViewWidget->id) ?>
+        <?= $crud->renderCheckedActions($gridViewWidget->id) ?>
 
         <?= ButtonDropdown::widget([
             'label' => '<span class="glyphicon glyphicon-asterisk"></span>',
@@ -42,6 +38,10 @@ $crud = $this->context->crud;
             'containerOptions' => ['class' => 'btn-default pull-right'],
         ]); ?>
     <?php endif; ?>
+
+    <div class="btn-group" role="group">
+        <?= Html::a(Yii::t('crud', 'Create'), $this->context->urlCreate(['create']), ['class' => 'btn btn-success']) ?>
+    </div>
 
     <?php
     $items = (new PerPage())->getMenuItems();

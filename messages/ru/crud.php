@@ -40,11 +40,11 @@ return [
     'Common actions' => 'Общие действия',
     'Please choose a field(s)' => 'Пожалуйста, выберите хотя бы одно поле',
 
-    'Duplicate data' => 'Дублировать данные',
+    'Duplicate' => 'Дублировать',
 
     'Are you sure you want to delete this items?' => 'Вы уверены, что хотите удалить выбранные элементы?',
     'Are you sure you want to delete all items?' => 'Вы действительно уверены, что хотите удалить все элементы?',
-    'No one item selected!' => 'Ни один элемент не выбран!',
+    'Please select a one entry at least.' => 'Выберите хотя бы одну запись.',
 
     'Use Ctrl or Shift button to select multiple values.' => 'Выделять несколько значений можно вместе с нажатой кнопкой Ctrl или Shift.',
 
