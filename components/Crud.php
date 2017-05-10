@@ -168,6 +168,8 @@ class Crud extends Object
                         default:
                             $dataProvider->query->andFilterWhere(['like', $attribute, $value]);
                     }
+                } else {
+                    $dataProvider->query->andFilterWhere([$attribute => $value]);
                 }
             }
         }
