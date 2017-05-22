@@ -36,6 +36,19 @@ jQuery(function ($) {
             $this.closest(".btn-group").find(".dropdown-toggle").html(html + ' <span class="caret"></span>');
             event.preventDefault();
         });
+
+        $(document).on('click', '.js-crud-post-update', function (event) {
+            var $that = $(this);
+            $.post({
+                url: $that.attr('href'),
+                data: $that.data('params')
+            }).done(function () {
+                $.get(location.href).done(function (data) {
+                    $('.cms-crud-index').replaceWith(data);
+                });
+            });
+            event.preventDefault();
+        });
     }
 
     // views/_form

@@ -33,12 +33,18 @@ class DefaultController extends Controller
     public function actionIndex()
     {
         $crud = $this->getCrud();
-        return $this->render($this->getCrud()->getConfig('views.index.view', 'index'), [
+        $view = $this->getCrud()->getConfig('views.index.view', 'index');
+        $params = [
             'crud' => $crud,
             'searchModel' => $crud->getSearchModel(),
             'dataProvider' => $crud->getDataProvider(true, true, true),
             'columns' => $crud->gridColumns(),
-        ]);
+        ];
+        if (Yii::$app->request->isAjax) {
+            return $this->renderPartial($view, $params);
+        } else {
+            return $this->render($view, $params);
+        }
     }
 
     public function actionCreate()
