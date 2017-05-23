@@ -227,13 +227,15 @@ class Crud extends Object
                 'options' => ['class' => 'btn btn-link btn-xs crud-hide-caret'],
             ],
             'items' => function ($model, $key) {
-                return [
-                    [
+                $template = $this->getConfig('gridActionsTemplate', "{update}\n{divider}\n{delete}");
+
+                $actions = [
+                    '{divider}' => '<li role="presentation" class="divider"></li>',
+                    '{update}' => [
                         'label' => Yii::t('crud', 'Edit'),
                         'url' => $this->columnUrlCreator('update', $model, $key),
                     ],
-                    '<li role="presentation" class="divider"></li>',
-                    [
+                    '{delete}' => [
                         'label' => Yii::t('crud', 'Delete'),
                         'url' => $this->columnUrlCreator('delete', $model, $key),
                         'linkOptions' => [
@@ -242,6 +244,20 @@ class Crud extends Object
                         'visible' => $this->getConfig('access.delete', true),
                     ],
                 ];
+
+                $gridActions = $this->getConfig('gridActions', []);
+                foreach ($gridActions as $key => $gridAction) {
+                    $actions[$key] = is_callable($gridAction) ? call_user_func_array($gridAction, [$model, $key]) : $gridAction;
+                }
+
+                $items = explode("\n", $template);
+                foreach ($actions as $key => $action) {
+                    foreach (array_keys($items, $key) as $pos) {
+                        $items[$pos] = $action;
+                    }
+                }
+
+                return $items;
             }
         ]);
 
