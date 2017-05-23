@@ -5,6 +5,7 @@ namespace ereminmdev\yii2\crud\grid;
 use yii\bootstrap\ButtonDropdown;
 use yii\grid\DataColumn;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
 
 /**
  * Render data column as bootstrap dropdown menu
@@ -21,21 +22,49 @@ class DropDownButtonColumn extends DataColumn
      * @see \yii\bootstrap\ButtonDropdown
      */
     public $buttonDropdownOptions = [];
+    /**
+     * @var null|array list of labels
+     */
+    public $labels;
+    /**
+     * @var boolean set true to hide dropdown caret icon
+     */
+    public $hideCaret = true;
+    /**
+     * @var boolean encode button and dropdown labels
+     */
+    public $encodeLabels = true;
 
+
+    public function init()
+    {
+        parent::init();
+
+        if ($this->hideCaret) {
+            Html::addCssClass($this->buttonDropdownOptions['options'], 'crud-hide-caret');
+        }
+
+        $this->buttonDropdownOptions['encodeLabel'] = isset($this->buttonDropdownOptions['encodeLabel']) ?
+            $this->buttonDropdownOptions['encodeLabel'] : $this->encodeLabels;
+
+        $this->buttonDropdownOptions['dropdown']['encodeLabels'] = isset($this->buttonDropdownOptions['dropdown']['encodeLabels']) ?
+            $this->buttonDropdownOptions['dropdown']['encodeLabels'] : $this->encodeLabels;
+    }
 
     /**
      * @inheritdoc
      */
     protected function renderDataCellContent($model, $key, $index)
     {
-        $items = $this->getItems($model, $key, $index);;
-
         if ($this->content === null) {
+            $items = $this->getItems($model, $key, $index);;
             $value = $this->getDataCellValue($model, $key, $index);
+
             return ButtonDropdown::widget(ArrayHelper::merge([
-                'label' => ArrayHelper::getValue($items, $value . '.label', ''),
+                'label' => $this->labels ? ArrayHelper::getValue($this->labels, $value, '') : ArrayHelper::getValue($items, $value . '.label', ''),
                 'dropdown' => ['items' => $items],
             ], $this->buttonDropdownOptions));
+
         } else {
             return parent::renderDataCellContent($model, $key, $index);
         }

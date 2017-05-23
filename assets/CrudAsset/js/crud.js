@@ -1,6 +1,5 @@
-'use strict';
-
 jQuery(function ($) {
+    'use strict';
 
     // views/_grid_toolbar
     if ($(".cms-crud-index").length) {
@@ -26,22 +25,12 @@ jQuery(function ($) {
             });
         });
 
-        $(document).on("click", ".js-ajax-dropdown-list", function (event) {
-            var $this = $(this);
-            $.post({
-                url: $this.attr("href"),
-                data: $this.data('params')
-            });
-            var html = $this.data('title') || $this.text();
-            $this.closest(".btn-group").find(".dropdown-toggle").html(html + ' <span class="caret"></span>');
-            event.preventDefault();
-        });
-
-        $(document).on('click', '.js-crud-post-update', function (event) {
+        $(document).on('click', '.js-crud-post-refresh', function (event) {
             var $that = $(this);
-            $.post({
-                url: $that.attr('href'),
-                data: $that.data('params')
+            $.ajax({
+                url: $that.data('url') ? $that.data('url') : $that.attr('href'),
+                data: $that.data('params') ? $that.data('params') : {},
+                method: $that.data('method') ? $that.data('method') : 'POST'
             }).done(function () {
                 $.get(location.href).done(function (data) {
                     $('.cms-crud-index').replaceWith(data);

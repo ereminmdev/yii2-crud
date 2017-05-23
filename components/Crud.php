@@ -224,7 +224,7 @@ class Crud extends Object
             'buttonDropdownOptions' => [
                 'label' => '<i class="glyphicon glyphicon-menu-hamburger"></i>',
                 'encodeLabel' => false,
-                'options' => ['class' => 'btn btn-link btn-xs hide_caret'],
+                'options' => ['class' => 'btn btn-link btn-xs crud-hide-caret'],
             ],
             'items' => function ($model, $key) {
                 return [
@@ -406,24 +406,24 @@ class Crud extends Object
                         $itemList = is_callable($schema['itemList']) ? call_user_func($schema['itemList']) : $schema['itemList'];
 
                         if (ArrayHelper::getValue($schema, 'gridDropButton', false)) {
+                            $dropList = ArrayHelper::getValue($schema, 'gridDropButtonList', $itemList);
                             $columns[$key] = [
                                 'class' => DropDownButtonColumn::className(),
                                 'buttonDropdownOptions' => [
-                                    'options' => ['class' => 'btn btn-link'],
+                                    'options' => ['class' => 'btn btn-link btn-xs'],
                                 ],
                                 'attribute' => $field,
                                 'filter' => $itemList,
-                                'items' => function ($model, $key, $index) use ($field, $itemList) {
+                                'items' => function ($model, $key, $index) use ($field, $dropList) {
                                     $items = [];
-                                    foreach ($itemList as $itemKey => $itemValue) {
-                                        $items[$itemKey] = ['label' => $itemValue,
+                                    foreach ($dropList as $itemKey => $itemValue) {
+                                        $items[$itemKey] = [
+                                            'label' => $itemValue,
                                             'url' => $this->columnUrlCreator('update', $model, $model->id, ['useReturnUrl' => 0]),
                                             'linkOptions' => [
-                                                'class' => 'js-ajax-dropdown-list',
-                                                'data' => [
-                                                    'params' => [
-                                                        Html::getInputName($model, $field) => $itemKey,
-                                                    ],
+                                                'class' => 'js-crud-post-refresh',
+                                                'data-params' => [
+                                                    Html::getInputName($model, $field) => $itemKey,
                                                 ],
                                             ],
                                         ];

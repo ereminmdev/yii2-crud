@@ -6,10 +6,6 @@
     display: none;
 }
 
-.hide_caret .caret {
-    display: none;
-}
-
 .crud-field-img {
     max-width: 30%;
 }
