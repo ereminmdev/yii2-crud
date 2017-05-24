@@ -268,7 +268,7 @@ class DefaultController extends Controller
             $behavior->beforeDelete();
         }
 
-        $model->updateAttributes([$field => null]);
+        $model->updateAttributes([$field => '']);
 
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->content = true;
