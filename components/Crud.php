@@ -2,7 +2,6 @@
 
 namespace ereminmdev\yii2\crud\components;
 
-use conquer\select2\Select2Widget;
 use ereminmdev\yii2\crud\controllers\DefaultController;
 use ereminmdev\yii2\crud\grid\DropDownButtonColumn;
 use ereminmdev\yii2\crud\models\CrudExportForm;
@@ -388,7 +387,7 @@ class Crud extends Object
                         break;
                     case 'upload-image':
                     case 'crop-image-upload':
-                        /* @see \ereminmdev\yii2\cropimageupload\CropImageUploadBehavior */
+                    case 'croppie-image-upload':
                         $columns[$key] = [
                             'attribute' => $field,
                             'format' => 'html',
@@ -651,16 +650,18 @@ class Crud extends Object
                     break;
                 case 'upload-image':
                 case 'crop-image-upload':
-                    /* @see \ereminmdev\yii2\cropimageupload\CropImageUploadBehavior */
+                case 'croppie-image-upload':
                     $thumb = isset($schema['thumb']) ? $schema['thumb'] : 'thumb';
                     $url = $model->getImageUrl($field, $thumb);
-                    $hint = $model->$field ? Html::a(Html::img($url, ['class' => 'img-responsive crud-field-img']), $url, ['target' => '_blank']) : '';
+                    $hint = $model->$field ? Html::a(Html::img($url, ['class' => 'img-responsive crud-field-img img-result']), $url, ['target' => '_blank']) : '';
                     $hint .= $model->$field ? '<p class="help-block">' .
                         Html::a('<i class="fa fa-remove"></i> ' . Yii::t('crud', 'Delete image'), $this->columnUrlCreator('delete-upload-image', $model, $model->id, ['field' => $field, 'returnUrl' => Url::current()]),
                             ['class' => 'btn btn-default btn-xs js-delete-image', 'data-message' => Yii::t('crud', 'Are you sure you want to delete this image?')]) . '</p>' : '';
                     $formField = $form->field($model, $field)->fileInput(['accept' => 'image/*'])->hint($hint);
                     if ($schema['type'] == 'crop-image-upload') {
                         $formField->widget(\ereminmdev\yii2\cropimageupload\CropImageUploadWidget::className());
+                    } elseif ($schema['type'] == 'croppie-image-upload') {
+                        $formField->widget(\ereminmdev\yii2\croppieimageupload\CroppieImageUploadWidget::className());
                     }
                     break;
                 case 'array':
@@ -686,7 +687,7 @@ class Crud extends Object
                         if (array_key_exists('select2', $schema)) {
                             $schema['select2'] = is_array($schema['select2']) ? $schema['select2'] : [];
                             $formField = $form->field($model, $field)->widget(
-                                Select2Widget::className(),
+                                \conquer\select2\Select2Widget::className(),
                                 ArrayHelper::merge(['items' => $list], $schema['select2'])
                             );
                         } else {
@@ -705,7 +706,7 @@ class Crud extends Object
                                 $schema['select2'] = is_array($schema['select2']) ? $schema['select2'] : [];
                                 $schema['select2']['multiple'] = true;
                                 $formField = $form->field($model, $field)->widget(
-                                    Select2Widget::className(),
+                                    \conquer\select2\Select2Widget::className(),
                                     ArrayHelper::merge(['items' => $list], $schema['select2'])
                                 );
                             } else {
@@ -726,7 +727,7 @@ class Crud extends Object
                             $schema['select2']['multiple'] = true;
                             $schema['select2']['placeholder'] = '';
                             $formField = $form->field($model, $field)->widget(
-                                Select2Widget::className(),
+                                \conquer\select2\Select2Widget::className(),
                                 ArrayHelper::merge(['items' => $list], $schema['select2'])
                             );
                         } else {
