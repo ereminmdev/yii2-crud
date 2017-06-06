@@ -653,7 +653,7 @@ class Crud extends Object
                 case 'croppie-image-upload':
                     $thumb = isset($schema['thumb']) ? $schema['thumb'] : 'thumb';
                     $url = $model->getImageUrl($field, $thumb);
-                    $hint = $model->$field ? Html::a(Html::img($url, ['class' => 'img-responsive crud-field-img img-result']), $url, ['target' => '_blank']) : '';
+                    $hint = Html::img($url, ['class' => 'img-responsive crud-field-img img-result']);
                     $hint .= $model->$field ? '<p class="help-block">' .
                         Html::a('<i class="fa fa-remove"></i> ' . Yii::t('crud', 'Delete image'), $this->columnUrlCreator('delete-upload-image', $model, $model->id, ['field' => $field, 'returnUrl' => Url::current()]),
                             ['class' => 'btn btn-default btn-xs js-delete-image', 'data-message' => Yii::t('crud', 'Are you sure you want to delete this image?')]) . '</p>' : '';
