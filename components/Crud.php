@@ -16,6 +16,7 @@ use yii\data\ActiveDataProvider;
 use yii\db\ActiveRecord;
 use yii\db\Schema;
 use yii\grid\CheckboxColumn;
+use yii\grid\GridView;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\StringHelper;

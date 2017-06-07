@@ -38,6 +38,7 @@ $gridViewWidget = new GridView(ArrayHelper::merge([
 
     <?= $this->render('_grid_toolbar', [
         'gridViewWidget' => $gridViewWidget,
+        'crud' => $crud,
     ]) ?>
 
     <br>

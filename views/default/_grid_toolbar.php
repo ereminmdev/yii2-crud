@@ -1,56 +1,58 @@
 <?php
 /* @var $this yii\web\View */
+/* @var $gridViewWidget \yii\grid\GridView */
+/* @var $crud \ereminmdev\yii2\crud\components\Crud */
 
 use ereminmdev\yii2\crud\components\PerPage;
 use yii\bootstrap\ButtonDropdown;
 use yii\helpers\Html;
 
-/* @var $crud \ereminmdev\yii2\crud\components\Crud */
-$crud = $this->context->crud;
+/** @var \ereminmdev\yii2\crud\controllers\DefaultController $controller */
+$controller = $this->context;
 
 ?>
 <div class="btn-toolbar" role="toolbar">
-    <?php if ($crud->getConfig('access.delete', true)): ?>
-        <?= $crud->renderCheckedActions($gridViewWidget->id) ?>
 
-        <?= ButtonDropdown::widget([
-            'label' => '<span class="glyphicon glyphicon-asterisk"></span>',
-            'encodeLabel' => false,
-            'dropdown' => [
-                'items' => [
-                    ['label' => Yii::t('crud', 'Export'), 'url' => $this->context->urlCreate(['export'])],
-                    ['label' => Yii::t('crud', 'Import'), 'url' => $this->context->urlCreate(['import'])],
-                    '<li role="presentation" class="divider"></li>',
-                    [
-                        'label' => Yii::t('crud', 'Delete all'),
-                        'url' => $this->context->urlCreate(['delete', 'id' => 'all']),
-                        'linkOptions' => [
-                            'data-confirm' => Yii::t('crud', 'Are you sure you want to delete all items?'),
-                        ],
+    <?php
+    $template = $crud->getConfig('gridToolbarTemplate', "{checks}\n{create}\n{full}\n{filter}");
+
+    $actions = [];
+
+    $actions['{checks}'] = $crud->renderCheckedActions($gridViewWidget->id);
+
+    $actions['{create}'] = Html::a(Yii::t('crud', 'Create'), $controller->urlCreate(['create']), ['class' => 'btn btn-success']);
+
+    $actions['{full}'] = ButtonDropdown::widget([
+        'label' => '<span class="glyphicon glyphicon-asterisk"></span>',
+        'encodeLabel' => false,
+        'dropdown' => [
+            'items' => [
+                ['label' => Yii::t('crud', 'Export'), 'url' => $controller->urlCreate(['export'])],
+                ['label' => Yii::t('crud', 'Import'), 'url' => $controller->urlCreate(['import'])],
+                '<li role="presentation" class="divider"></li>',
+                [
+                    'label' => Yii::t('crud', 'Delete all'),
+                    'url' => $controller->urlCreate(['delete', 'id' => 'all']),
+                    'linkOptions' => [
+                        'data-confirm' => Yii::t('crud', 'Are you sure you want to delete all items?'),
                     ],
                 ],
             ],
-            'options' => [
-                'class' => 'btn-default',
-                'title' => Yii::t('crud', 'Common actions'),
-            ],
-            'containerOptions' => ['class' => 'btn-default pull-right'],
-        ]); ?>
-    <?php endif; ?>
+        ],
+        'options' => [
+            'class' => 'btn-default',
+            'title' => Yii::t('crud', 'Common actions'),
+        ],
+        'containerOptions' => ['class' => 'btn-default pull-right'],
+    ]);
 
-    <div class="btn-group" role="group">
-        <?= Html::a(Yii::t('crud', 'Create'), $this->context->urlCreate(['create']), ['class' => 'btn btn-success']) ?>
-    </div>
-
-    <?php
     $items = (new PerPage())->getMenuItems();
     $items[] = '<li role="presentation" class="divider"></li>';
     $items[] = [
         'label' => Yii::t('crud', 'Reset filter'),
-        'url' => $this->context->urlCreate([], false, false),
+        'url' => $controller->urlCreate([], false, false),
     ];
-    ?>
-    <?= ButtonDropdown::widget([
+    $actions['{filter}'] = ButtonDropdown::widget([
         'label' => '<span class="glyphicon glyphicon-filter"></span>',
         'encodeLabel' => false,
         'split' => true,
@@ -60,6 +62,20 @@ $crud = $this->context->crud;
             'class' => 'btn btn-default toggle-filters',
         ],
         'containerOptions' => ['class' => 'btn-default pull-right'],
-    ]); ?>
-    <?php // js/crud.js ?>
+    ]);
+
+    if (!$crud->getConfig('access.delete', true)) {
+        $actions['{checks}'] = $actions['{full}'] = '';
+    }
+
+    $customActions = $crud->getConfig('gridToolbarActions', []);
+    foreach ($customActions as $key => $customAction) {
+        $actions[$key] = is_callable($customAction) ? call_user_func_array($customAction, [$gridViewWidget, $crud, $this]) : $customAction;
+    }
+
+    echo strtr($template, $actions);
+
+    // js/crud.js
+    ?>
+
 </div>
