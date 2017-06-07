@@ -226,10 +226,10 @@ class Crud extends Object
                 'options' => ['class' => 'btn btn-link btn-xs crud-hide-caret'],
             ],
             'items' => function ($model, $key) {
-                $template = $this->getConfig('gridActionsTemplate', "{update}\n{divider}\n{delete}");
+                $template = $this->getConfig('gridActionsTemplate', "{update}\n{--}\n{delete}");
 
                 $actions = [
-                    '{divider}' => '<li role="presentation" class="divider"></li>',
+                    '{--}' => '<li role="presentation" class="divider"></li>',
                     '{update}' => [
                         'label' => Yii::t('crud', 'Edit'),
                         'url' => $this->columnUrlCreator('update', $model, $key),
@@ -244,9 +244,9 @@ class Crud extends Object
                     ],
                 ];
 
-                $gridActions = $this->getConfig('gridActions', []);
-                foreach ($gridActions as $key => $gridAction) {
-                    $actions[$key] = is_callable($gridAction) ? call_user_func_array($gridAction, [$model, $key]) : $gridAction;
+                $customActions = $this->getConfig('gridActions', []);
+                foreach ($customActions as $key => $customAction) {
+                    $actions[$key] = is_callable($customAction) ? call_user_func_array($customAction, [$model, $key, $this]) : $customAction;
                 }
 
                 $items = explode("\n", $template);
@@ -870,38 +870,53 @@ class Crud extends Object
 
     public function checkedActions()
     {
-        return ArrayHelper::merge(ArrayHelper::getValue($this->config, 'gridCheckedActions', []), [
-            [
+        $template = $this->getConfig('gridCheckedActionsTemplate',
+            "{setvals}\n{--}\n{duplicate}\n{--}\n{export}\n{--}\n{delete}");
+
+        $actions = [
+            '{--}' => '<li role="presentation" class="divider"></li>',
+            '{setvals}' => [
                 'label' => Yii::t('crud', 'Set values'),
                 'url' => $this->context->urlCreate(['setvals'], true),
             ],
-            '<li role="presentation" class="divider"></li>',
-            [
+            '{duplicate}' => [
                 'label' => Yii::t('crud', 'Duplicate'),
                 'url' => $this->context->urlCreate(['duplicate'], true),
             ],
-            [
+            '{export}' => [
                 'label' => Yii::t('crud', 'Export'),
                 'url' => $this->context->urlCreate(['export'], true),
             ],
-            '<li role="presentation" class="divider"></li>',
-            [
+            '{delete}' => [
                 'label' => Yii::t('crud', 'Delete'),
                 'url' => $this->context->urlCreate(['delete'], true),
                 'linkOptions' => [
                     'data-confirm' => Yii::t('crud', 'Are you sure you want to delete this items?'),
                 ],
             ],
-        ]);
+        ];
+
+        $customActions = $this->getConfig('gridCheckedActions', []);
+        foreach ($customActions as $key => $customAction) {
+            $actions[$key] = is_callable($customAction) ? call_user_func_array($customAction, [$this]) : $customAction;
+        }
+
+        $items = explode("\n", $template);
+        foreach ($actions as $key => $action) {
+            foreach (array_keys($items, $key) as $pos) {
+                $items[$pos] = $action;
+            }
+        }
+
+        return $items;
     }
 
     public function renderCheckedActions($gridId)
     {
         $checked = $this->checkedActions();
-        foreach ($checked as &$check) {
+        foreach ($checked as $key => $check) {
             if (is_array($check)) {
-                $check['linkOptions']['class'] = isset($check['linkOptions']['class']) ?
-                    $check['linkOptions']['class'] . ' js-checked-action' : 'js-checked-action';
+                Html::addCssClass($checked[$key]['linkOptions'], 'js-checked-action');
             }
         }
 

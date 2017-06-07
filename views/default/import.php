@@ -1,17 +1,16 @@
 <?php
+/* @var $this yii\web\View */
+/* @var $model CrudImportForm */
+
 use ereminmdev\yii2\crud\models\CrudImportForm;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
-
-/* @var $this yii\web\View */
-/* @var $model CrudImportForm */
 
 $this->title = Yii::t('crud', 'Import');
 $this->params['breadcrumbs'][] = ['label' => $this->context->pageTitle, 'url' => $this->context->urlCreate(['index'])];
 $this->params['breadcrumbs'][] = Yii::t('crud', 'Import');
 
 ?>
-
 <div class="cms-crud cms-crud-import">
 
     <h1><?= Html::encode($this->title) ?></h1>

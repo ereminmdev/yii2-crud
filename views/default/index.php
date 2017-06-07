@@ -1,15 +1,14 @@
 <?php
-use ereminmdev\yii2\crud\components\Crud;
+/* @var $this yii\web\View */
+/* @var $crud \ereminmdev\yii2\crud\components\Crud */
+/* @var $searchModel \yii\db\ActiveRecord */
+/* @var $dataProvider yii\data\ActiveDataProvider */
+/* @var $columns array grid column configuration. Each array element represents the configuration */
+
 use yii\bootstrap\Alert;
 use yii\grid\GridView;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
-
-/* @var $this yii\web\View */
-/* @var $crud Crud */
-/* @var $searchModel \yii\db\ActiveRecord */
-/* @var $dataProvider yii\data\ActiveDataProvider */
-/* @var $columns array grid column configuration. Each array element represents the configuration */
 
 $this->title = $this->context->pageTitle;
 $this->params['breadcrumbs'][] = $this->title;
@@ -24,7 +23,6 @@ $gridViewWidget = new GridView(ArrayHelper::merge([
 ], $crud->getConfig('gridViewOptions', [])));
 
 ?>
-
 <div class="cms-crud cms-crud-index">
 
     <h1><?= Html::encode($this->title) ?></h1>

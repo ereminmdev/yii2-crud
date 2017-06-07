@@ -1,18 +1,17 @@
 <?php
-use yii\bootstrap\ActiveForm;
-use yii\helpers\Html;
-
 /* @var $this yii\web\View */
 /* @var $model \yii\db\ActiveRecord */
 /* @var $setModel \yii\base\DynamicModel */
 /* @var $form ActiveForm */
+
+use yii\bootstrap\ActiveForm;
+use yii\helpers\Html;
 
 $this->title = Yii::t('crud', 'Set values');
 $this->params['breadcrumbs'][] = ['label' => $this->context->pageTitle, 'url' => $this->context->urlCreate(['index'])];
 $this->params['breadcrumbs'][] = Yii::t('crud', 'Set values');
 
 ?>
-
 <div class="cms-crud cms-crud-setvals">
 
     <h1><?= Html::encode($this->title) ?></h1>

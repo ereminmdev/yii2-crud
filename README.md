@@ -8,7 +8,7 @@ Crud module for Yii framework.
 
 ## Use
 
-1) Add this module to config file:
+1) Add module to config file:
 
 ```
 'modules' => [
@@ -18,7 +18,7 @@ Crud module for Yii framework.
 ],
 ```
 
-2) Add crudConfig function to model class:
+2) Add crudConfig() function to model class:
 
 Simple:
 
@@ -94,8 +94,8 @@ public static function crudConfig()
 }
 ```
 
-3) Add link with url:
+3) Add link to crud:
 
 ```
-['/crud', 'model' => Product::className()]
+echo Url::toRoute(['/crud', 'model' => Product::className()]);
 ```

@@ -1,17 +1,16 @@
 <?php
+/* @var $this yii\web\View */
+/* @var $model CrudExportForm */
+
 use ereminmdev\yii2\crud\models\CrudExportForm;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
-
-/* @var $this yii\web\View */
-/* @var $model CrudExportForm */
 
 $this->title = Yii::t('crud', 'Export');
 $this->params['breadcrumbs'][] = ['label' => $this->context->pageTitle, 'url' => $this->context->urlCreate(['index'])];
 $this->params['breadcrumbs'][] = Yii::t('crud', 'Export');
 
 ?>
-
 <div class="cms-crud cms-crud-export">
 
     <h1><?= Html::encode($this->title) ?></h1>

@@ -17,8 +17,13 @@ use yii\web\UploadedFile;
 
 class DefaultController extends Controller
 {
+    /**
+     * @var string view page title
+     */
     public $pageTitle = 'crud';
-
+    /**
+     * @var string $_get param for model class
+     */
     public $modelUrlParam = 'model';
 
 
@@ -353,6 +358,6 @@ class DefaultController extends Controller
      */
     public function getReturnUrl($defRoute = ['index'])
     {
-        return (($url = Yii::$app->request->get('returnUrl')) && Yii::$app->request->get('useReturnUrl', 1)) ? $url : $this->urlCreate($defRoute);
+        return (Yii::$app->request->get('useReturnUrl', 1) && ($url = Yii::$app->request->get('returnUrl'))) ? $url : $this->urlCreate($defRoute);
     }
 }

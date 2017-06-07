@@ -3,9 +3,10 @@
 namespace ereminmdev\yii2\crud;
 
 use Yii;
+use yii\base\Module;
 
 
-class Crud extends \yii\base\Module
+class Crud extends Module
 {
     public $controllerNamespace = 'ereminmdev\yii2\crud\controllers';
 

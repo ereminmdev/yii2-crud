@@ -1,15 +1,14 @@
 <?php
+/* @var $this yii\web\View */
+
 use ereminmdev\yii2\crud\components\PerPage;
 use yii\bootstrap\ButtonDropdown;
 use yii\helpers\Html;
-
-/* @var $this yii\web\View */
 
 /* @var $crud \ereminmdev\yii2\crud\components\Crud */
 $crud = $this->context->crud;
 
 ?>
-
 <div class="btn-toolbar" role="toolbar">
     <?php if ($crud->getConfig('access.delete', true)): ?>
         <?= $crud->renderCheckedActions($gridViewWidget->id) ?>
