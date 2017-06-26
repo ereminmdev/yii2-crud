@@ -190,9 +190,7 @@ class DefaultController extends Controller
             $oldPos = $curModel->position;
             $curModel->position = $model2->position;
             $model2->position = $oldPos;
-
-            $curModel->save();
-            $model2->save();
+            $curModel->save() && $model2->save();
         }
 
         return $this->redirect($this->getReturnUrl());
@@ -216,9 +214,7 @@ class DefaultController extends Controller
             $oldPos = $curModel->position;
             $curModel->position = $model2->position;
             $model2->position = $oldPos;
-
-            $curModel->save();
-            $model2->save();
+            $curModel->save() && $model2->save();
         }
 
         return $this->redirect($this->getReturnUrl());

@@ -3,6 +3,7 @@
   "description": "Crud module for Yii framework.",
   "keywords": ["yii2","module","crud"],
   "homepage": "https://bitbucket.org/ereminmdev/yii2-crud",
+  "type": "yii2-extension",
   "license": "MIT",
   "authors": [
     {

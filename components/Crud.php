@@ -426,7 +426,7 @@ class Crud extends Object
                             $columns[$key] = [
                                 'class' => DropDownButtonColumn::className(),
                                 'buttonDropdownOptions' => [
-                                    'options' => ['class' => 'btn btn-link btn-xs'],
+                                    'options' => ['class' => 'btn btn-link btn-xs crud-hide-caret'],
                                 ],
                                 'attribute' => $field,
                                 'filter' => $itemList,
