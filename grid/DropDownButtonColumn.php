@@ -30,7 +30,7 @@ class DropDownButtonColumn extends DataColumn
     /**
      * @var boolean set true to hide dropdown caret icon
      */
-    public $hideCaret = true;
+    public $showCaret = false;
     /**
      * @var boolean encode button and dropdown labels
      */
@@ -41,15 +41,16 @@ class DropDownButtonColumn extends DataColumn
     {
         parent::init();
 
-        if ($this->hideCaret) {
-            Html::addCssClass($this->buttonDropdownOptions['options'], 'crud-hide-caret');
-        }
-
-        $this->buttonDropdownOptions['encodeLabel'] = isset($this->buttonDropdownOptions['encodeLabel']) ?
-            $this->buttonDropdownOptions['encodeLabel'] : $this->encodeLabels;
-
-        $this->buttonDropdownOptions['dropdown']['encodeLabels'] = isset($this->buttonDropdownOptions['dropdown']['encodeLabels']) ?
-            $this->buttonDropdownOptions['dropdown']['encodeLabels'] : $this->encodeLabels;
+        $this->buttonDropdownOptions = ArrayHelper::merge([
+            'tagName' => 'a',
+            'options' => [
+                'class' => !$this->showCaret ? ['widget' => 'crud-hide-caret'] : null,
+            ],
+            'encodeLabel' => $this->encodeLabels,
+            'dropdown' => [
+                'encodeLabels' => $this->encodeLabels,
+            ]
+        ], $this->buttonDropdownOptions);
     }
 
     /**

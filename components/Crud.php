@@ -16,7 +16,6 @@ use yii\data\ActiveDataProvider;
 use yii\db\ActiveRecord;
 use yii\db\Schema;
 use yii\grid\CheckboxColumn;
-use yii\grid\GridView;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\StringHelper;
@@ -224,7 +223,6 @@ class Crud extends Object
             'buttonDropdownOptions' => [
                 'label' => '<i class="glyphicon glyphicon-menu-hamburger"></i>',
                 'encodeLabel' => false,
-                'options' => ['class' => 'btn btn-link btn-xs crud-hide-caret'],
             ],
             'items' => function ($model, $key) {
                 $template = $this->getConfig('gridActionsTemplate', "{update}\n{--}\n{delete}");
@@ -425,9 +423,6 @@ class Crud extends Object
                             $dropList = ArrayHelper::getValue($schema, 'gridDropButtonList', $itemList);
                             $columns[$key] = [
                                 'class' => DropDownButtonColumn::className(),
-                                'buttonDropdownOptions' => [
-                                    'options' => ['class' => 'btn btn-link btn-xs crud-hide-caret'],
-                                ],
                                 'attribute' => $field,
                                 'filter' => $itemList,
                                 'items' => function ($model, $key, $index) use ($field, $dropList) {
