@@ -5,11 +5,10 @@ namespace ereminmdev\yii2\crud\grid;
 use yii\bootstrap\ButtonDropdown;
 use yii\grid\DataColumn;
 use yii\helpers\ArrayHelper;
-use yii\helpers\Html;
 
 
 /**
- * Render data column as bootstrap dropdown menu
+ * Render bootstrap ButtonDropdown widget as grid column
  */
 class DropDownButtonColumn extends DataColumn
 {
@@ -66,7 +65,6 @@ class DropDownButtonColumn extends DataColumn
                 'label' => $this->labels ? ArrayHelper::getValue($this->labels, $value, '') : ArrayHelper::getValue($items, $value . '.label', ''),
                 'dropdown' => ['items' => $items],
             ], $this->buttonDropdownOptions));
-
         } else {
             return parent::renderDataCellContent($model, $key, $index);
         }

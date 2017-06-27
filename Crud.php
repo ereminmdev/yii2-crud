@@ -6,11 +6,21 @@ use Yii;
 use yii\base\Module;
 
 
+/**
+ * Class Crud
+ * @package ereminmdev\yii2\crud
+ */
 class Crud extends Module
 {
+    /**
+     * @var string
+     */
     public $controllerNamespace = 'ereminmdev\yii2\crud\controllers';
 
 
+    /**
+     * @inheritdoc
+     */
     public function init()
     {
         parent::init();
@@ -20,6 +30,9 @@ class Crud extends Module
         $this->registerTranslations();
     }
 
+    /**
+     * @inheritdoc
+     */
     public function registerTranslations()
     {
         Yii::$app->i18n->translations['crud*'] = [

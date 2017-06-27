@@ -75,7 +75,6 @@ $controller = $this->context;
 
     echo strtr($template, $actions);
 
-    // js/crud.js
     ?>
 
 </div>

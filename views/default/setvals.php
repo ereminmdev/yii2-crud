@@ -7,8 +7,11 @@
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 
+/** @var \ereminmdev\yii2\crud\controllers\DefaultController $controller */
+$controller = $this->context;
+
 $this->title = Yii::t('crud', 'Set values');
-$this->params['breadcrumbs'][] = ['label' => $this->context->pageTitle, 'url' => $this->context->urlCreate(['index'])];
+$this->params['breadcrumbs'][] = ['label' => $controller->pageTitle, 'url' => $controller->urlCreate(['index'])];
 $this->params['breadcrumbs'][] = Yii::t('crud', 'Set values');
 
 ?>
@@ -24,19 +27,19 @@ $this->params['breadcrumbs'][] = Yii::t('crud', 'Set values');
             <div class="panel-heading"><?= Yii::t('crud', 'Select the required fields') ?></div>
             <div class="panel-body">
                 <?= $form->errorSummary($setModel) ?>
-                <?= $this->context->crud->renderFormSetvals($form, $model, $setModel) ?>
+                <?= $controller->crud->renderFormSetvals($form, $model, $setModel) ?>
             </div>
         </div>
 
         <?= $form->errorSummary($model) ?>
 
-        <?= $this->context->crud->renderFormFields($form, $model) ?>
+        <?= $controller->crud->renderFormFields($form, $model) ?>
 
         <div class="form-group">
             <?= Html::submitButton(Yii::t('crud', 'Set values'),
                 ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
             &nbsp; &nbsp;
-            <?= Html::a(Yii::t('crud', 'Cancel'), $this->context->urlCreate(['index'])) ?>
+            <?= Html::a(Yii::t('crud', 'Cancel'), $controller->urlCreate(['index'])) ?>
         </div>
 
         <?php ActiveForm::end(); ?>

@@ -9,28 +9,45 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 
 
+/**
+ * Class PerPage
+ * @package ereminmdev\yii2\crud\components
+ *
+ * @property array $menuItems
+ */
 class PerPage extends Component
 {
+    /**
+     * @var array of perPage values
+     */
     public $variants = [1, 5, 10, 20, 30, 50];
-
+    /**
+     * @var int default perPage value
+     */
     public $default = 30;
-
+    /**
+     * @var int current perPage value
+     */
     public $current;
-
+    /**
+     * @var string perPage $_GET param name
+     */
     public $perPageParam = 'per-page';
 
-    public $pageParam = 'page';
 
-    public $urlManager;
-
-
+    /**
+     * @inheritdoc
+     */
     public function init()
     {
         parent::init();
 
-        $this->current = $this->current ?: Yii::$app->request->getQueryParam('per-page', $this->default);
+        $this->current = $this->current ?: Yii::$app->request->getQueryParam($this->perPageParam, $this->default);
     }
 
+    /**
+     * @return array of menu items for bootstrap ButtonDropdown widget
+     */
     public function getMenuItems()
     {
         $items = [];
@@ -48,8 +65,6 @@ class PerPage extends Component
             $items[] = $item;
         }
 
-        $items[] = '<li role="presentation" class="divider"></li>';
-
         $items[] = [
             'label' => Yii::t('crud', 'Show all'),
             'url' => $this->urlCreate(0),
@@ -59,9 +74,13 @@ class PerPage extends Component
         return $items;
     }
 
+    /**
+     * @param array $options for bootstrap ButtonDropdown widget
+     * @return string
+     */
     public function buttonDropdown($options = [])
     {
-        $options = ArrayHelper::merge([
+        return ButtonDropdown::widget(ArrayHelper::merge([
             'label' => '<span class="glyphicon glyphicon-filter"></span>',
             'encodeLabel' => false,
             'dropdown' => [
@@ -74,11 +93,13 @@ class PerPage extends Component
             'containerOptions' => [
                 'class' => 'btn-default pull-right',
             ],
-        ], $options);
-
-        return ButtonDropdown::widget($options);
+        ], $options));
     }
 
+    /**
+     * @param int $perPage
+     * @return string
+     */
     public function urlCreate($perPage)
     {
         $perPage = $perPage != $this->default ? $perPage : null;

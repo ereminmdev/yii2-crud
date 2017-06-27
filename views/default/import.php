@@ -6,8 +6,11 @@ use ereminmdev\yii2\crud\models\CrudImportForm;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 
+/** @var \ereminmdev\yii2\crud\controllers\DefaultController $controller */
+$controller = $this->context;
+
 $this->title = Yii::t('crud', 'Import');
-$this->params['breadcrumbs'][] = ['label' => $this->context->pageTitle, 'url' => $this->context->urlCreate(['index'])];
+$this->params['breadcrumbs'][] = ['label' => $controller->pageTitle, 'url' => $controller->urlCreate(['index'])];
 $this->params['breadcrumbs'][] = Yii::t('crud', 'Import');
 
 ?>
@@ -36,7 +39,7 @@ $this->params['breadcrumbs'][] = Yii::t('crud', 'Import');
     <div class="form-group">
         <?= Html::submitButton(Yii::t('crud', 'Import'), ['class' => 'btn btn-primary']) ?>
         &nbsp; &nbsp;
-        <?= Html::a(Yii::t('crud', 'Cancel'), $this->context->urlCreate(['index'])) ?>
+        <?= Html::a(Yii::t('crud', 'Cancel'), $controller->urlCreate(['index'])) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

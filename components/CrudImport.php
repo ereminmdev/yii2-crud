@@ -7,21 +7,44 @@ use yii\base\Object;
 use yii\db\Schema;
 
 
+/**
+ * Class CrudImport
+ * @package ereminmdev\yii2\crud\components
+ *
+ * @property array $errors
+ */
 class CrudImport extends Object
 {
+    /**
+     * @var string file name
+     */
     public $fileName;
-
+    /**
+     * @var string file format
+     */
     public $format;
-
+    /**
+     * @var string model class name
+     */
     public $modelClass;
-
+    /**
+     * @var array of columns schema
+     */
     public $columnsSchema;
-
+    /**
+     * @var int inserted count
+     */
     public $insertCount = 0;
 
+    /**
+     * @var array of errors during import process
+     */
     private $_errors = [];
 
 
+    /**
+     * @return array of file formats
+     */
     public static function fileFormats()
     {
         return [
@@ -31,6 +54,9 @@ class CrudImport extends Object
         ];
     }
 
+    /**
+     * @return bool to has errors during import process
+     */
     public function import()
     {
         \PHPExcel_Settings::setLocale(Yii::$app->language);
@@ -91,6 +117,9 @@ class CrudImport extends Object
         return empty($this->_errors);
     }
 
+    /**
+     * @param $values array
+     */
     public function prepareData(&$values)
     {
         foreach ($values as $field => &$value) {
@@ -109,6 +138,9 @@ class CrudImport extends Object
         }
     }
 
+    /**
+     * @return array of errors during import process
+     */
     public function getErrors()
     {
         return $this->_errors;

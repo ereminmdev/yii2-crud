@@ -10,7 +10,10 @@ use yii\grid\GridView;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
-$this->title = $this->context->pageTitle;
+/** @var \ereminmdev\yii2\crud\controllers\DefaultController $controller */
+$controller = $this->context;
+
+$this->title = $controller->pageTitle;
 $this->params['breadcrumbs'][] = $this->title;
 
 $gridViewWidget = new GridView(ArrayHelper::merge([

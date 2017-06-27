@@ -8,29 +8,44 @@ use yii\data\ActiveDataProvider;
 use yii\db\ActiveRecord;
 use yii\grid\GridView;
 use yii\helpers\Inflector;
+use yii\web\Response;
 
 
+/**
+ * Class CrudExport
+ * @package ereminmdev\yii2\crud\components
+ */
 class CrudExport extends Object
 {
+    /**
+     * @var string file name
+     */
     public $fileName;
-
+    /**
+     * @var string file format
+     */
     public $format;
-
+    /**
+     * @var bool
+     */
     public $renderData = false;
-
     /**
      * @var ActiveDataProvider
      */
     public $dataProvider;
-
     /**
      * @var ActiveRecord
      */
     public $model;
-
+    /**
+     * @var array of columns
+     */
     public $columns;
 
 
+    /**
+     * @return array of file formats
+     */
     public static function fileFormats()
     {
         return [
@@ -42,6 +57,9 @@ class CrudExport extends Object
         ];
     }
 
+    /**
+     * @return Response
+     */
     public function export()
     {
         function getHeaderValue($value)
@@ -128,11 +146,9 @@ class CrudExport extends Object
         }
 
         ob_start();
-
         $objWriter->save('php://output');
         $objPHPExcel->disconnectWorksheets();
         unset($objPHPExcel);
-
         $content = ob_get_contents();
         ob_end_clean();
 

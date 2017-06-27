@@ -15,12 +15,18 @@ use yii\web\NotFoundHttpException;
 use yii\web\UploadedFile;
 
 
+/**
+ * Class DefaultController
+ * @package ereminmdev\yii2\crud\controllers
+ *
+ * @property null|Crud $crud
+ */
 class DefaultController extends Controller
 {
     /**
      * @var string view page title
      */
-    public $pageTitle = 'crud';
+    public $pageTitle = 'Crud';
     /**
      * @var string $_get param for model class
      */

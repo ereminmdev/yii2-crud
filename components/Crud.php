@@ -26,23 +26,29 @@ use yii\widgets\ActiveField;
 use yii\widgets\ActiveForm;
 
 
+/**
+ * Class Crud
+ * @package ereminmdev\yii2\crud\components
+ *
+ * @property ActiveRecord $modelScenario
+ * @property ActiveRecord|null $searchModel
+ * @property mixed $fields
+ * @property DynamicModel $setvalsModel
+ */
 class Crud extends Object
 {
     /**
-     * @var ActiveRecord $modelClass
+     * @var ActiveRecord model class name
      */
     public $modelClass;
-
     /**
-     * @var DefaultController $context
+     * @var DefaultController
      */
     public $context;
-
     /**
-     * @var array $config returned from $model->crudConfig()
+     * @var array $config getting from $model->crudConfig()
      */
     public $config;
-
     /**
      * @var string crud scenario, like model scenario
      */
@@ -867,7 +873,7 @@ class Crud extends Object
     public function checkedActions()
     {
         $template = $this->getConfig('gridCheckedActionsTemplate',
-            "{setvals}\n{--}\n{duplicate}\n{--}\n{export}\n{--}\n{delete}");
+            "{setvals}\n{duplicate}\n{export}\n{--}\n{delete}");
 
         $actions = [
             '{--}' => '<li role="presentation" class="divider"></li>',

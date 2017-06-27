@@ -7,13 +7,25 @@ use Yii;
 use yii\base\Model;
 
 
+/**
+ * Class CrudExportForm
+ * @package ereminmdev\yii2\crud\models
+ */
 class CrudExportForm extends Model
 {
+    /**
+     * @var string
+     */
     public $fileFormat;
-
+    /**
+     * @var bool
+     */
     public $renderData = false;
 
 
+    /**
+     * @inheritdoc
+     */
     public function rules()
     {
         return [
@@ -22,6 +34,9 @@ class CrudExportForm extends Model
         ];
     }
 
+    /**
+     * @inheritdoc
+     */
     public function attributeLabels()
     {
         return [
@@ -30,6 +45,9 @@ class CrudExportForm extends Model
         ];
     }
 
+    /**
+     * @return array of pairs $format => $title
+     */
     public static function fileFormats()
     {
         return CrudExport::fileFormats();

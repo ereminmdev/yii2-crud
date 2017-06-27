@@ -18,15 +18,13 @@ Crud module for Yii framework.
 ],
 ```
 
-2) Add crudConfig() function to model class:
-
-Simple:
+2) Add crudConfig() function to ActiveRecord model class:
 
 ```
 public static function crudConfig()
 {
     return [
-        'title' => 'Products',
+        'title' => Yii::t('app', 'Products'),
     ],
 }
 ```
@@ -37,7 +35,7 @@ or with some customizations:
 public static function crudConfig()
 {
     return [
-        'title' => 'Products',
+        'title' => Yii::t('app', 'Products'),
         'dataProvider' => function (ActiveDataProvider $dataProvider) {
             $dataProvider->sort = [
                 'defaultOrder' => [
@@ -87,6 +85,7 @@ public static function crudConfig()
                 'itemList' => function () {
                     return static::statuses();
                 },
+                'gridDropButton' => true,
             ],
             'colors3' => false,
         ],
@@ -94,8 +93,8 @@ public static function crudConfig()
 }
 ```
 
-3) Add link to crud:
+3) Add link in view file:
 
 ```
-echo Url::toRoute(['/crud', 'model' => Product::className()]);
+<?= Url::toRoute(['/crud', 'model' => Product::className()]); ?>
 ```

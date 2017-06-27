@@ -1,4 +1,4 @@
-jQuery(function ($) {
+(function ($) {
     'use strict';
 
     // views/_grid_toolbar
@@ -85,4 +85,4 @@ jQuery(function ($) {
         }).trigger("change");
     }
 
-});
+}(jQuery));

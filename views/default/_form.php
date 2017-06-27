@@ -6,22 +6,28 @@
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 
-// js/crud.js
+/** @var \ereminmdev\yii2\crud\controllers\DefaultController $controller */
+$controller = $this->context;
 
 ?>
 <div class="cms-crud-form">
 
-    <?php $form = ActiveForm::begin(['options' => ['id' => 'crudFormData', 'enctype' => 'multipart/form-data']]); ?>
+    <?php $form = ActiveForm::begin([
+        'options' => [
+            'id' => 'crudFormData',
+            'enctype' => 'multipart/form-data',
+        ],
+    ]); ?>
 
     <?= $form->errorSummary($model); ?>
 
-    <?= $this->context->crud->renderFormFields($form, $model) ?>
+    <?= $controller->crud->renderFormFields($form, $model) ?>
 
     <div class="form-group form-buttons">
         <?= Html::submitButton($model->isNewRecord ? Yii::t('crud', 'Create') : Yii::t('crud', 'Update'),
             ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
         &nbsp;
-        <?= Html::a(Yii::t('crud', 'Cancel'), $this->context->getReturnUrl(), ['class' => 'btn btn-link']) ?>
+        <?= Html::a(Yii::t('crud', 'Cancel'), $controller->getReturnUrl(), ['class' => 'btn btn-link']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>
