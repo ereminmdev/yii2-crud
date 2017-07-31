@@ -59,7 +59,7 @@ public static function crudConfig()
             },
             'colors2' => false,
         ],
-        'сolumnsSchema' => [
+        'columnsSchema' => [
             'shop_phone' => ['type' => 'tel'],
             'shop_email' => ['type' => 'email'],
             'shop_url' => ['type' => 'url'],

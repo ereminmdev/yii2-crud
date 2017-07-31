@@ -141,7 +141,7 @@ class Crud extends Object
         }
 
         if ($model->load($filterParams)) {
-            $columnsSchema = $this->сolumnsSchema();
+            $columnsSchema = $this->columnsSchema();
             $formName = $model->formName();
             //foreach ($model->attributes() as $attribute) {
             foreach ($filterParams[$formName] as $attribute => $value) {
@@ -180,7 +180,7 @@ class Crud extends Object
         }
 
         if ($relations) {
-            $columnsSchema = $this->сolumnsSchema();
+            $columnsSchema = $this->columnsSchema();
             foreach ($columnsSchema as $column => $schema) {
                 if ($schema['type'] == 'relation') {
                     $relation = $schema['relation'];
@@ -278,7 +278,7 @@ class Crud extends Object
             $onlyColumns : array_keys($model->attributeLabels()));
 
         $paramColumns = $this->getConfig('gridColumns', []);
-        $columnsSchema = $this->сolumnsSchema();
+        $columnsSchema = $this->columnsSchema();
 
         $prepend = $this->getConfig('gridColumnsPrepend', []);
         $columns = ArrayHelper::merge($prepend, $columns);
@@ -404,21 +404,12 @@ class Crud extends Object
                         ];
                         break;
                     case 'sort':
+                        $this->useSortableJs = true;
                         $columns[$key] = [
                             'attribute' => $field,
                             'filter' => false,
                             'content' => function ($model, $key, $index, $column) use ($field, $schema) {
-                                return
-                                    Html::a(
-                                        '<span class="glyphicon glyphicon-arrow-up"></span>',
-                                        $this->columnUrlCreator('sort-up', $model, $key),
-                                        ['class' => 'btn btn-link btn-xs']
-                                    ) .
-                                    Html::a(
-                                        '<span class="glyphicon glyphicon-arrow-down"></span>',
-                                        $this->columnUrlCreator('sort-down', $model, $key),
-                                        ['class' => 'btn btn-link btn-xs']
-                                    );
+                                return Html::tag('div', '<span class="glyphicon glyphicon-move"></span>', ['class' => 'crud-grid__sort-handle']);
                             },
                         ];
                         break;
@@ -547,7 +538,7 @@ class Crud extends Object
     {
         $formFields = $this->formFields();
         $paramFields = $this->getConfig('formFields', []);
-        $columnsSchema = $this->сolumnsSchema();
+        $columnsSchema = $this->columnsSchema();
 
         $formTabs = $this->getConfig('formTabs');
         if ($formTabs) {
@@ -819,50 +810,50 @@ class Crud extends Object
         }
     }
 
-    private $_сolumnsSchema;
+    private $_columnsSchema;
 
-    public function сolumnsSchema()
+    public function columnsSchema()
     {
-        if ($this->_сolumnsSchema === null) {
-            $сolumnsSchema = [];
+        if ($this->_columnsSchema === null) {
+            $columnsSchema = [];
 
             $tableSchema = $this->getModel()->getTableSchema()->columns;
             foreach ($tableSchema as $field => $columnSchema) {
-                $сolumnsSchema[$field]['type'] = $columnSchema->type;
-                $сolumnsSchema[$field]['size'] = $columnSchema->size;
-                $сolumnsSchema[$field]['allowNull'] = $columnSchema->allowNull;
+                $columnsSchema[$field]['type'] = $columnSchema->type;
+                $columnsSchema[$field]['size'] = $columnSchema->size;
+                $columnsSchema[$field]['allowNull'] = $columnSchema->allowNull;
 
-                if (($сolumnsSchema[$field]['type'] == Schema::TYPE_SMALLINT) && ($сolumnsSchema[$field]['size'] == 1)) {
-                    $сolumnsSchema[$field]['type'] = Schema::TYPE_BOOLEAN;
+                if (($columnsSchema[$field]['type'] == Schema::TYPE_SMALLINT) && ($columnsSchema[$field]['size'] == 1)) {
+                    $columnsSchema[$field]['type'] = Schema::TYPE_BOOLEAN;
                 }
             }
 
-            if (isset($сolumnsSchema['created_at'])) {
-                $сolumnsSchema['created_at']['type'] = 'datetime';
+            if (isset($columnsSchema['created_at'])) {
+                $columnsSchema['created_at']['type'] = 'datetime';
             }
-            if (isset($сolumnsSchema['updated_at'])) {
-                $сolumnsSchema['created_at']['type'] = 'datetime';
-            }
-
-            if (isset($сolumnsSchema['email'])) {
-                $сolumnsSchema['email']['type'] = 'email';
+            if (isset($columnsSchema['updated_at'])) {
+                $columnsSchema['created_at']['type'] = 'datetime';
             }
 
-            if (isset($сolumnsSchema['position'])) {
-                $сolumnsSchema['position']['type'] = 'sort';
+            if (isset($columnsSchema['email'])) {
+                $columnsSchema['email']['type'] = 'email';
             }
 
-            $сolumnsSchema = ArrayHelper::merge($сolumnsSchema, $this->getConfig('сolumnsSchema', []));
+            if (isset($columnsSchema['position'])) {
+                $columnsSchema['position']['type'] = 'sort';
+            }
 
-            foreach ($сolumnsSchema as $key => $schema) {
+            $columnsSchema = ArrayHelper::merge($columnsSchema, $this->getConfig('columnsSchema', []));
+
+            foreach ($columnsSchema as $key => $schema) {
                 if (isset($schema['type']) && ($schema['type'] == 'relation') && !isset($schema['titleField'])) {
-                    $сolumnsSchema[$key]['titleField'] = 'title';
+                    $columnsSchema[$key]['titleField'] = 'title';
                 }
             }
 
-            $this->_сolumnsSchema = $сolumnsSchema;
+            $this->_columnsSchema = $columnsSchema;
         }
-        return $this->_сolumnsSchema;
+        return $this->_columnsSchema;
     }
 
     public function getConfig($key, $default = null)
@@ -989,7 +980,7 @@ $(".js-checked-action").on("click", function () {
             'format' => $file->extension,
             'fileName' => $file->tempName,
             'modelClass' => $this->modelClass,
-            'columnsSchema' => $this->сolumnsSchema(),
+            'columnsSchema' => $this->columnsSchema(),
         ]);
 
         $result = $importer->import();
@@ -1024,5 +1015,18 @@ $(".js-checked-action").on("click", function () {
         }
 
         return $query->column();
+    }
+
+    /**
+     * @var bool
+     */
+    protected $useSortableJs = false;
+
+    /**
+     * @return bool
+     */
+    public function isUseSortableJs()
+    {
+        return $this->useSortableJs;
     }
 }

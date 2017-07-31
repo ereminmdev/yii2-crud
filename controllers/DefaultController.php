@@ -178,52 +178,27 @@ class DefaultController extends Controller
         ]);
     }
 
-    public function actionSortUp($id)
+    public function actionSortable()
     {
-        $curModel = $this->getCrud()->findModel($id, 'sort');
+        $class = Yii::$app->request->get('model', $this->crud->modelClass);
 
-        $models = $this->getCrud()->getModels(true, false, false, false);
-        $curKey = null;
-        foreach ($models as $key => $model) {
-            if ($model->id == $id) {
-                $curKey = $key;
+        $order = Yii::$app->request->post('order', []);
+        if (count($order) < 2) return;
+
+        $positions = $this->getCrud()->getDataProvider(true, true, true)->getModels();
+
+        foreach ($order as $id) {
+            $position = array_shift($positions);
+            if ($position !== null) {
+                $model = $class::findOne(['id' => $id]);
+                if ($model !== null) {
+                    $model->position = $position->position;
+                    $model->save();
+                }
+            } else {
                 break;
             }
         }
-
-        if (($curKey !== null) && isset($models[$curKey - 1])) {
-            $model2 = $models[$curKey - 1];
-            $oldPos = $curModel->position;
-            $curModel->position = $model2->position;
-            $model2->position = $oldPos;
-            $curModel->save() && $model2->save();
-        }
-
-        return $this->redirect($this->getReturnUrl());
-    }
-
-    public function actionSortDown($id)
-    {
-        $curModel = $this->getCrud()->findModel($id, 'sort');
-
-        $models = $this->getCrud()->getModels(true, false, false, false);
-        $curKey = null;
-        foreach ($models as $key => $model) {
-            if ($model->id == $id) {
-                $curKey = $key;
-                break;
-            }
-        }
-
-        if (($curKey !== null) && isset($models[$curKey + 1])) {
-            $model2 = $models[$curKey + 1];
-            $oldPos = $curModel->position;
-            $curModel->position = $model2->position;
-            $model2->position = $oldPos;
-            $curModel->save() && $model2->save();
-        }
-
-        return $this->redirect($this->getReturnUrl());
     }
 
     public function actionExport()

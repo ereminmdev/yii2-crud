@@ -14,6 +14,11 @@
     display: none;
 }
 
+.crud-grid__sort-handle {
+    text-align: center;
+    cursor: move;
+}
+
 @media (min-width: 992px) {
     .cms-crud-grid.table-responsive {
         overflow: visible;

@@ -1,20 +1,34 @@
 <?php
+
+use ereminmdev\yii2\sortablejs\SortableJs;
+use yii\bootstrap\Alert;
+use yii\grid\GridView;
+use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
+use yii\helpers\Url;
+
 /* @var $this yii\web\View */
 /* @var $crud \ereminmdev\yii2\crud\components\Crud */
 /* @var $searchModel \yii\db\ActiveRecord */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 /* @var $columns array grid column configuration. Each array element represents the configuration */
 
-use yii\bootstrap\Alert;
-use yii\grid\GridView;
-use yii\helpers\ArrayHelper;
-use yii\helpers\Html;
-
 /** @var \ereminmdev\yii2\crud\controllers\DefaultController $controller */
 $controller = $this->context;
 
 $this->title = $controller->pageTitle;
 $this->params['breadcrumbs'][] = $this->title;
+
+if ($crud->isUseSortableJs()) {
+    echo SortableJs::widget([
+        'elementSelector' => '.cms-crud-grid table > tbody',
+        'storeSetAction' => Url::toRoute(ArrayHelper::merge(['default/sortable', 'model' => $crud->modelClass], Yii::$app->request->get())),
+        'clientOptions' => [
+            'handle' => '.crud-grid__sort-handle',
+            'dataIdAttr' => 'data-key',
+        ],
+    ]);
+}
 
 $gridViewWidget = new GridView(ArrayHelper::merge([
     'dataProvider' => $dataProvider,

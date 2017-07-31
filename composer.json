@@ -15,7 +15,8 @@
   "require": {
     "php": ">=7.0",
     "yiisoft/yii2": "~2.0.1",
-    "phpoffice/phpexcel": "^1.8"
+    "phpoffice/phpexcel": "^1.8",
+    "ereminmdev/yii2-sortablejs": "^1.0"
   },
   "autoload": {
     "psr-4": {
