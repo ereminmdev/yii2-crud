@@ -294,7 +294,7 @@ class Crud extends Object
                 continue;
             }
 
-            if (isset($paramColumns[$field])) {
+            if (isset($paramColumns[$field]) && ($paramColumns[$field] !== true)) {
                 if ($paramColumns[$field] instanceof \Closure) {
                     $columns[$key] = call_user_func($paramColumns[$field]);
                 } elseif ($paramColumns[$field] === false) {
@@ -587,7 +587,7 @@ class Crud extends Object
     public function renderFormField(ActiveForm $form, ActiveRecord $model, $field, $param, $schema, $content = '')
     {
         $formField = '';
-        if (isset($param)) {
+        if (isset($param) && ($param !== true)) {
             if ($param instanceof \Closure) {
                 $formField = call_user_func($param, $form, $model);
             }
