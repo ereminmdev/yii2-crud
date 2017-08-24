@@ -33,27 +33,12 @@ class DefaultController extends Controller
     public $modelUrlParam = 'model';
 
 
-    /**
-     * @inheritdoc
-     */
     public function init()
     {
         parent::init();
         $this->setCrud();
         $this->pageTitle = $this->getCrud()->getConfig('title') ?: Yii::t('app', basename($this->getCrud()->modelClass));
         $this->view->params['breadcrumbs'] = $this->getCrud()->getConfig('breadcrumbs', []);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function actions()
-    {
-        return [
-            'sortable' => [
-                'class' => 'ereminmdev\yii2\sortablejs\SortableJsAction',
-            ],
-        ];
     }
 
     public function actionIndex()
@@ -191,6 +176,29 @@ class DefaultController extends Controller
             'model' => $model,
             'setModel' => $setModel,
         ]);
+    }
+
+    public function actionSortable()
+    {
+        $class = Yii::$app->request->get('model', $this->crud->modelClass);
+
+        $order = Yii::$app->request->post('order', []);
+        if (count($order) < 2) return;
+
+        $positions = $this->getCrud()->getDataProvider(true, true, true)->getModels();
+
+        foreach ($order as $id) {
+            $position = array_shift($positions);
+            if ($position !== null) {
+                $model = $class::findOne(['id' => $id]);
+                if ($model !== null) {
+                    $model->position = $position->position;
+                    $model->save();
+                }
+            } else {
+                break;
+            }
+        }
     }
 
     public function actionExport()
