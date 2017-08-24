@@ -193,7 +193,7 @@ class DefaultController extends Controller
                 $model = $class::findOne(['id' => $id]);
                 if ($model !== null) {
                     $model->position = $position->position;
-                    $model->save();
+                    $model->save(false);
                 }
             } else {
                 break;
