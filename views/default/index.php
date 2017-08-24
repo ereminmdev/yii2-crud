@@ -22,7 +22,7 @@ $this->params['breadcrumbs'][] = $this->title;
 if ($crud->isUseSortableJs()) {
     echo SortableJs::widget([
         'elementSelector' => '.cms-crud-grid table > tbody',
-        'storeSetAction' => Url::toRoute(ArrayHelper::merge(['default/sortable', 'model' => $crud->modelClass], Yii::$app->request->get())),
+        'storeSetAction' => ['default/sortable', 'model' => $crud->modelClass],
         'clientOptions' => [
             'handle' => '.crud-grid__sort-handle',
             'dataIdAttr' => 'data-key',
