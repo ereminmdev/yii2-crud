@@ -1,10 +1,11 @@
 <?php
-/* @var $this yii\web\View */
-/* @var $crud \ereminmdev\yii2\crud\components\Crud */
-/* @var $model \yii\db\ActiveRecord */
 
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
+
+/* @var $this yii\web\View */
+/* @var $crud \ereminmdev\yii2\crud\components\Crud */
+/* @var $model \yii\db\ActiveRecord */
 
 /** @var \ereminmdev\yii2\crud\controllers\DefaultController $controller */
 $controller = $this->context;
@@ -28,6 +29,13 @@ $controller = $this->context;
             ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
         &nbsp;
         <?= Html::a(Yii::t('crud', 'Cancel'), $controller->getReturnUrl(), ['class' => 'btn btn-link']) ?>
+
+        <?php if (!$model->isNewRecord && $crud->getConfig('access.delete', true)): ?>
+            <div class="pull-right">
+                <?= Html::a(Yii::t('crud', 'Delete'), $controller->getReturnUrl(['delete', 'id' => $model->getPrimaryKey()]),
+                    ['class' => 'btn btn-default', 'data-confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'), 'data-form' => 'delete record']) ?>
+            </div>
+        <?php endif; ?>
     </div>
 
     <?php ActiveForm::end(); ?>
