@@ -393,6 +393,7 @@ class Crud extends Object
                     case 'upload-image':
                     case 'crop-image-upload':
                     case 'croppie-image-upload':
+                    case 'cropper-image-upload':
                         $columns[$key] = [
                             'attribute' => $field,
                             'format' => 'html',
@@ -644,6 +645,7 @@ class Crud extends Object
                 case 'upload-image':
                 case 'crop-image-upload':
                 case 'croppie-image-upload':
+                case 'cropper-image-upload':
                     $thumb = isset($schema['thumb']) ? $schema['thumb'] : 'thumb';
                     $url = $model->getImageUrl($field, $thumb);
                     $hint = Html::img($url, ['class' => 'img-responsive crud-field-img img-result']);
@@ -655,6 +657,8 @@ class Crud extends Object
                         $formField->widget(\ereminmdev\yii2\cropimageupload\CropImageUploadWidget::className());
                     } elseif ($schema['type'] == 'croppie-image-upload') {
                         $formField->widget(\ereminmdev\yii2\croppieimageupload\CroppieImageUploadWidget::className());
+                    } elseif ($schema['type'] == 'cropper-image-upload') {
+                        $formField->widget(\ereminmdev\yii2\cropperimageupload\CropperImageUploadWidget::className());
                     }
                     break;
                 case 'array':
