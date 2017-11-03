@@ -8,8 +8,8 @@ use ereminmdev\yii2\crud\models\CrudExportForm;
 use ereminmdev\yii2\crud\models\CrudImportForm;
 use ereminmdev\yii2\tinymce\TinyMce;
 use Yii;
+use yii\base\BaseObject;
 use yii\base\DynamicModel;
-use yii\base\Object;
 use yii\bootstrap\ButtonDropdown;
 use yii\bootstrap\Tabs;
 use yii\data\ActiveDataProvider;
@@ -35,7 +35,7 @@ use yii\widgets\ActiveForm;
  * @property mixed $fields
  * @property DynamicModel $setvalsModel
  */
-class Crud extends Object
+class Crud extends BaseObject
 {
     /**
      * @var ActiveRecord model class name

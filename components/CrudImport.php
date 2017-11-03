@@ -3,7 +3,7 @@
 namespace ereminmdev\yii2\crud\components;
 
 use Yii;
-use yii\base\Object;
+use yii\base\BaseObject;
 use yii\db\Schema;
 
 
@@ -13,7 +13,7 @@ use yii\db\Schema;
  *
  * @property array $errors
  */
-class CrudImport extends Object
+class CrudImport extends BaseObject
 {
     /**
      * @var string file name

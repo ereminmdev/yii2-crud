@@ -3,7 +3,7 @@
 namespace ereminmdev\yii2\crud\components;
 
 use Yii;
-use yii\base\Object;
+use yii\base\BaseObject;
 use yii\data\ActiveDataProvider;
 use yii\db\ActiveRecord;
 use yii\grid\GridView;
@@ -15,7 +15,7 @@ use yii\web\Response;
  * Class CrudExport
  * @package ereminmdev\yii2\crud\components
  */
-class CrudExport extends Object
+class CrudExport extends BaseObject
 {
     /**
      * @var string file name
