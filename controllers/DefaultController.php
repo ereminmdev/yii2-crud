@@ -36,9 +36,13 @@ class DefaultController extends Controller
     public function init()
     {
         parent::init();
+
         $this->setCrud();
-        $this->pageTitle = $this->getCrud()->getConfig('title') ?: Yii::t('app', basename($this->getCrud()->modelClass));
-        $this->view->params['breadcrumbs'] = $this->getCrud()->getConfig('breadcrumbs', []);
+
+        $crud = $this->getCrud();
+        $this->pageTitle = $crud->getConfig('title') ?: Yii::t('app', basename($crud->modelClass));
+        $this->view->params['breadcrumbs'] = $crud->getConfig('breadcrumbs', []);
+        $this->attachBehaviors($crud->getConfig('controller.behaviors', []));
     }
 
     public function actionIndex()
@@ -239,7 +243,8 @@ class DefaultController extends Controller
      * Delete image for mongosoft/yii2-upload-behavior behavior
      * @param integer $id
      * @param string $field attribute name
-     * @return \yii\web\Response
+     * @return \yii\console\Response|\yii\web\Response
+     * @throws NotFoundHttpException
      */
     public function actionDeleteUploadImage($id, $field)
     {
