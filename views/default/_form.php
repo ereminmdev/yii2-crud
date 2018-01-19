@@ -32,7 +32,7 @@ $controller = $this->context;
 
         <?php if (!$model->isNewRecord && $crud->getConfig('access.delete', true)): ?>
             <div class="pull-right">
-                <?= Html::a(Yii::t('crud', 'Delete'), $controller->getReturnUrl(['delete', 'id' => $model->getPrimaryKey()]),
+                <?= Html::a(Yii::t('crud', 'Delete'), $controller->urlCreate(['delete', 'id' => $model->getPrimaryKey()]),
                     ['class' => 'btn btn-default', 'data-confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'), 'data-form' => 'delete record']) ?>
             </div>
         <?php endif; ?>
