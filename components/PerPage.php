@@ -8,7 +8,6 @@ use yii\bootstrap\ButtonDropdown;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 
-
 /**
  * Class PerPage
  * @package ereminmdev\yii2\crud\components
@@ -33,7 +32,6 @@ class PerPage extends Component
      * @var string perPage $_GET param name
      */
     public $perPageParam = 'per-page';
-
 
     /**
      * @inheritdoc

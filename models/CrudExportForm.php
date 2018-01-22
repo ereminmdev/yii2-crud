@@ -6,7 +6,6 @@ use ereminmdev\yii2\crud\components\CrudExport;
 use Yii;
 use yii\base\Model;
 
-
 /**
  * Class CrudExportForm
  * @package ereminmdev\yii2\crud\models
@@ -21,7 +20,6 @@ class CrudExportForm extends Model
      * @var bool
      */
     public $renderData = false;
-
 
     /**
      * @inheritdoc

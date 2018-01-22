@@ -1,10 +1,11 @@
 <?php
-/* @var $this yii\web\View */
-/* @var $model CrudImportForm */
 
 use ereminmdev\yii2\crud\models\CrudImportForm;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
+
+/* @var $this yii\web\View */
+/* @var $model CrudImportForm */
 
 /** @var \ereminmdev\yii2\crud\controllers\DefaultController $controller */
 $controller = $this->context;
@@ -35,6 +36,8 @@ $this->params['breadcrumbs'][] = Yii::t('crud', 'Import');
     <?= $form->errorSummary($model) ?>
 
     <?= $form->field($model, 'file')->fileInput() ?>
+
+    <hr>
 
     <div class="form-group">
         <?= Html::submitButton(Yii::t('crud', 'Import'), ['class' => 'btn btn-primary']) ?>

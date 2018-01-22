@@ -1,11 +1,12 @@
 <?php
+
+use yii\bootstrap\ActiveForm;
+use yii\helpers\Html;
+
 /* @var $this yii\web\View */
 /* @var $model \yii\db\ActiveRecord */
 /* @var $setModel \yii\base\DynamicModel */
 /* @var $form ActiveForm */
-
-use yii\bootstrap\ActiveForm;
-use yii\helpers\Html;
 
 /** @var \ereminmdev\yii2\crud\controllers\DefaultController $controller */
 $controller = $this->context;
@@ -34,6 +35,8 @@ $this->params['breadcrumbs'][] = Yii::t('crud', 'Set values');
         <?= $form->errorSummary($model) ?>
 
         <?= $controller->crud->renderFormFields($form, $model) ?>
+
+        <hr>
 
         <div class="form-group">
             <?= Html::submitButton(Yii::t('crud', 'Set values'),

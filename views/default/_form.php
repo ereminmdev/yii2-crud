@@ -24,6 +24,8 @@ $controller = $this->context;
 
     <?= $controller->crud->renderFormFields($form, $model) ?>
 
+    <hr>
+
     <div class="form-group form-buttons">
         <?= Html::submitButton($model->isNewRecord ? Yii::t('crud', 'Create') : Yii::t('crud', 'Update'),
             ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>

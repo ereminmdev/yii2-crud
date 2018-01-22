@@ -1,11 +1,12 @@
 <?php
-/* @var $this yii\web\View */
-/* @var $gridViewWidget \yii\grid\GridView */
-/* @var $crud \ereminmdev\yii2\crud\components\Crud */
 
 use ereminmdev\yii2\crud\components\PerPage;
 use yii\bootstrap\ButtonDropdown;
 use yii\helpers\Html;
+
+/* @var $this yii\web\View */
+/* @var $gridViewWidget \yii\grid\GridView */
+/* @var $crud \ereminmdev\yii2\crud\components\Crud */
 
 /** @var \ereminmdev\yii2\crud\controllers\DefaultController $controller */
 $controller = $this->context;

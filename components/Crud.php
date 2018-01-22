@@ -25,7 +25,6 @@ use yii\web\UploadedFile;
 use yii\widgets\ActiveField;
 use yii\widgets\ActiveForm;
 
-
 /**
  * Class Crud
  * @package ereminmdev\yii2\crud\components
@@ -53,7 +52,6 @@ class Crud extends BaseObject
      * @var string crud scenario, like model scenario
      */
     public $scenario = 'default';
-
 
     /**
      * @param string $scenario

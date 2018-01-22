@@ -1,9 +1,10 @@
 <?php
+
+use yii\helpers\Html;
+
 /* @var $this yii\web\View */
 /* @var $crud \ereminmdev\yii2\crud\components\Crud */
 /* @var $model \yii\db\ActiveRecord */
-
-use yii\helpers\Html;
 
 /** @var \ereminmdev\yii2\crud\controllers\DefaultController $controller */
 $controller = $this->context;

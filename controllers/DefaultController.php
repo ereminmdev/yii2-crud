@@ -14,7 +14,6 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\UploadedFile;
 
-
 /**
  * Class DefaultController
  * @package ereminmdev\yii2\crud\controllers
@@ -32,7 +31,9 @@ class DefaultController extends Controller
      */
     public $modelUrlParam = 'model';
 
-
+    /**
+     * @inheritdoc
+     */
     public function init()
     {
         parent::init();

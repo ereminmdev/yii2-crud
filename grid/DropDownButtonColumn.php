@@ -6,7 +6,6 @@ use yii\bootstrap\ButtonDropdown;
 use yii\grid\DataColumn;
 use yii\helpers\ArrayHelper;
 
-
 /**
  * Render bootstrap ButtonDropdown widget as grid column
  */
@@ -35,7 +34,9 @@ class DropDownButtonColumn extends DataColumn
      */
     public $encodeLabels = true;
 
-
+    /**
+     * @inheritdoc
+     */
     public function init()
     {
         parent::init();

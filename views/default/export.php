@@ -1,10 +1,11 @@
 <?php
-/* @var $this yii\web\View */
-/* @var $model CrudExportForm */
 
 use ereminmdev\yii2\crud\models\CrudExportForm;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
+
+/* @var $this yii\web\View */
+/* @var $model CrudExportForm */
 
 /** @var \ereminmdev\yii2\crud\controllers\DefaultController $controller */
 $controller = $this->context;
@@ -29,6 +30,8 @@ $this->params['breadcrumbs'][] = Yii::t('crud', 'Export');
     <?= $form->field($model, 'fileFormat')->dropDownList(CrudExportForm::fileFormats()) ?>
 
     <?= $form->field($model, 'renderData')->checkbox() ?>
+
+    <hr>
 
     <div class="form-group">
         <?= Html::submitButton(Yii::t('crud', 'Export'), ['class' => 'btn btn-primary']) ?>

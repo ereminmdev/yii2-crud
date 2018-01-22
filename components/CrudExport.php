@@ -10,7 +10,6 @@ use yii\grid\GridView;
 use yii\helpers\Inflector;
 use yii\web\Response;
 
-
 /**
  * Class CrudExport
  * @package ereminmdev\yii2\crud\components
@@ -41,7 +40,6 @@ class CrudExport extends BaseObject
      * @var array of columns
      */
     public $columns;
-
 
     /**
      * @return array of file formats

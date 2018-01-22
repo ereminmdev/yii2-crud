@@ -7,7 +7,6 @@ use Yii;
 use yii\base\Model;
 use yii\web\UploadedFile;
 
-
 /**
  * Class CrudImportForm
  * @package ereminmdev\yii2\crud\models
@@ -22,7 +21,6 @@ class CrudImportForm extends Model
      * @var int
      */
     public $count = 0;
-
 
     /**
      * @inheritdoc

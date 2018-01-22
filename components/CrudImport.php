@@ -6,7 +6,6 @@ use Yii;
 use yii\base\BaseObject;
 use yii\db\Schema;
 
-
 /**
  * Class CrudImport
  * @package ereminmdev\yii2\crud\components
@@ -40,7 +39,6 @@ class CrudImport extends BaseObject
      * @var array of errors during import process
      */
     private $_errors = [];
-
 
     /**
      * @return array of file formats

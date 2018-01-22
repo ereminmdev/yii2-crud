@@ -4,7 +4,10 @@ namespace ereminmdev\yii2\crud\assets;
 
 use yii\web\AssetBundle;
 
-
+/**
+ * Class Crud asset bundle
+ * @package ereminmdev\yii2\crud\assets
+ */
 class CrudAsset extends AssetBundle
 {
     public $sourcePath = '@vendor/ereminmdev/yii2-crud/assets/CrudAsset';
