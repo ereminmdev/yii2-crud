@@ -2,6 +2,9 @@
 
 namespace ereminmdev\yii2\crud\components;
 
+use PhpOffice\PhpSpreadsheet\Reader\Csv;
+use PhpOffice\PhpSpreadsheet\Reader\Xls;
+use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use Yii;
 use yii\base\BaseObject;
 use yii\db\Schema;
@@ -53,34 +56,32 @@ class CrudImport extends BaseObject
     }
 
     /**
-     * @return bool to has errors during import process
+     * @return bool
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
      */
     public function import()
     {
-        \PHPExcel_Settings::setLocale(Yii::$app->language);
-
         switch ($this->format) {
             case 'xlsx':
-                $objReader = new \PHPExcel_Reader_Excel2007();
+                $reader = new Xlsx();
                 break;
             case 'xls':
-                $objReader = new \PHPExcel_Reader_Excel5();
+                $reader = new Xls();
                 break;
             case 'csv':
-                $objReader = new \PHPExcel_Reader_CSV();
-                $objReader->setDelimiter(';')
-                    ->setInputEncoding('CP1251');
+                $reader = new Csv();
+                $reader->setDelimiter(';');
                 break;
             default:
                 $this->_errors[] = Yii::t('crud', 'Not support file format "{format}".', ['format' => $this->format]);
                 return false;
         }
 
-        $objReader->setReadDataOnly(true);
-        $objPHPExcel = $objReader->load($this->fileName);
-        $fileData = $objPHPExcel->getActiveSheet()->toArray();
-        $objPHPExcel->disconnectWorksheets();
-        unset($objPHPExcel);
+        $reader->setReadDataOnly(true);
+        $spreadsheet = $reader->load($this->fileName);
+        $fileData = $spreadsheet->getActiveSheet()->toArray();
+        $spreadsheet->disconnectWorksheets();
+        unset($spreadsheet);
 
         $dataCount = count($fileData);
         if ($dataCount < 3) {

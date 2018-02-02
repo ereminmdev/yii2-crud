@@ -2,13 +2,17 @@
 
 namespace ereminmdev\yii2\crud\components;
 
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Csv;
+use PhpOffice\PhpSpreadsheet\Writer\Html;
+use PhpOffice\PhpSpreadsheet\Writer\Xls;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Yii;
 use yii\base\BaseObject;
 use yii\data\ActiveDataProvider;
 use yii\db\ActiveRecord;
 use yii\grid\GridView;
 use yii\helpers\Inflector;
-use yii\web\Response;
 
 /**
  * Class CrudExport
@@ -56,7 +60,9 @@ class CrudExport extends BaseObject
     }
 
     /**
-     * @return Response
+     * @return $this|mixed
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     * @throws \yii\web\RangeNotSatisfiableHttpException
      */
     public function export()
     {
@@ -72,12 +78,8 @@ class CrudExport extends BaseObject
 
         $this->fileName = $this->fileName ?: 'Export_' . Inflector::camelize($this->model->className()) . '_' . date('d.m.Y');
 
-        //require_once Yii::getAlias('@vendor/phpoffice/phpexcel/Classes/PHPExcel.php');
-        \PHPExcel_Settings::setLocale(Yii::$app->language);
-
-        $objPHPExcel = new \PHPExcel();
-        //$objPHPExcel->getProperties()->setCreator(Yii::$app->params['appName']);
-        $objWorksheet = $objPHPExcel->setActiveSheetIndex(0);
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
 
         $gridView = new GridView([
             'dataProvider' => $this->dataProvider,
@@ -92,79 +94,63 @@ class CrudExport extends BaseObject
 
         $rowI = 1;
 
-        $colI = 0;
+        $colI = 1;
         foreach ($columns as $column) {
-            $objWorksheet->setCellValueByColumnAndRow($colI, $rowI, $column->attribute);
-            $headerValue = $this->renderData ? getHeaderValue($column->renderHeaderCell()) :
-                $model->getAttributeLabel($column->attribute);
-            $objWorksheet->setCellValueByColumnAndRow($colI, $rowI + 1, $headerValue);
+            $sheet->setCellValueByColumnAndRow($colI, $rowI, $column->attribute);
+            $headerValue = $this->renderData ? getHeaderValue($column->renderHeaderCell()) : $model->getAttributeLabel($column->attribute);
+            $sheet->setCellValueByColumnAndRow($colI, $rowI + 1, $headerValue);
             $colI++;
         }
         $rowI = 2;
 
         foreach ($models as $index => $model) {
-            $colI = 0;
+            $colI = 1;
             $rowI++;
             $key = $keys[$index];
             foreach ($columns as $column) {
                 $attribute = $column->attribute;
                 $value = $this->renderData ? getValue($column->renderDataCell($model, $key, $index)) : $model->getAttribute($attribute);
-                $objWorksheet->setCellValueByColumnAndRow($colI, $rowI, $value);
+                $sheet->setCellValueByColumnAndRow($colI, $rowI, $value);
                 $colI++;
             }
         }
 
         switch ($this->format) {
             case 'xlsx':
-                $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+                $writer = new Xlsx($spreadsheet);
                 $fileName = $this->fileName . '.xlsx';
                 $mimeType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
                 break;
             case 'xls':
-                $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
+                $writer = new Xls($spreadsheet);
                 $fileName = $this->fileName . '.xls';
                 $mimeType = 'application/vnd.ms-excel';
                 break;
             case 'htm':
-                $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'HTML');
+                $writer = new Html($spreadsheet);
                 $fileName = $this->fileName . '.htm';
                 $mimeType = 'text/html';
                 break;
             /*case 'pdf':
-                $this->initPdfWriter();
-                $objWriter = new \PHPExcel_Writer_PDF($objPHPExcel);
+                $writer = \PhpOffice\PhpSpreadsheet\Writer\Pdf\Mpdf($spreadsheet);
                 $fileName = $this->fileName . '.pdf';
                 $mimeType = 'application/pdf';
                 break;*/
             default:
-                $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'CSV');
-                $objWriter->setDelimiter(';');//->setExcelCompatibility(true);
+                $writer = new Csv($spreadsheet);
+                $writer->setDelimiter(';');
+                $writer->setUseBOM(true); // writing UTF-8 CSV file
                 $fileName = $this->fileName . '.csv';
                 $mimeType = 'text/csv';
         }
 
         ob_start();
-        $objWriter->save('php://output');
-        $objPHPExcel->disconnectWorksheets();
-        unset($objPHPExcel);
+        $writer->save('php://output');
+        $spreadsheet->disconnectWorksheets();
+        unset($spreadsheet);
         $content = ob_get_contents();
         ob_end_clean();
 
-        if ($this->format == 'csv') {
-            $content = iconv('UTF-8', 'CP1251//TRANSLIT', $content);
-        }
-
         return Yii::$app->response->sendContentAsFile($content, $fileName, ['mimeType' => $mimeType]);
     }
-
-    /*public function initPdfWriter()
-    {
-        // First, install library: composer require tecnickcom/tcpdf
-        $rendererName = \PHPExcel_Settings::PDF_RENDERER_TCPDF;
-        $rendererLibraryPath = Yii::getAlias('@vendor/tecnickcom/tcpdf');
-
-        if (!\PHPExcel_Settings::setPdfRenderer($rendererName, $rendererLibraryPath)) {
-            die('Please set the $rendererName and $rendererLibraryPath values as appropriate for your directory structure');
-        }
-    }*/
 }
