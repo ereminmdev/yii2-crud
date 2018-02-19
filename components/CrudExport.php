@@ -76,7 +76,7 @@ class CrudExport extends BaseObject
             return strip_tags($value);
         }
 
-        $this->fileName = $this->fileName ?: 'Export_' . Inflector::camelize($this->model->className()) . '_' . date('d.m.Y');
+        $this->fileName = $this->fileName ?: 'Export_' . Inflector::camelize(get_class($this->model)) . '_' . date('d.m.Y');
 
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
