@@ -223,7 +223,7 @@ class Crud extends BaseObject
 
         // actions column
         array_unshift($columns, [
-            'class' => DropDownButtonColumn::className(),
+            'class' => DropDownButtonColumn::class,
             'buttonDropdownOptions' => [
                 'label' => '<i class="glyphicon glyphicon-menu-hamburger"></i>',
                 'encodeLabel' => false,
@@ -263,7 +263,7 @@ class Crud extends BaseObject
             }
         ]);
 
-        array_unshift($columns, ['class' => CheckboxColumn::className()]);
+        array_unshift($columns, ['class' => CheckboxColumn::class]);
 
         return $columns;
     }
@@ -418,7 +418,7 @@ class Crud extends BaseObject
                         if (ArrayHelper::getValue($schema, 'gridDropButton', false)) {
                             $dropList = ArrayHelper::getValue($schema, 'gridDropButtonList', $itemList);
                             $columns[$key] = [
-                                'class' => DropDownButtonColumn::className(),
+                                'class' => DropDownButtonColumn::class,
                                 'attribute' => $field,
                                 'filter' => $itemList,
                                 'items' => function ($model, $key, $index) use ($field, $dropList) {
@@ -603,7 +603,7 @@ class Crud extends BaseObject
                     $formField = $form->field($model, $field)->textarea(['rows' => 6]);
                     break;
                 case 'html':
-                    $formField = $form->field($model, $field)->widget(TinyMce::className());
+                    $formField = $form->field($model, $field)->widget(TinyMce::class);
                     break;
                 case Schema::TYPE_BOOLEAN:
                     $formField = $form->field($model, $field)->checkbox();
@@ -652,11 +652,11 @@ class Crud extends BaseObject
                             ['class' => 'btn btn-default btn-xs js-delete-image', 'data-message' => Yii::t('crud', 'Are you sure you want to delete this image?')]) . '</p>' : '';
                     $formField = $form->field($model, $field)->fileInput(['accept' => 'image/*'])->hint($hint);
                     if ($schema['type'] == 'crop-image-upload') {
-                        $formField->widget(\ereminmdev\yii2\cropimageupload\CropImageUploadWidget::className());
+                        $formField->widget(\ereminmdev\yii2\cropimageupload\CropImageUploadWidget::class);
                     } elseif ($schema['type'] == 'croppie-image-upload') {
-                        $formField->widget(\ereminmdev\yii2\croppieimageupload\CroppieImageUploadWidget::className());
+                        $formField->widget(\ereminmdev\yii2\croppieimageupload\CroppieImageUploadWidget::class);
                     } elseif ($schema['type'] == 'cropper-image-upload') {
-                        $formField->widget(\ereminmdev\yii2\cropperimageupload\CropperImageUploadWidget::className());
+                        $formField->widget(\ereminmdev\yii2\cropperimageupload\CropperImageUploadWidget::class);
                     }
                     break;
                 case 'array':
@@ -682,7 +682,7 @@ class Crud extends BaseObject
                         if (array_key_exists('select2', $schema)) {
                             $schema['select2'] = is_array($schema['select2']) ? $schema['select2'] : [];
                             $formField = $form->field($model, $field)->widget(
-                                \conquer\select2\Select2Widget::className(),
+                                \conquer\select2\Select2Widget::class,
                                 ArrayHelper::merge(['items' => $list], $schema['select2'])
                             );
                         } else {
@@ -701,7 +701,7 @@ class Crud extends BaseObject
                                 $schema['select2'] = is_array($schema['select2']) ? $schema['select2'] : [];
                                 $schema['select2']['multiple'] = true;
                                 $formField = $form->field($model, $field)->widget(
-                                    \conquer\select2\Select2Widget::className(),
+                                    \conquer\select2\Select2Widget::class,
                                     ArrayHelper::merge(['items' => $list], $schema['select2'])
                                 );
                             } else {
@@ -722,7 +722,7 @@ class Crud extends BaseObject
                             $schema['select2']['multiple'] = true;
                             $schema['select2']['placeholder'] = '';
                             $formField = $form->field($model, $field)->widget(
-                                \conquer\select2\Select2Widget::className(),
+                                \conquer\select2\Select2Widget::class,
                                 ArrayHelper::merge(['items' => $list], $schema['select2'])
                             );
                         } else {

@@ -96,5 +96,5 @@ public static function crudConfig()
 3) Add link in view file:
 
 ```
-<?= Url::toRoute(['/crud', 'model' => Product::className()]); ?>
+<?= Url::toRoute(['/crud', 'model' => Product::class]); ?>
 ```
