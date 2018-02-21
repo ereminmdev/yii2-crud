@@ -75,6 +75,7 @@ class Crud extends BaseObject
      * @param bool $relations
      * @param bool $limitById
      * @return array
+     * @throws \yii\base\InvalidConfigException
      */
     public function getModels($filterParams = true, $pagination = false, $relations = false, $limitById = true)
     {
@@ -84,6 +85,7 @@ class Crud extends BaseObject
     /**
      * @param bool $filterParams
      * @return null|ActiveRecord
+     * @throws \yii\base\InvalidConfigException
      */
     public function getFirstModel($filterParams = true)
     {
@@ -99,6 +101,7 @@ class Crud extends BaseObject
      * @param bool $relations
      * @param bool $limitById
      * @return ActiveDataProvider
+     * @throws \yii\base\InvalidConfigException
      */
     public function getDataProvider($filterParams = true, $pagination = false, $relations = false, $limitById = true)
     {
@@ -217,6 +220,10 @@ class Crud extends BaseObject
         return $dataProvider;
     }
 
+    /**
+     * @return mixed
+     * @throws \yii\base\InvalidConfigException
+     */
     public function gridColumns()
     {
         $columns = $this->guessColumns();
@@ -268,6 +275,11 @@ class Crud extends BaseObject
         return $columns;
     }
 
+    /**
+     * @param array $fields
+     * @return mixed
+     * @throws \yii\base\InvalidConfigException
+     */
     public function guessColumns($fields = null)
     {
         $model = $this->getModel('getfields');
@@ -317,7 +329,7 @@ class Crud extends BaseObject
                         $columns[$key] = [
                             'attribute' => $field,
                             'format' => 'html',
-                            'value' => function ($model, $key, $index, $column) {
+                            'value' => function (ActiveRecord $model, $key, $index, $column) {
                                 $field = $column->attribute;
                                 $value = $model->$field;
                                 return StringHelper::truncateWords($value, 10, '...', true);
@@ -336,7 +348,7 @@ class Crud extends BaseObject
                             'attribute' => $field,
                             //'format' => 'date',
                             'filterInputOptions' => ['type' => 'date', 'class' => 'form-control', 'id' => null],
-                            'value' => function ($model, $key, $index, $column) use ($field) {
+                            'value' => function (ActiveRecord $model) use ($field) {
                                 $value = $model->$field;
                                 $value = ($value && !is_numeric($value)) ? strtotime($value) : $value;
                                 return $value ? date('d.m.Y', $value) : $value;
@@ -348,7 +360,7 @@ class Crud extends BaseObject
                             'attribute' => $field,
                             //'format' => 'time',
                             'filterInputOptions' => ['type' => 'time', 'class' => 'form-control', 'id' => null],
-                            'value' => function ($model, $key, $index, $column) use ($field) {
+                            'value' => function (ActiveRecord $model) use ($field) {
                                 $value = $model->$field;
                                 $value = ($value && !is_numeric($value)) ? strtotime($value) : $value;
                                 return $value ? date('H:i:s', $value) : $value;
@@ -360,7 +372,7 @@ class Crud extends BaseObject
                             'attribute' => $field,
                             //'format' => 'datetime',
                             'filterInputOptions' => ['type' => 'datetime-local', 'class' => 'form-control', 'id' => null],
-                            'value' => function ($model, $key, $index, $column) use ($field) {
+                            'value' => function (ActiveRecord $model) use ($field) {
                                 $value = $model->$field;
                                 $value = ($value && !is_numeric($value)) ? strtotime($value) : $value;
                                 return $value ? date('d.m.Y H:i:s', $value) : $value;
@@ -377,7 +389,7 @@ class Crud extends BaseObject
                         $columns[$key] = [
                             'attribute' => $field,
                             'format' => 'html',
-                            'value' => function ($model, $key, $index, $column) use ($field) {
+                            'value' => function (ActiveRecord $model) use ($field) {
                                 return Html::a($model->$field, 'tel:' . preg_replace('/[^\+\d]/', '', $model->$field));
                             },
                         ];
@@ -395,7 +407,7 @@ class Crud extends BaseObject
                         $columns[$key] = [
                             'attribute' => $field,
                             'format' => 'html',
-                            'content' => function ($model, $key, $index, $column) use ($field, $schema) {
+                            'content' => function (ActiveRecord $model) use ($field, $schema) {
                                 $thumb = isset($schema['thumb']) ? $schema['thumb'] : 'thumb';
                                 $url = $model->getImageUrl($field, $thumb);
                                 return Html::a(Html::img($url, ['class' => 'img-responsive crud-column-img']), $url);
@@ -407,7 +419,7 @@ class Crud extends BaseObject
                         $columns[$key] = [
                             'attribute' => $field,
                             'filter' => false,
-                            'content' => function ($model, $key, $index, $column) use ($field, $schema) {
+                            'content' => function () use ($field, $schema) {
                                 return Html::tag('div', '<span class="glyphicon glyphicon-move"></span>', ['class' => 'crud-grid__sort-handle']);
                             },
                         ];
@@ -471,7 +483,7 @@ class Crud extends BaseObject
                             $columns[$key] = [
                                 'attribute' => $field,
                                 'filter' => $list,
-                                'content' => function ($model, $key, $index, $column) use ($field, $schema, $relation, $list) {
+                                'content' => function (ActiveRecord $model) use ($field, $schema, $relation, $list) {
                                     $relatedClass = $model->{'get' . $relation}()->modelClass;
                                     $relatedPureClass = StringHelper::basename($relatedClass);
                                     $id = $model->$field;
@@ -483,8 +495,7 @@ class Crud extends BaseObject
                             $schema['title'] = array_key_exists('title', $schema) ? $schema['title'] : $model->getAttributeLabel($field);
                             $columns[$key] = [
                                 //'label' => $schema['title'],
-                                'content' => function ($model, $key, $index, $column) use ($field, $schema, $relation) {
-                                    /** @var ActiveRecord $model */
+                                'content' => function (ActiveRecord $model) use ($field, $schema, $relation) {
                                     $relatedClass = $model->{'get' . $relation}()->modelClass;
                                     $relatedPureClass = StringHelper::basename($relatedClass);
 
@@ -492,7 +503,7 @@ class Crud extends BaseObject
                                     $linkKey = array_keys($link)[0];
 
                                     return Html::a($schema['title'] . '&nbsp;<small>(' . count($model->$relation) . ')</small>',
-                                        ['index', 'model' => $relatedClass, $relatedPureClass . '[' . $linkKey . ']' => $model->id]);
+                                        ['index', 'model' => $relatedClass, $relatedPureClass . '[' . $linkKey . ']' => $model->getPrimaryKey()]);
                                 },
                             ];
                         } elseif ($schema['rtype'] == 'manyMany') {
@@ -501,13 +512,13 @@ class Crud extends BaseObject
                                 $columns[$key] = [
                                     'filter' => $itemList,
                                     'attribute' => $field,
-                                    'content' => function ($model, $key, $index, $column) use ($field, $schema, $relation) {
+                                    'content' => function (ActiveRecord $model) use ($field, $schema, $relation) {
                                         return $model->getAttributeLabel($field) . ' (' . count($model->$relation) . ')';
                                     },
                                 ];
                             } else {
                                 $columns[$key] = [
-                                    'content' => function ($model, $key, $index, $column) use ($field, $schema, $relation) {
+                                    'content' => function (ActiveRecord $model) use ($field, $schema, $relation) {
                                         return $model->getAttributeLabel($field) . ' (' . count($model->$relation) . ')';
                                     },
                                 ];
@@ -525,6 +536,13 @@ class Crud extends BaseObject
         return $columns;
     }
 
+    /**
+     * @param string $action
+     * @param string $model
+     * @param string $key
+     * @param array $urlParams
+     * @return string
+     */
     public function columnUrlCreator($action, $model, $key, $urlParams = [])
     {
         $params = is_array($key) ? $key : ['id' => (string)$key];
@@ -533,6 +551,14 @@ class Crud extends BaseObject
         return $this->context->urlCreate($params);
     }
 
+    /**
+     * @param ActiveForm $form
+     * @param ActiveRecord $model
+     * @param string $content
+     * @return string
+     * @throws \Exception
+     * @throws \yii\base\InvalidConfigException
+     */
     public function renderFormFields(ActiveForm $form, ActiveRecord $model, $content = '')
     {
         $formFields = $this->formFields();
@@ -583,6 +609,15 @@ class Crud extends BaseObject
         return $content;
     }
 
+    /**
+     * @param ActiveForm $form
+     * @param ActiveRecord $model
+     * @param string $field
+     * @param mixed $param
+     * @param array $schema
+     * @param string $content
+     * @return string
+     */
     public function renderFormField(ActiveForm $form, ActiveRecord $model, $field, $param, $schema, $content = '')
     {
         $formField = '';
@@ -744,6 +779,9 @@ class Crud extends BaseObject
         return $content . $formField;
     }
 
+    /**
+     * @return array|mixed
+     */
     public function formFields()
     {
         return ($onlyFields = $this->getConfig('formFieldsOnly')) != null ? $onlyFields : $this->getFields();
@@ -751,6 +789,9 @@ class Crud extends BaseObject
 
     private $_fields;
 
+    /**
+     * @return array
+     */
     public function getFields()
     {
         if ($this->_fields === null) {
@@ -788,7 +829,7 @@ class Crud extends BaseObject
     }
 
     /**
-     * @param $id
+     * @param int $id
      * @param string $scenario
      * @return ActiveRecord
      * @throws NotFoundHttpException
@@ -805,6 +846,10 @@ class Crud extends BaseObject
         }
     }
 
+    /**
+     * @param ActiveRecord $model
+     * @param string $scenario
+     */
     public function setModelScenario(ActiveRecord $model, $scenario)
     {
         if (($scenario !== false) && in_array($scenario, array_keys($model->scenarios()))) {
@@ -814,6 +859,10 @@ class Crud extends BaseObject
 
     private $_columnsSchema;
 
+    /**
+     * @return array
+     * @throws \yii\base\InvalidConfigException
+     */
     public function columnsSchema()
     {
         if ($this->_columnsSchema === null) {
@@ -825,23 +874,18 @@ class Crud extends BaseObject
                 $columnsSchema[$field]['size'] = $columnSchema->size;
                 $columnsSchema[$field]['allowNull'] = $columnSchema->allowNull;
 
-                if (($columnsSchema[$field]['type'] == Schema::TYPE_SMALLINT) && ($columnsSchema[$field]['size'] == 1)) {
+                if (($columnsSchema[$field]['type'] == Schema::TYPE_TINYINT) && ($columnsSchema[$field]['size'] == 1)) {
                     $columnsSchema[$field]['type'] = Schema::TYPE_BOOLEAN;
                 }
             }
 
             if (isset($columnsSchema['created_at'])) {
                 $columnsSchema['created_at']['type'] = 'datetime';
-            }
-            if (isset($columnsSchema['updated_at'])) {
+            } elseif (isset($columnsSchema['updated_at'])) {
                 $columnsSchema['created_at']['type'] = 'datetime';
-            }
-
-            if (isset($columnsSchema['email'])) {
+            } elseif (isset($columnsSchema['email'])) {
                 $columnsSchema['email']['type'] = 'email';
-            }
-
-            if (isset($columnsSchema['position'])) {
+            } elseif (isset($columnsSchema['position'])) {
                 $columnsSchema['position']['type'] = 'sort';
             }
 
@@ -858,11 +902,19 @@ class Crud extends BaseObject
         return $this->_columnsSchema;
     }
 
+    /**
+     * @param string $key
+     * @param string $default
+     * @return mixed
+     */
     public function getConfig($key, $default = null)
     {
         return ArrayHelper::getValue($this->config, $key, $default);
     }
 
+    /**
+     * @return array
+     */
     public function checkedActions()
     {
         $template = $this->getConfig('gridCheckedActionsTemplate',
@@ -906,6 +958,11 @@ class Crud extends BaseObject
         return $items;
     }
 
+    /**
+     * @param string $gridId
+     * @return string
+     * @throws \Exception
+     */
     public function renderCheckedActions($gridId)
     {
         $checked = $this->checkedActions();
@@ -942,11 +999,18 @@ $(".js-checked-action").on("click", function () {
         ]);
     }
 
-    public function renderFormSetvals($form, $model, $setvalsModel, $content = '')
+    /**
+     * @param ActiveForm $form
+     * @param ActiveRecord $model
+     * @param ActiveRecord $setModel
+     * @param string $content
+     * @return string
+     */
+    public function renderFormSetvals($form, $model, $setModel, $content = '')
     {
         // js/crud.js
-        foreach ($setvalsModel->attributes() as $field) {
-            $content .= $form->field($setvalsModel, $field)->checkbox([
+        foreach ($setModel->attributes() as $field) {
+            $content .= $form->field($setModel, $field)->checkbox([
                 'label' => $model->getAttributeLabel($field),
                 'class' => 'js-toggle-block',
                 'data-destination' => 'field-' . Html::getInputId($model, $field),
@@ -955,6 +1019,9 @@ $(".js-checked-action").on("click", function () {
         return $content;
     }
 
+    /**
+     * @return DynamicModel
+     */
     public function getSetvalsModel()
     {
         $formFields = $this->formFields();
@@ -964,6 +1031,13 @@ $(".js-checked-action").on("click", function () {
         return $setModel;
     }
 
+    /**
+     * @param CrudExportForm $model
+     * @return $this|mixed
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\web\RangeNotSatisfiableHttpException
+     */
     public function export(CrudExportForm $model)
     {
         $exporter = new CrudExport([
@@ -976,6 +1050,13 @@ $(".js-checked-action").on("click", function () {
         return $exporter->export();
     }
 
+    /**
+     * @param CrudImportForm $model
+     * @param UploadedFile $file
+     * @return bool
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     * @throws \yii\base\InvalidConfigException
+     */
     public function import(CrudImportForm $model, UploadedFile $file)
     {
         $importer = new CrudImport([
