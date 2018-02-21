@@ -874,7 +874,7 @@ class Crud extends BaseObject
                 $columnsSchema[$field]['size'] = $columnSchema->size;
                 $columnsSchema[$field]['allowNull'] = $columnSchema->allowNull;
 
-                if (($columnsSchema[$field]['type'] == Schema::TYPE_TINYINT) && ($columnsSchema[$field]['size'] == 1)) {
+                if ((in_array($columnsSchema[$field]['type'], [Schema::TYPE_TINYINT, Schema::TYPE_SMALLINT])) && ($columnsSchema[$field]['size'] == 1)) {
                     $columnsSchema[$field]['type'] = Schema::TYPE_BOOLEAN;
                 }
             }
