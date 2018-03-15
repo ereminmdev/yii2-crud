@@ -46,6 +46,10 @@ class DefaultController extends Controller
         $this->attachBehaviors($crud->getConfig('controller.behaviors', []));
     }
 
+    /**
+     * @return string
+     * @throws \yii\base\InvalidConfigException
+     */
     public function actionIndex()
     {
         $crud = $this->getCrud();
@@ -63,6 +67,9 @@ class DefaultController extends Controller
         }
     }
 
+    /**
+     * @return string|\yii\web\Response
+     */
     public function actionCreate()
     {
         $crud = $this->getCrud();
@@ -81,6 +88,11 @@ class DefaultController extends Controller
         }
     }
 
+    /**
+     * @param int $id
+     * @return string|\yii\web\Response
+     * @throws NotFoundHttpException
+     */
     public function actionUpdate($id)
     {
         $crud = $this->getCrud();
@@ -101,6 +113,11 @@ class DefaultController extends Controller
         }
     }
 
+    /**
+     * @param int $id
+     * @return \yii\web\Response
+     * @throws \yii\base\InvalidConfigException
+     */
     public function actionDelete($id)
     {
         $models = $this->getCrud()->getModels();
@@ -112,6 +129,11 @@ class DefaultController extends Controller
         return $this->redirect($this->getReturnUrl());
     }
 
+    /**
+     * @param int $id
+     * @return \yii\web\Response
+     * @throws \yii\base\InvalidConfigException
+     */
     public function actionDuplicate($id)
     {
         $modelClass = $this->getCrud()->modelClass;
@@ -155,6 +177,11 @@ class DefaultController extends Controller
         return $this->redirect($this->getReturnUrl());
     }
 
+    /**
+     * @param int $id
+     * @return string|\yii\web\Response
+     * @throws \yii\base\InvalidConfigException
+     */
     public function actionSetvals($id)
     {
         $model = $this->getCrud()->getFirstModel();
@@ -183,6 +210,9 @@ class DefaultController extends Controller
         ]);
     }
 
+    /**
+     * @throws \yii\base\InvalidConfigException
+     */
     public function actionSortable()
     {
         $class = Yii::$app->request->get('model', $this->crud->modelClass);
@@ -206,6 +236,12 @@ class DefaultController extends Controller
         }
     }
 
+    /**
+     * @return mixed|string
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\web\RangeNotSatisfiableHttpException
+     */
     public function actionExport()
     {
         $model = new CrudExportForm;
@@ -219,6 +255,11 @@ class DefaultController extends Controller
         }
     }
 
+    /**
+     * @return string|\yii\web\Response
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     * @throws \yii\base\InvalidConfigException
+     */
     public function actionImport()
     {
         $model = new CrudImportForm;
@@ -242,6 +283,7 @@ class DefaultController extends Controller
 
     /**
      * Delete image for mongosoft/yii2-upload-behavior behavior
+     *
      * @param integer $id
      * @param string $field attribute name
      * @return \yii\console\Response|\yii\web\Response
@@ -268,6 +310,7 @@ class DefaultController extends Controller
 
     /**
      * Create url for crud
+     *
      * @param array $params
      * @param bool $scheme
      * @param bool $includeGet
@@ -300,6 +343,7 @@ class DefaultController extends Controller
 
     /**
      * Get Crud component
+     *
      * @return Crud
      */
     public function getCrud()
@@ -313,6 +357,7 @@ class DefaultController extends Controller
 
     /**
      * Set Crud component
+     *
      * @param null $modelClass
      * @throws NotFoundHttpException
      */
@@ -336,6 +381,7 @@ class DefaultController extends Controller
 
     /**
      * Get return url
+     *
      * @param array $defRoute default route
      * @return string
      */

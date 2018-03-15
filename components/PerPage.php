@@ -75,6 +75,7 @@ class PerPage extends Component
     /**
      * @param array $options for bootstrap ButtonDropdown widget
      * @return string
+     * @throws \Exception
      */
     public function buttonDropdown($options = [])
     {
