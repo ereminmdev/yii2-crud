@@ -41,10 +41,10 @@ $controller = $this->context;
             ],
         ],
         'options' => [
-            'class' => 'btn-default',
             'title' => Yii::t('crud', 'Common actions'),
+            'class' => 'btn btn-default',
         ],
-        'containerOptions' => ['class' => 'btn-default pull-right'],
+        'containerOptions' => ['class' => 'pull-right'],
     ]);
 
     $items = (new PerPage())->getMenuItems();
@@ -56,13 +56,14 @@ $controller = $this->context;
     $actions['{filter}'] = ButtonDropdown::widget([
         'label' => '<span class="glyphicon glyphicon-filter"></span>',
         'encodeLabel' => false,
-        'split' => true,
         'dropdown' => ['items' => $items],
         'options' => [
             'title' => Yii::t('crud', 'Items per page'),
-            'class' => 'btn btn-default toggle-filters',
+            'class' => 'btn btn-default',
         ],
-        'containerOptions' => ['class' => 'btn-default pull-right'],
+        'containerOptions' => [
+            'class' => 'pull-right',
+        ],
     ]);
 
     if (!$crud->getConfig('access.delete', true)) {

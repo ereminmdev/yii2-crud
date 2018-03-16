@@ -32,10 +32,10 @@ if ($crud->isUseSortableJs()) {
 
 $gridViewWidget = new GridView(ArrayHelper::merge([
     'dataProvider' => $dataProvider,
-    'filterModel' => $searchModel,
     'columns' => $columns,
     'layout' => "{items}\n{pager}\n{summary}",
-    'filterPosition' => GridView::FILTER_POS_HEADER,
+    'filterModel' => $searchModel,
+    'filterPosition' => GridView::FILTER_POS_BODY,
     'tableOptions' => ['class' => 'table table-hover'],
 ], $crud->getConfig('gridViewOptions', [])));
 

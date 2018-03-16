@@ -3,23 +3,8 @@
 
     // views/_grid_toolbar
     if ($(".cms-crud-index").length) {
-        var $filters = $(".cms-crud-grid tr.filters");
-
-        $(".toggle-filters").on("click", function () {
-            if (!$(this).hasClass("dropdown-toggle")) {
-                $filters.toggle();
-            }
-        });
-
-        $filters.find("input, select").each(function () {
-            if ($(this).val()) {
-                $filters.show();
-                return false;
-            }
-        });
-
         // stop form submitting when only part of value is written
-        $filters.find("input[type=date], input[type=time]").each(function () {
+        $(".cms-crud-grid tr.filters").find("input[type=date], input[type=time]").each(function () {
             $(this).on('change', function () {
                 return false;
             });

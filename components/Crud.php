@@ -993,8 +993,8 @@ $(".js-checked-action").on("click", function () {
                 'items' => $checked,
             ],
             'options' => [
-                'class' => 'btn-default',
                 'title' => Yii::t('crud', 'Checked data actions'),
+                'class' => 'btn btn-default',
             ],
         ]);
     }

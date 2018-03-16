@@ -2,10 +2,6 @@
     margin: 1em 0 2em;
 }
 
-.cms-crud-grid tr.filters {
-    display: none;
-}
-
 .crud-field-img {
     max-width: 30%;
 }
