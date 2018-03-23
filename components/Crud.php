@@ -881,11 +881,14 @@ class Crud extends BaseObject
 
             if (isset($columnsSchema['created_at'])) {
                 $columnsSchema['created_at']['type'] = 'datetime';
-            } elseif (isset($columnsSchema['updated_at'])) {
+            }
+            if (isset($columnsSchema['updated_at'])) {
                 $columnsSchema['created_at']['type'] = 'datetime';
-            } elseif (isset($columnsSchema['email'])) {
+            }
+            if (isset($columnsSchema['email'])) {
                 $columnsSchema['email']['type'] = 'email';
-            } elseif (isset($columnsSchema['position'])) {
+            }
+            if (isset($columnsSchema['position'])) {
                 $columnsSchema['position']['type'] = 'sort';
             }
 
