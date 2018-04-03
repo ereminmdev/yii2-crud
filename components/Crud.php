@@ -407,10 +407,13 @@ class Crud extends BaseObject
                         $columns[$key] = [
                             'attribute' => $field,
                             'format' => 'html',
+                            'filter' => false,
                             'content' => function (ActiveRecord $model) use ($field, $schema) {
                                 $thumb = isset($schema['thumb']) ? $schema['thumb'] : 'thumb';
+                                $thumb2 = isset($schema['thumb2']) ? $schema['thumb2'] : $thumb;
                                 $url = $model->getImageUrl($field, $thumb);
-                                return Html::a(Html::img($url, ['class' => 'img-responsive crud-column-img']), $url);
+                                $url2 = $model->getImageUrl($field, $thumb2);
+                                return Html::a(Html::img($url, ['class' => 'img-responsive crud-column-img']), $url2, ['target' => '_blank']);
                             },
                         ];
                         break;

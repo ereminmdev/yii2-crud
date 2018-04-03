@@ -6,6 +6,7 @@ use ereminmdev\yii2\crud\components\Crud;
 use ereminmdev\yii2\crud\models\CrudExportForm;
 use ereminmdev\yii2\crud\models\CrudImportForm;
 use Yii;
+use yii\base\InvalidArgumentException;
 use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
@@ -359,18 +360,21 @@ class DefaultController extends Controller
      * Set Crud component
      *
      * @param null $modelClass
-     * @throws NotFoundHttpException
+     * @throws InvalidArgumentException
      */
     public function setCrud($modelClass = null)
     {
         if ($modelClass === null) {
             if (($modelClass = Yii::$app->request->get($this->modelUrlParam)) === null) {
-                throw new NotFoundHttpException('There\'s no parameter "' . $this->modelUrlParam . '" in request query.');
+                throw new InvalidArgumentException('There\'s no parameter "' . $this->modelUrlParam . '" in request query.');
             }
         }
 
-        //$config = is_callable([$modelClass, 'crudConfig']) ? call_user_func([$modelClass, 'crudConfig']) : [];
         $config = call_user_func([$modelClass, 'crudConfig']);
+
+        if (!is_array($config)) {
+            throw new InvalidArgumentException('Config parameter "' . $this->modelUrlParam . '" type not array.');
+        }
 
         $this->_crud = new Crud([
             'modelClass' => $modelClass,
