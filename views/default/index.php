@@ -19,12 +19,11 @@ $controller = $this->context;
 $this->title = $controller->pageTitle;
 $this->params['breadcrumbs'][] = $this->title;
 
-if ($crud->isUseSortableJs()) {
+if ($crud->isSortableJs()) {
     echo SortableJs::widget([
         'elementSelector' => '.cms-crud-grid table > tbody',
         'storeSetAction' => ['default/sortable', 'model' => $crud->modelClass],
         'clientOptions' => [
-            'handle' => '.crud-grid__sort-handle',
             'dataIdAttr' => 'data-key',
         ],
     ]);

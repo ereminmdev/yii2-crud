@@ -232,7 +232,7 @@ class Crud extends BaseObject
         array_unshift($columns, [
             'class' => DropDownButtonColumn::class,
             'buttonDropdownOptions' => [
-                'label' => '<i class="glyphicon glyphicon-menu-hamburger"></i>',
+                'label' => '<i class="glyphicon glyphicon-option-vertical"></i>',
                 'encodeLabel' => false,
             ],
             'items' => function ($model, $key) {
@@ -418,14 +418,8 @@ class Crud extends BaseObject
                         ];
                         break;
                     case 'sort':
-                        $this->useSortableJs = true;
-                        $columns[$key] = [
-                            'attribute' => $field,
-                            'filter' => false,
-                            'content' => function () use ($field, $schema) {
-                                return Html::tag('div', '<span class="glyphicon glyphicon-move"></span>', ['class' => 'crud-grid__sort-handle']);
-                            },
-                        ];
+                        $this->sortableJs = true;
+                        unset($columns[$key]);
                         break;
                     case 'array':
                         $itemList = is_callable($schema['itemList']) ? call_user_func($schema['itemList']) : $schema['itemList'];
@@ -1110,13 +1104,13 @@ $(".js-checked-action").on("click", function () {
     /**
      * @var bool
      */
-    protected $useSortableJs = false;
+    protected $sortableJs = false;
 
     /**
      * @return bool
      */
-    public function isUseSortableJs()
+    public function isSortableJs()
     {
-        return $this->useSortableJs;
+        return $this->sortableJs;
     }
 }
