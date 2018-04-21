@@ -25,6 +25,7 @@ if ($crud->isSortableJs()) {
         'storeSetAction' => ['default/sortable', 'model' => $crud->modelClass],
         'clientOptions' => [
             'dataIdAttr' => 'data-key',
+            'handle' => '.crud-grid__sort-handle',
         ],
     ]);
 }

@@ -234,6 +234,9 @@ class Crud extends BaseObject
             'buttonDropdownOptions' => [
                 'label' => '<i class="glyphicon glyphicon-option-vertical"></i>',
                 'encodeLabel' => false,
+                'options' => [
+                    'class' => ['crud-grid__sort-handle'],
+                ],
             ],
             'items' => function ($model, $key) {
                 $template = $this->getConfig('gridActionsTemplate', "{update}\n{--}\n{delete}");
