@@ -235,7 +235,7 @@ class Crud extends BaseObject
                 'label' => '<i class="glyphicon glyphicon-option-vertical"></i>',
                 'encodeLabel' => false,
                 'options' => [
-                    'class' => ['crud-grid__sort-handle'],
+                    'class' => $this->isSortableJs() ? ['crud-grid__sort-handle'] : [],
                 ],
             ],
             'items' => function ($model, $key) {
@@ -891,6 +891,7 @@ class Crud extends BaseObject
             }
             if (isset($columnsSchema['position'])) {
                 $columnsSchema['position']['type'] = 'sort';
+                $this->sortableJs = true;
             }
 
             $columnsSchema = ArrayHelper::merge($columnsSchema, $this->getConfig('columnsSchema', []));
