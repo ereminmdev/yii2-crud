@@ -89,6 +89,34 @@ public static function crudConfig()
             ],
             'colors3' => false,
         ],
+        'gridToolbarActions' => [
+            '{custom}' => Html::a('Моя кнопка', '#', ['class' => 'btn btn-default']),
+        ],
+        'gridActions' => [
+            '{custom}' => function(self $model, mixed $key, Crud $this) {
+                return [
+                   'label' => 'Мое действие',
+                   'url' => '#',
+                ];
+            },
+        ],
+        'controller.behaviors' => [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'actions' => ['index'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                    [
+                        'actions' => ['create', 'update'],
+                        'allow' => true,
+                        'roles' => ['admin'],
+                    ],
+                ],
+            ],
+        ],
     ];
 }
 ```

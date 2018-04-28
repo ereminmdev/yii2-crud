@@ -239,9 +239,10 @@ class Crud extends BaseObject
                 ],
             ],
             'items' => function ($model, $key) {
-                $template = $this->getConfig('gridActionsTemplate', "{update}\n{--}\n{delete}");
+                $template = $this->getConfig('gridActionsTemplate', "{custom}\n{update}\n{--}\n{delete}");
 
                 $actions = [
+                    '{custom}' => '',
                     '{--}' => '<li role="presentation" class="divider"></li>',
                     '{update}' => [
                         'label' => Yii::t('crud', 'Edit'),

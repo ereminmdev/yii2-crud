@@ -5,7 +5,6 @@ use yii\bootstrap\Alert;
 use yii\grid\GridView;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
-use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $crud \ereminmdev\yii2\crud\components\Crud */

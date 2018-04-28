@@ -15,13 +15,15 @@ $controller = $this->context;
 <div class="btn-toolbar" role="toolbar">
 
     <?php
-    $template = $crud->getConfig('gridToolbarTemplate', "{checks}\n{create}\n{full}\n{filter}");
+    $template = $crud->getConfig('gridToolbarTemplate', "{checks}\n{create}\n{custom}\n{full}\n{filter}");
 
     $actions = [];
 
     $actions['{checks}'] = $crud->renderCheckedActions($gridViewWidget->id);
 
     $actions['{create}'] = Html::a(Yii::t('crud', 'Create'), $controller->urlCreate(['create']), ['class' => 'btn btn-success']);
+
+    $actions['{custom}'] = '';
 
     $actions['{full}'] = ButtonDropdown::widget([
         'label' => '<span class="glyphicon glyphicon-asterisk"></span>',
