@@ -283,7 +283,7 @@ class DefaultController extends Controller
     }
 
     /**
-     * Delete image for mongosoft/yii2-upload-behavior behavior
+     * Delete image for mohorev/yii2-upload-behavior behavior
      *
      * @param integer $id
      * @param string $field attribute name
