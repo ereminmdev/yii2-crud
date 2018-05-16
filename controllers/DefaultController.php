@@ -80,7 +80,10 @@ class DefaultController extends Controller
         $model->load(Yii::$app->request->get());
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect($this->getReturnUrl());
+            $url = $this->getActionSuccessUrl('create', [
+                'model' => $model,
+            ]);
+            return $this->redirect($url);
         } else {
             return $this->render($crud->getConfig('views.create.view', 'create'), [
                 'crud' => $crud,
@@ -104,7 +107,10 @@ class DefaultController extends Controller
             if (Yii::$app->request->isAjax) {
                 return Json::encode($model->getAttributes());
             } else {
-                return $this->redirect($this->getReturnUrl());
+                $url = $this->getActionSuccessUrl('update', [
+                    'model' => $model,
+                ]);
+                return $this->redirect($url);
             }
         } else {
             return $this->render($crud->getConfig('views.update.view', 'update'), [
@@ -127,7 +133,10 @@ class DefaultController extends Controller
             $model->delete();
         }
 
-        return $this->redirect($this->getReturnUrl());
+        $url = $this->getActionSuccessUrl('delete', [
+            'models' => $models,
+        ]);
+        return $this->redirect($url);
     }
 
     /**
@@ -175,7 +184,10 @@ class DefaultController extends Controller
             }
         }
 
-        return $this->redirect($this->getReturnUrl());
+        $url = $this->getActionSuccessUrl('duplicate', [
+            'models' => $models,
+        ]);
+        return $this->redirect($url);
     }
 
     /**
@@ -201,7 +213,11 @@ class DefaultController extends Controller
                     $model->setAttributes($setVals);
                     $model->save();
                 }
-                return $this->redirect($this->getReturnUrl());
+
+                $url = $this->getActionSuccessUrl('setvals', [
+                    'models' => $models,
+                ]);
+                return $this->redirect($url);
             }
         }
 
@@ -272,7 +288,10 @@ class DefaultController extends Controller
                 $this->getCrud()->import($model, $model->file);
                 Yii::$app->session->addFlash('info', Yii::t('crud', 'Count of imported items') . ': ' . $model->count);
                 if (!$model->hasErrors()) {
-                    return $this->redirect($this->getReturnUrl());
+                    $url = $this->getActionSuccessUrl('import', [
+                        'model' => $model,
+                    ]);
+                    return $this->redirect($url);
                 }
             }
         }
@@ -305,7 +324,10 @@ class DefaultController extends Controller
             Yii::$app->response->content = true;
             return Yii::$app->response;
         } else {
-            return $this->redirect($this->getReturnUrl());
+            $url = $this->getActionSuccessUrl('delete-upload-image', [
+                'model' => $model,
+            ]);
+            return $this->redirect($url);
         }
     }
 
@@ -392,5 +414,17 @@ class DefaultController extends Controller
     public function getReturnUrl($defRoute = ['index'])
     {
         return (Yii::$app->request->get('useReturnUrl', 1) && ($url = Yii::$app->request->get('returnUrl'))) ? $url : $this->urlCreate($defRoute);
+    }
+
+    /**
+     * @param string $action
+     * @param array $params to be passed to the call_user_func_array function, as an indexed array.
+     * @return mixed
+     */
+    public function getActionSuccessUrl($action, $params = [])
+    {
+        $url = $this->getCrud()->getConfig('actionSuccessUrl.' . $action, $this->getReturnUrl());
+        $url = is_callable($url) ? call_user_func_array($url, $params) : $url;
+        return $url;
     }
 }
