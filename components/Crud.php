@@ -924,9 +924,10 @@ class Crud extends BaseObject
     public function checkedActions()
     {
         $template = $this->getConfig('gridCheckedActionsTemplate',
-            "{setvals}\n{duplicate}\n{export}\n{--}\n{delete}");
+            "{custom}\n{setvals}\n{duplicate}\n{export}\n{--}\n{delete}");
 
         $actions = [
+            '{custom}' => '',
             '{--}' => '<li role="presentation" class="divider"></li>',
             '{setvals}' => [
                 'label' => Yii::t('crud', 'Set values'),
