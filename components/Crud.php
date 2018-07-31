@@ -666,7 +666,10 @@ class Crud extends BaseObject
                     $formField = $form->field($model, $field)->input('tel');
                     break;
                 case 'file':
-                    $formField = $form->field($model, $field)->fileInput();
+                    $value = $model->$field;
+                    $behavior = $model->getBehavior($field) ?? $model;
+                    $hint = $value ? Html::a('<i class="fa fa-file"></i> ' . $value, $behavior->getUploadUrl($field), ['target' => '_blank']) : '';
+                    $formField = $form->field($model, $field, ['template' => "{label}\n{hint}\n{input}\n{error}"])->fileInput()->hint($hint);
                     break;
                 case 'image':
                     $formField = $form->field($model, $field)->fileInput(['accept' => 'image/*']);
