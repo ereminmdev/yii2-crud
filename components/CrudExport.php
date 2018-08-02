@@ -5,6 +5,7 @@ namespace ereminmdev\yii2\crud\components;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Csv;
 use PhpOffice\PhpSpreadsheet\Writer\Html;
+use PhpOffice\PhpSpreadsheet\Writer\Ods;
 use PhpOffice\PhpSpreadsheet\Writer\Xls;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Yii;
@@ -53,6 +54,7 @@ class CrudExport extends BaseObject
         return [
             'xlsx' => Yii::t('crud', 'Excel') . ' (*.xlsx)',
             'xls' => Yii::t('crud', 'Microsoft Excel 5.0/95') . ' (*.xls)',
+            'ods' => Yii::t('crud', 'Open Document Format') . ' (*.ods)',
             'csv' => Yii::t('crud', 'CSV (delimiter - comma)') . ' (*.csv)',
             'htm' => Yii::t('crud', 'Web page') . ' (*.htm)',
             //'pdf' => Yii::t('crud', 'Adobe acrobat PDF') . ' (*.pdf)',
@@ -125,6 +127,11 @@ class CrudExport extends BaseObject
                 $writer = new Xls($spreadsheet);
                 $fileName = $this->fileName . '.xls';
                 $mimeType = 'application/vnd.ms-excel';
+                break;
+            case 'ods':
+                $writer = new Ods($spreadsheet);
+                $fileName = $this->fileName . '.ods';
+                $mimeType = 'application/vnd.oasis.opendocument.spreadsheet';
                 break;
             case 'htm':
                 $writer = new Html($spreadsheet);

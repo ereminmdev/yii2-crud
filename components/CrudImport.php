@@ -3,6 +3,7 @@
 namespace ereminmdev\yii2\crud\components;
 
 use PhpOffice\PhpSpreadsheet\Reader\Csv;
+use PhpOffice\PhpSpreadsheet\Reader\Ods;
 use PhpOffice\PhpSpreadsheet\Reader\Xls;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use Yii;
@@ -51,6 +52,7 @@ class CrudImport extends BaseObject
         return [
             'xlsx' => Yii::t('crud', 'Excel') . ' (*.xlsx)',
             'xls' => Yii::t('crud', 'Microsoft Excel 5.0/95') . ' (*.xls)',
+            'ods' => Yii::t('crud', 'Open Document Format') . ' (*.ods)',
             'csv' => Yii::t('crud', 'CSV (delimiter - comma)') . ' (*.csv)',
         ];
     }
@@ -67,6 +69,9 @@ class CrudImport extends BaseObject
                 break;
             case 'xls':
                 $reader = new Xls();
+                break;
+            case 'ods':
+                $reader = new Ods();
                 break;
             case 'csv':
                 $reader = new Csv();
