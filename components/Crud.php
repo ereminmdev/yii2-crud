@@ -668,8 +668,13 @@ class Crud extends BaseObject
                 case 'file':
                     $value = $model->$field;
                     $behavior = $model->getBehavior($field) ?? $model;
-                    $hint = $value ? Html::a('<i class="fa fa-file"></i> ' . $value, $behavior->getUploadUrl($field), ['target' => '_blank']) : '';
-                    $formField = $form->field($model, $field, ['template' => "{label}\n{hint}\n{input}\n{error}"])->fileInput()->hint($hint);
+                    $formField = $form->field($model, $field, ['template' => "{label}\n{hint}\n{input}\n{error}"])->fileInput();
+                    if ($value) {
+                        $formField->hint(Html::a('<i class="fa fa-file"></i> ' . $value, $behavior->getUploadUrl($field), ['class' => 'btn btn-link', 'target' => '_blank']) .
+                            ' &nbsp; ' . Html::a('<i class="fa fa-remove"></i> ' . Yii::t('crud', 'Delete file'), $this->columnUrlCreator('delete-upload-file', $model, $model->id, ['field' => $field, 'returnUrl' => Url::current()]),
+                                ['class' => 'btn js-delete-file', 'data-message' => Yii::t('crud', 'Are you sure you want to delete this file?')])
+                        );
+                    }
                     break;
                 case 'image':
                     $formField = $form->field($model, $field)->fileInput(['accept' => 'image/*']);
@@ -689,7 +694,7 @@ class Crud extends BaseObject
                     $hint = Html::img($url, ['class' => 'img-responsive crud-field-img img-result', 'data-src' => $model->getUploadUrl($field)]);
                     $hint .= $model->$field ? '<p class="help-block">' .
                         Html::a('<i class="fa fa-remove"></i> ' . Yii::t('crud', 'Delete image'), $this->columnUrlCreator('delete-upload-image', $model, $model->id, ['field' => $field, 'returnUrl' => Url::current()]),
-                            ['class' => 'btn btn-default btn-xs js-delete-image', 'data-message' => Yii::t('crud', 'Are you sure you want to delete this image?')]) . '</p>' : '';
+                            ['class' => 'btn btn-default btn-xs js-delete-file', 'data-message' => Yii::t('crud', 'Are you sure you want to delete this image?')]) . '</p>' : '';
                     $formField = $form->field($model, $field)->fileInput(['accept' => 'image/*'])->hint($hint);
                     if ($schema['type'] == 'crop-image-upload') {
                         $formField->widget(\ereminmdev\yii2\cropimageupload\CropImageUploadWidget::class);

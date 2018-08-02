@@ -11,7 +11,7 @@
         });
 
         $(document).on('click', '.js-crud-post-refresh', function (event) {
-            var $that = $(this);
+            let $that = $(this);
             $.ajax({
                 url: $that.data('url') ? $that.data('url') : $that.attr('href'),
                 data: $that.data('params') ? $that.data('params') : {},
@@ -27,7 +27,7 @@
 
     // views/_form
     if ($(".cms-crud-form").length) {
-        var $crudForm = $("#crudFormData"),
+        let $crudForm = $("#crudFormData"),
             oldCrudFormData = $crudForm.serialize();
 
         $crudForm.on("beforeSubmit", function () {
@@ -37,14 +37,14 @@
 
         $(window).on("beforeunload", function (e) {
             if (oldCrudFormData != $crudForm.serialize()) {
-                var message = "Изменения не сохранены. Вы можете потерять данные!";
+                let message = "Изменения не сохранены. Вы можете потерять данные!";
                 e.returnValue = message;
                 return message;
             }
         });
 
-        $(document).on("click", ".js-delete-image", function () {
-            var that = this,
+        $(document).on("click", ".js-delete-file", function () {
+            let that = this,
                 message = $(this).data('message');
 
             if (window.confirm(message)) {
@@ -60,7 +60,7 @@
     // components/Crud:renderFormSetvals
     if ($(".cms-crud-setvals").length) {
         $(".js-toggle-block").on("change", function () {
-            var destination = $(this).data("destination");
+            let destination = $(this).data("destination");
 
             if ($(this).prop("checked")) {
                 $("." + destination).show();

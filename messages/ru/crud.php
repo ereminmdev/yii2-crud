@@ -53,6 +53,8 @@ return [
         '{variant, number} {variant, plural, =1{запись} few{записи} many{записей} other{запись}}',
     'Show all' => 'Показать все',
 
+    'Delete file' => 'Удалить файл',
+    'Are you sure you want to delete this file?' => 'Вы уверены, что хотите удалить файл?',
     'Delete image' => 'Удалить изображение',
     'Are you sure you want to delete this image?' => 'Вы уверены, что хотите удалить изображение?',
 ];

@@ -302,6 +302,39 @@ class DefaultController extends Controller
     }
 
     /**
+     * Delete file for mohorev/yii2-upload-behavior behavior
+     *
+     * @param integer $id
+     * @param string $field attribute name
+     * @return \yii\console\Response|\yii\web\Response
+     * @throws NotFoundHttpException
+     */
+    public function actionDeleteUploadFile($id, $field)
+    {
+        $crud = $this->getCrud();
+        $model = $crud->findModel($id, 'update');
+
+        $behavior = $model->getBehavior($field) ?? $model;
+
+        $path = $behavior->hasMethod('getUploadPath') ? $behavior->getUploadPath($field) : $behavior->getAttribute($field);
+        if (is_file($path)) {
+            @unlink($path);
+        }
+
+        $model->updateAttributes([$field => '']);
+
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->content = true;
+            return Yii::$app->response;
+        } else {
+            $url = $this->getActionSuccessUrl('delete-upload-file', [
+                'model' => $model,
+            ]);
+            return $this->redirect($url);
+        }
+    }
+
+    /**
      * Delete image for mohorev/yii2-upload-behavior behavior
      *
      * @param integer $id
