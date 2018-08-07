@@ -57,7 +57,6 @@ class CrudExport extends BaseObject
             'ods' => Yii::t('crud', 'Open Document Format') . ' (*.ods)',
             'csv' => Yii::t('crud', 'CSV (delimiter - comma)') . ' (*.csv)',
             'htm' => Yii::t('crud', 'Web page') . ' (*.htm)',
-            //'pdf' => Yii::t('crud', 'Adobe acrobat PDF') . ' (*.pdf)',
         ];
     }
 
