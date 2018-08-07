@@ -197,12 +197,14 @@ class Crud extends BaseObject
                             $dataProvider->query->with($relation);
                         }
                     } elseif ($schema['rtype'] == 'hasMany') {
-                        $dataProvider->query->with([
-                            $relation => function ($query) use ($schema, $relation, $model) {
-                                $linkAttribute = array_keys($model->{'get' . $relation}()->link)[0];
-                                $query->select($linkAttribute);
-                            },
-                        ]);
+                        if (ArrayHelper::getValue($schema, 'queryWith', true)) {
+                            $dataProvider->query->with([
+                                $relation => function ($query) use ($schema, $relation, $model) {
+                                    $linkAttribute = array_keys($model->{'get' . $relation}()->link)[0];
+                                    $query->select($linkAttribute);
+                                },
+                            ]);
+                        }
                     } elseif ($schema['rtype'] == 'manyMany') {
                         $dataProvider->query->with($relation);
                         // select only `id` for count()
