@@ -1062,7 +1062,7 @@ $(".js-checked-action").on("click", function () {
             'renderData' => (bool)$model->renderData,
             'model' => $this->getModel('search'),
             'dataProvider' => $this->getDataProvider(),
-            'columns' => $this->guessColumns($this->getFields()),
+            'columns' => $this->getConfig('exportColumns', $this->guessColumns($this->getFields())),
         ]);
         return $exporter->export();
     }

@@ -9,6 +9,7 @@ use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use Yii;
 use yii\base\BaseObject;
 use yii\db\Schema;
+use yii\helpers\ArrayHelper;
 
 /**
  * Class CrudImport
@@ -108,6 +109,10 @@ class CrudImport extends BaseObject
 
             /* @var $model \yii\db\ActiveRecord */
             $model = new $this->modelClass;
+            if ($id = ArrayHelper::getValue($values, 'id')) {
+                $model->id = $id;
+                $model->setIsNewRecord(false);
+            }
             $model->setAttributes($values);
 
             if ($model->save()) {
