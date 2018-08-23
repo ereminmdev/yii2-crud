@@ -19,6 +19,10 @@
     width: 30px;
 }
 
+.cms-crud-grid .table > thead > tr > th, .cms-crud-grid .table > thead > tr > td {
+    border-bottom-width: 1px;
+}
+
 @media (min-width: 992px) {
     .cms-crud-grid.table-responsive {
         overflow: visible;
