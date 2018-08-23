@@ -44,7 +44,7 @@ class DropDownButtonColumn extends DataColumn
         $this->buttonDropdownOptions = ArrayHelper::merge([
             'tagName' => 'a',
             'options' => [
-                'class' => !$this->showCaret ? ['widget' => 'crud-hide-caret'] : null,
+                'class' => ['btn btn-xs', !$this->showCaret ? 'crud-hide-caret' : null],
             ],
             'encodeLabel' => $this->encodeLabels,
             'dropdown' => [

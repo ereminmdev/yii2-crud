@@ -15,6 +15,10 @@
     cursor: move;
 }
 
+.cms-crud-grid .col-width-sm {
+    width: 30px;
+}
+
 @media (min-width: 992px) {
     .cms-crud-grid.table-responsive {
         overflow: visible;

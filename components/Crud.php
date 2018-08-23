@@ -240,6 +240,7 @@ class Crud extends BaseObject
                     'class' => $this->isSortableJs() ? ['crud-grid__sort-handle'] : [],
                 ],
             ],
+            'options' => ['class' => 'col-width-sm'],
             'items' => function ($model, $key) {
                 $template = $this->getConfig('gridActionsTemplate', "{custom}\n{update}\n{--}\n{delete}");
 
@@ -276,7 +277,10 @@ class Crud extends BaseObject
             }
         ]);
 
-        array_unshift($columns, ['class' => CheckboxColumn::class]);
+        array_unshift($columns, [
+            'class' => CheckboxColumn::class,
+            'options' => ['class' => 'col-width-sm'],
+        ]);
 
         return $columns;
     }
