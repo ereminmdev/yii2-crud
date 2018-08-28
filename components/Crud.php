@@ -436,7 +436,8 @@ class Crud extends BaseObject
 
                         if (ArrayHelper::getValue($schema, 'gridDropButton', false)) {
                             $dropList = ArrayHelper::getValue($schema, 'gridDropButtonList', $itemList);
-                            $columns[$key] = [
+                            $dropOptions = ArrayHelper::getValue($schema, 'gridDropButtonOptions', []);
+                            $columns[$key] = ArrayHelper::merge([
                                 'class' => DropDownButtonColumn::class,
                                 'attribute' => $field,
                                 'filter' => $itemList,
@@ -456,7 +457,7 @@ class Crud extends BaseObject
                                     }
                                     return $items;
                                 },
-                            ];
+                            ], $dropOptions);
                         } else {
                             $columns[$key] = [
                                 'attribute' => $field,
