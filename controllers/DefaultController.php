@@ -347,8 +347,8 @@ class DefaultController extends Controller
         $crud = $this->getCrud();
         $model = $crud->findModel($id, 'update');
 
-        if (in_array($field, array_keys($model->getBehaviors()), true) && ($behavior = $model->getBehavior($field))) {
-            $behavior->beforeDelete();
+        if (in_array($field, array_keys($model->getBehaviors()), true) && ($behavior = $model->getBehavior($field)) && $behavior->hasMethod('removeImage')) {
+            $behavior->removeImage($field);
         }
 
         $model->updateAttributes([$field => '']);
