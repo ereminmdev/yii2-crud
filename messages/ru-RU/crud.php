@@ -47,8 +47,6 @@ return [
     'Are you sure you want to delete all items?' => 'Вы действительно уверены, что хотите удалить все элементы?',
     'Please select a one entry at least.' => 'Выберите хотя бы одну запись.',
 
-    'Use Ctrl or Shift button to select multiple values.' => 'Выделять несколько значений можно вместе с нажатой кнопкой Ctrl или Shift.',
-
     'Items per page' => 'Записей на странице',
     '{variant, number} {variant, plural, one{item} other{items}}' =>
         '{variant, number} {variant, plural, =1{запись} few{записи} many{записей} other{запись}}',

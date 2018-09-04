@@ -717,8 +717,7 @@ class Crud extends BaseObject
                     break;
                 case 'list':
                     $items = call_user_func($schema['getList']);
-                    $formField = $form->field($model, $field)->listBox($items, ['multiple' => true, 'size' => min(10, count($items))])
-                        ->hint(Yii::t('crud', 'Use Ctrl or Shift button to select multiple values.'));
+                    $formField = $form->field($model, $field, ['inline' => true])->checkboxList($items);
                     break;
                 case 'relation':
                     $relation = $schema['relation'];
@@ -778,8 +777,7 @@ class Crud extends BaseObject
                                 ArrayHelper::merge(['items' => $list], $schema['select2'])
                             );
                         } else {
-                            $formField = $form->field($model, $field)->dropDownList($list, ['multiple' => true, 'size' => 10])
-                                ->hint(Yii::t('crud', 'Use Ctrl or Shift button to select multiple values.'));
+                            $formField = $form->field($model, $field, ['inline' => true])->checkboxList($list);
                         }
                     }
                     break;
