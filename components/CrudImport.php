@@ -84,22 +84,20 @@ class CrudImport extends BaseObject
 
         $reader->setReadDataOnly(true);
         $spreadsheet = $reader->load($this->fileName);
-        $fileData = $spreadsheet->getActiveSheet()->toArray();
+        $rows = $spreadsheet->getActiveSheet()->toArray();
         $spreadsheet->disconnectWorksheets();
         unset($spreadsheet);
 
-        $dataCount = count($fileData);
-        if ($dataCount < 3) {
+        if (count($rows) < 3) {
             $this->_errors[] = Yii::t('crud', 'No data to import. Need more then 2 strings in file.');
             return false;
         }
 
-        $fields = $fileData[0];
+        $fields = array_shift($rows);
+        array_shift($rows); // extract 2nd row
 
-        for ($rowI = 2, $rowCount = $dataCount; $rowI < $rowCount; $rowI++) {
-            $data = $fileData[$rowI];
-
-            $values = array_combine($fields, $data);
+        foreach ($rows as $idx => $row) {
+            $values = array_combine($fields, $row);
             foreach ($values as $key => $value) {
                 if ($value === null) unset($values[$key]);
             }
@@ -118,7 +116,7 @@ class CrudImport extends BaseObject
                 $this->insertCount++;
             } else {
                 $errors = array_values($model->getFirstErrors());
-                $this->_errors[] = 'Строка ' . ($rowI + 1) . ': ' . $errors[0];
+                $this->_errors[] = Yii::t('crud', 'String') . ' ' . ($idx + 3) . ': ' . $errors[0];
             }
         }
 

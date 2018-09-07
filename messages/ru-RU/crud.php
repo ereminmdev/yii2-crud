@@ -4,15 +4,12 @@ return [
     'Edit' => 'Редактировать',
     'Update' => 'Обновить',
     'Delete' => 'Удалить',
-    'Submit' => 'Отправить',
     'Cancel' => 'Отмена',
 
     'delete' => 'удалить',
     'Delete all' => 'Удалить все',
 
     'Reset filter' => 'Сбросить фильтр',
-
-    'View on site' => 'Смотреть на сайте',
 
     'File' => 'Файл',
     'File type' => 'Тип файла',
@@ -33,7 +30,7 @@ return [
     'No data to import. Need more then 2 strings in file.' => 'Данных для импорта не найдено. В файле меньше 3 строк.',
     'Not support file format "{format}".' => 'Формат файла "{format}" не поддерживается.',
     'Count of imported items' => 'Импортировано записей',
-    'Import successful complete. Count of imported items' => 'Загрузка успешно завершена. Импортировано записей',
+    'String' => 'Строка',
 
     'Set values' => 'Проставить значения',
     'Select the required fields' => 'Выберите нужные поля',
