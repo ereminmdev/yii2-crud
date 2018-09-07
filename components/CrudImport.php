@@ -76,7 +76,6 @@ class CrudImport extends BaseObject
                 break;
             case 'csv':
                 $reader = new Csv();
-                $reader->setDelimiter(';');
                 break;
             default:
                 $this->_errors[] = Yii::t('crud', 'Not support file format "{format}".', ['format' => $this->format]);

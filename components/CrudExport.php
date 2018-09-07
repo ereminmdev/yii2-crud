@@ -144,7 +144,6 @@ class CrudExport extends BaseObject
                 break;*/
             default:
                 $writer = new Csv($spreadsheet);
-                $writer->setDelimiter(';');
                 $writer->setUseBOM(true); // writing UTF-8 CSV file
                 $fileName = $this->fileName . '.csv';
                 $mimeType = 'text/csv';
