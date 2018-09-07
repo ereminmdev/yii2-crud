@@ -35,7 +35,8 @@ $this->params['breadcrumbs'][] = Yii::t('crud', 'Import');
 
     <?= $form->errorSummary($model) ?>
 
-    <?= $form->field($model, 'file')->fileInput() ?>
+    <?php $accept = '.' . implode(', .', array_keys(CrudImportForm::fileFormats())); ?>
+    <?= $form->field($model, 'file')->fileInput(['accept' => $accept]) ?>
 
     <hr>
 
