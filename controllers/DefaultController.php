@@ -35,6 +35,17 @@ class DefaultController extends Controller
     /**
      * @inheritdoc
      */
+    public function beforeAction($action)
+    {
+        if (in_array($action->id, ['sortable'])) {
+            $this->enableCsrfValidation = false;
+        }
+        return parent::beforeAction($action);
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function init()
     {
         parent::init();
