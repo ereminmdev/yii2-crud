@@ -21,7 +21,7 @@ $this->params['breadcrumbs'][] = $this->title;
 if ($crud->isSortableJs()) {
     echo SortableJs::widget([
         'elementSelector' => '.cms-crud-grid table > tbody',
-        'storeSetAction' => ['default/sortable', 'model' => $crud->modelClass],
+        'storeSetAction' => $controller->urlCreate(['/crud/default/sortable']),
         'clientOptions' => [
             'dataIdAttr' => 'data-key',
             'handle' => '.crud-grid__sort-handle',
