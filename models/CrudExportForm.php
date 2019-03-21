@@ -19,7 +19,7 @@ class CrudExportForm extends Model
     /**
      * @var bool
      */
-    public $renderData = false;
+    public $needRenderData = false;
 
     /**
      * @inheritdoc
@@ -27,8 +27,8 @@ class CrudExportForm extends Model
     public function rules()
     {
         return [
-            [['fileFormat', 'renderData'], 'required'],
-            [['renderData'], 'boolean'],
+            [['fileFormat', 'needRenderData'], 'required'],
+            [['needRenderData'], 'boolean'],
         ];
     }
 
@@ -39,7 +39,7 @@ class CrudExportForm extends Model
     {
         return [
             'fileFormat' => Yii::t('crud', 'File type'),
-            'renderData' => Yii::t('crud', 'Render relative data'),
+            'needRenderData' => Yii::t('crud', 'Render relative data'),
         ];
     }
 

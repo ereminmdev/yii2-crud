@@ -29,7 +29,7 @@ $this->params['breadcrumbs'][] = Yii::t('crud', 'Export');
 
     <?= $form->field($model, 'fileFormat')->dropDownList(CrudExportForm::fileFormats()) ?>
 
-    <?= $form->field($model, 'renderData')->checkbox() ?>
+    <?= $form->field($model, 'needRenderData')->checkbox() ?>
 
     <hr>
 
