@@ -475,7 +475,8 @@ class Crud extends BaseObject
                             'attribute' => $field,
                             'filter' => $list,
                             'value' => function ($model, $key, $index, $column) use ($list) {
-                                $value = $model->{$column->attribute};
+                                $value = (array)$model->{$column->attribute};
+                                $value = array_intersect_key($list, array_flip($value));
                                 $value = implode(', ', $value);
                                 return str_replace(array_keys($list), array_values($list), $value);
                             },
@@ -1060,12 +1061,13 @@ $(".js-checked-action").on("click", function () {
      */
     public function export(CrudExportForm $model)
     {
+        $fields = $this->getConfig('exportColumns', $this->getModel()->attributes());
         $exporter = new CrudExport([
             'format' => $model->fileFormat,
-            'renderData' => (bool)$model->renderData,
+            'needRenderData' => (bool)$model->needRenderData,
             'model' => $this->getModel('search'),
             'dataProvider' => $this->getDataProvider(),
-            'columns' => $this->getConfig('exportColumns', $this->getModel()->attributes()),
+            'columns' => $model->needRenderData ? $this->guessColumns($fields) : $fields,
         ]);
         return $exporter->export();
     }

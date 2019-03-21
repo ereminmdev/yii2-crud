@@ -32,7 +32,7 @@ class CrudExport extends BaseObject
     /**
      * @var bool
      */
-    public $renderData = false;
+    public $needRenderData = false;
     /**
      * @var ActiveDataProvider
      */
@@ -98,7 +98,7 @@ class CrudExport extends BaseObject
         $colI = 1;
         foreach ($columns as $column) {
             $sheet->setCellValueByColumnAndRow($colI, $rowI, $column->attribute);
-            $headerValue = $this->renderData ? getHeaderValue($column->renderHeaderCell()) : $model->getAttributeLabel($column->attribute);
+            $headerValue = $this->needRenderData ? getHeaderValue($column->renderHeaderCell()) : (string)$model->getAttributeLabel($column->attribute);
             $sheet->setCellValueByColumnAndRow($colI, $rowI + 1, $headerValue);
             $colI++;
         }
@@ -110,7 +110,7 @@ class CrudExport extends BaseObject
             $key = $keys[$index];
             foreach ($columns as $column) {
                 $attribute = $column->attribute;
-                $value = $this->renderData ? getValue($column->renderDataCell($model, $key, $index)) : $model->getAttribute($attribute);
+                $value = $this->needRenderData ? getValue($column->renderDataCell($model, $key, $index)) : (string)$model->getAttribute($attribute);
                 $sheet->setCellValueByColumnAndRow($colI, $rowI, $value);
                 $colI++;
             }
