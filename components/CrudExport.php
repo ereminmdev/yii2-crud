@@ -12,6 +12,7 @@ use Yii;
 use yii\base\BaseObject;
 use yii\data\ActiveDataProvider;
 use yii\db\ActiveRecord;
+use yii\grid\DataColumn;
 use yii\grid\GridView;
 use yii\helpers\Inflector;
 
@@ -67,18 +68,6 @@ class CrudExport extends BaseObject
      */
     public function export()
     {
-        function getHeaderValue($value)
-        {
-            return strip_tags($value);
-        }
-
-        function getValue($value)
-        {
-            return strip_tags($value);
-        }
-
-        $this->fileName = $this->fileName ?: 'Export_' . Inflector::camelize(get_class($this->model)) . '_' . date('d.m.Y');
-
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
@@ -88,64 +77,69 @@ class CrudExport extends BaseObject
             'columns' => $this->columns,
             'emptyCell' => '',
         ]);
+
+        /** @var DataColumn[] $columns */
         $columns = $gridView->columns;
-        $models = $gridView->dataProvider->getModels();
-        $model = $this->model;
-        $keys = $this->dataProvider->getKeys();
 
         $rowI = 1;
 
         $colI = 1;
+        $model = $this->model;
         foreach ($columns as $column) {
             $sheet->setCellValueByColumnAndRow($colI, $rowI, $column->attribute);
-            $headerValue = $this->needRenderData ? getHeaderValue($column->renderHeaderCell()) : (string)$model->getAttributeLabel($column->attribute);
+            $headerValue = $this->needRenderData ? strip_tags($column->renderHeaderCell()) : (string)$model->getAttributeLabel($column->attribute);
             $sheet->setCellValueByColumnAndRow($colI, $rowI + 1, $headerValue);
             $colI++;
         }
         $rowI = 2;
 
+        /** @var ActiveRecord[] $models */
+        $models = $gridView->dataProvider->getModels();
+        $keys = $gridView->dataProvider->getKeys();
         foreach ($models as $index => $model) {
             $colI = 1;
             $rowI++;
             $key = $keys[$index];
             foreach ($columns as $column) {
                 $attribute = $column->attribute;
-                $value = $this->needRenderData ? getValue($column->renderDataCell($model, $key, $index)) : (string)$model->getAttribute($attribute);
+                $value = $this->needRenderData ? strip_tags($column->renderDataCell($model, $key, $index)) : (string)$model->getAttribute($attribute);
                 $sheet->setCellValueByColumnAndRow($colI, $rowI, $value);
                 $colI++;
             }
         }
 
+        $fileName = $this->fileName ?: 'Export_' . Inflector::camelize(get_class($this->model)) . '_' . date('d.m.Y');
+
         switch ($this->format) {
             case 'xlsx':
                 $writer = new Xlsx($spreadsheet);
-                $fileName = $this->fileName . '.xlsx';
+                $fileName .= '.xlsx';
                 $mimeType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
                 break;
             case 'xls':
                 $writer = new Xls($spreadsheet);
-                $fileName = $this->fileName . '.xls';
+                $fileName .= '.xls';
                 $mimeType = 'application/vnd.ms-excel';
                 break;
             case 'ods':
                 $writer = new Ods($spreadsheet);
-                $fileName = $this->fileName . '.ods';
+                $fileName .= '.ods';
                 $mimeType = 'application/vnd.oasis.opendocument.spreadsheet';
                 break;
             case 'htm':
                 $writer = new Html($spreadsheet);
-                $fileName = $this->fileName . '.htm';
+                $fileName .= '.htm';
                 $mimeType = 'text/html';
                 break;
             /*case 'pdf':
                 $writer = \PhpOffice\PhpSpreadsheet\Writer\Pdf\Mpdf($spreadsheet);
-                $fileName = $this->fileName . '.pdf';
+                $fileName .= '.pdf';
                 $mimeType = 'application/pdf';
                 break;*/
             default:
                 $writer = new Csv($spreadsheet);
                 $writer->setUseBOM(true); // writing UTF-8 CSV file
-                $fileName = $this->fileName . '.csv';
+                $fileName .= '.csv';
                 $mimeType = 'text/csv';
         }
 
