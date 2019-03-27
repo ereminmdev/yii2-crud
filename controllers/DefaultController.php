@@ -87,8 +87,8 @@ class DefaultController extends Controller
         $crud = $this->getCrud();
 
         $model = $crud->getModel('insert');
-        $model->loadDefaultValues();
         $model->load(Yii::$app->request->get());
+        $model->loadDefaultValues(true);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             $url = $this->getActionSuccessUrl('create', [
