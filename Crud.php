@@ -3,8 +3,8 @@
 namespace ereminmdev\yii2\crud;
 
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\base\Module;
-
 
 /**
  * Class Crud
@@ -17,9 +17,9 @@ class Crud extends Module
      */
     public $controllerNamespace = 'ereminmdev\yii2\crud\controllers';
 
-
     /**
      * @inheritdoc
+     * @throws InvalidConfigException
      */
     public function init()
     {

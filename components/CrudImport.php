@@ -2,12 +2,14 @@
 
 namespace ereminmdev\yii2\crud\components;
 
+use PhpOffice\PhpSpreadsheet\Exception as PhpSpreadsheetException;
 use PhpOffice\PhpSpreadsheet\Reader\Csv;
 use PhpOffice\PhpSpreadsheet\Reader\Ods;
 use PhpOffice\PhpSpreadsheet\Reader\Xls;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use Yii;
 use yii\base\BaseObject;
+use yii\db\ActiveRecord;
 use yii\db\Schema;
 use yii\helpers\ArrayHelper;
 
@@ -60,7 +62,7 @@ class CrudImport extends BaseObject
 
     /**
      * @return bool
-     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     * @throws PhpSpreadsheetException
      */
     public function import()
     {
@@ -104,10 +106,10 @@ class CrudImport extends BaseObject
 
             $this->prepareData($values);
 
-            /* @var $model \yii\db\ActiveRecord */
+            /* @var $model ActiveRecord */
             $model = new $this->modelClass;
             if ($id = ArrayHelper::getValue($values, 'id')) {
-                $model->id = $id;
+                $model->setAttribute('id', $id);
                 $model->setIsNewRecord(false);
             }
             $model->setAttributes($values);

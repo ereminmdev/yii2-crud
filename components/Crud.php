@@ -7,9 +7,11 @@ use ereminmdev\yii2\crud\grid\DropDownButtonColumn;
 use ereminmdev\yii2\crud\models\CrudExportForm;
 use ereminmdev\yii2\crud\models\CrudImportForm;
 use ereminmdev\yii2\tinymce\TinyMce;
+use PhpOffice\PhpSpreadsheet\Exception as PhpSpreadsheetException;
 use Yii;
 use yii\base\BaseObject;
 use yii\base\DynamicModel;
+use yii\base\InvalidConfigException;
 use yii\bootstrap\ButtonDropdown;
 use yii\bootstrap\Tabs;
 use yii\data\ActiveDataProvider;
@@ -21,6 +23,7 @@ use yii\helpers\Html;
 use yii\helpers\StringHelper;
 use yii\helpers\Url;
 use yii\web\NotFoundHttpException;
+use yii\web\RangeNotSatisfiableHttpException;
 use yii\web\UploadedFile;
 use yii\widgets\ActiveField;
 use yii\widgets\ActiveForm;
@@ -74,8 +77,8 @@ class Crud extends BaseObject
      * @param bool $pagination
      * @param bool $relations
      * @param bool $limitById
-     * @return array
-     * @throws \yii\base\InvalidConfigException
+     * @return ActiveRecord[]
+     * @throws InvalidConfigException
      */
     public function getModels($filterParams = true, $pagination = false, $relations = false, $limitById = true)
     {
@@ -85,7 +88,7 @@ class Crud extends BaseObject
     /**
      * @param bool $filterParams
      * @return null|ActiveRecord
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
     public function getFirstModel($filterParams = true)
     {
@@ -101,7 +104,7 @@ class Crud extends BaseObject
      * @param bool $relations
      * @param bool $limitById
      * @return ActiveDataProvider
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
     public function getDataProvider($filterParams = true, $pagination = false, $relations = false, $limitById = true)
     {
@@ -126,7 +129,7 @@ class Crud extends BaseObject
         }
 
         $configDataProvider = $this->getConfig('dataProvider');
-        if ($configDataProvider instanceof \Closure) {
+        if (is_callable($configDataProvider)) {
             call_user_func($configDataProvider, $dataProvider);
         }
 
@@ -224,7 +227,7 @@ class Crud extends BaseObject
 
     /**
      * @return mixed
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
     public function gridColumns()
     {
@@ -288,7 +291,7 @@ class Crud extends BaseObject
     /**
      * @param array $fields
      * @return mixed
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
     public function guessColumns($fields = null)
     {
@@ -307,7 +310,7 @@ class Crud extends BaseObject
         $columns = ArrayHelper::merge($columns, $append);
 
         foreach ($columns as $key => $field) {
-            if ($field instanceof \Closure) {
+            if (is_callable($field)) {
                 $columns[$key] = call_user_func($field);
                 continue;
             } elseif (!is_string($field)) {
@@ -315,7 +318,7 @@ class Crud extends BaseObject
             }
 
             if (isset($paramColumns[$field]) && ($paramColumns[$field] !== true)) {
-                if ($paramColumns[$field] instanceof \Closure) {
+                if (is_callable($paramColumns[$field])) {
                     $columns[$key] = call_user_func($paramColumns[$field]);
                 } elseif ($paramColumns[$field] === false) {
                     unset($columns[$key]);
@@ -567,7 +570,7 @@ class Crud extends BaseObject
      * @param string $content
      * @return string
      * @throws \Exception
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
     public function renderFormFields(ActiveForm $form, ActiveRecord $model, $content = '')
     {
@@ -632,7 +635,7 @@ class Crud extends BaseObject
     {
         $formField = '';
         if (isset($param) && ($param !== true)) {
-            if ($param instanceof \Closure) {
+            if (is_callable($param)) {
                 $formField = call_user_func($param, $form, $model);
             }
         } elseif ($schema) {
@@ -877,7 +880,7 @@ class Crud extends BaseObject
 
     /**
      * @return array
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
     public function columnsSchema()
     {
@@ -1055,9 +1058,9 @@ $(".js-checked-action").on("click", function () {
     /**
      * @param CrudExportForm $model
      * @return $this|mixed
-     * @throws \PhpOffice\PhpSpreadsheet\Exception
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\web\RangeNotSatisfiableHttpException
+     * @throws PhpSpreadsheetException
+     * @throws InvalidConfigException
+     * @throws RangeNotSatisfiableHttpException
      */
     public function export(CrudExportForm $model)
     {
@@ -1076,8 +1079,8 @@ $(".js-checked-action").on("click", function () {
      * @param CrudImportForm $model
      * @param UploadedFile $file
      * @return bool
-     * @throws \PhpOffice\PhpSpreadsheet\Exception
-     * @throws \yii\base\InvalidConfigException
+     * @throws PhpSpreadsheetException
+     * @throws InvalidConfigException
      */
     public function import(CrudImportForm $model, UploadedFile $file)
     {

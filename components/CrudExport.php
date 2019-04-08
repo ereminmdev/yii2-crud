@@ -2,6 +2,7 @@
 
 namespace ereminmdev\yii2\crud\components;
 
+use PhpOffice\PhpSpreadsheet\Exception as PhpSpreadsheetException;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Csv;
 use PhpOffice\PhpSpreadsheet\Writer\Html;
@@ -15,6 +16,7 @@ use yii\db\ActiveRecord;
 use yii\grid\DataColumn;
 use yii\grid\GridView;
 use yii\helpers\Inflector;
+use yii\web\RangeNotSatisfiableHttpException;
 
 /**
  * Class CrudExport
@@ -63,8 +65,8 @@ class CrudExport extends BaseObject
 
     /**
      * @return $this|mixed
-     * @throws \PhpOffice\PhpSpreadsheet\Exception
-     * @throws \yii\web\RangeNotSatisfiableHttpException
+     * @throws PhpSpreadsheetException
+     * @throws RangeNotSatisfiableHttpException
      */
     public function export()
     {

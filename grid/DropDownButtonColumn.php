@@ -55,6 +55,7 @@ class DropDownButtonColumn extends DataColumn
 
     /**
      * @inheritdoc
+     * @throws \Exception
      */
     protected function renderDataCellContent($model, $key, $index)
     {
