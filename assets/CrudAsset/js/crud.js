@@ -2,9 +2,9 @@
     'use strict';
 
     // views/_grid_toolbar
-    if ($(".cms-crud-index").length) {
+    if ($('.cms-crud-index').length) {
         // stop form submitting when only part of value is written
-        $(".cms-crud-grid tr.filters").find("input[type=date], input[type=time]").each(function () {
+        $('.cms-crud-grid tr.filters').find('input[type=date], input[type=time]').each(function () {
             $(this).on('change', function () {
                 return false;
             });
@@ -26,30 +26,34 @@
     }
 
     // views/_form
-    if ($(".cms-crud-form").length) {
-        let $crudForm = $("#crudFormData"),
-            oldCrudFormData = $crudForm.serialize();
+    if ($('.cms-crud-form').length) {
+        let $crudForm = $('#crudFormData'),
+            isDataChanged = false;
 
-        $crudForm.on("beforeSubmit", function () {
-            $(this).find(".form-buttons .btn").attr("disabled", "disabled");
-            oldCrudFormData = $crudForm.serialize()
+        $crudForm.on('change', function () {
+            isDataChanged = true;
         });
 
-        $(window).on("beforeunload", function (e) {
-            if (oldCrudFormData != $crudForm.serialize()) {
-                let message = "Изменения не сохранены. Вы можете потерять данные!";
+        $crudForm.on('beforeSubmit', function () {
+            $(this).find('.form-buttons .btn').attr('disabled', 'disabled');
+            isDataChanged = false;
+        });
+
+        $(window).on('beforeunload', function (e) {
+            if (isDataChanged) {
+                let message = 'Изменения не сохранены. Вы можете потерять данные!';
                 e.returnValue = message;
                 return message;
             }
         });
 
-        $(document).on("click", ".js-delete-file", function () {
+        $(document).on('click', '.js-delete-file', function () {
             let that = this,
                 message = $(this).data('message');
 
             if (window.confirm(message)) {
-                $.get($(this).attr("href"), function () {
-                    $(that).closest(".form-group").find(".help-block").remove();
+                $.get($(this).attr('href'), function () {
+                    $(that).closest('.form-group').find('.help-block').remove();
                 });
             }
 
@@ -58,16 +62,16 @@
     }
 
     // components/Crud:renderFormSetvals
-    if ($(".cms-crud-setvals").length) {
-        $(".js-toggle-block").on("change", function () {
-            let destination = $(this).data("destination");
+    if ($('.cms-crud-setvals').length) {
+        $('.js-toggle-block').on('change', function () {
+            let destination = $(this).data('destination');
 
-            if ($(this).prop("checked")) {
-                $("." + destination).show();
+            if ($(this).prop('checked')) {
+                $('.' + destination).show();
             } else {
-                $("." + destination).hide();
+                $('.' + destination).hide();
             }
-        }).trigger("change");
+        }).trigger('change');
     }
 
 }(jQuery));
