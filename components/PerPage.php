@@ -2,6 +2,7 @@
 
 namespace ereminmdev\yii2\crud\components;
 
+use Exception;
 use Yii;
 use yii\base\Component;
 use yii\bootstrap\ButtonDropdown;
@@ -75,7 +76,7 @@ class PerPage extends Component
     /**
      * @param array $options for bootstrap ButtonDropdown widget
      * @return string
-     * @throws \Exception
+     * @throws Exception
      */
     public function buttonDropdown($options = [])
     {

@@ -2,10 +2,13 @@
 
 namespace ereminmdev\yii2\crud\controllers;
 
+use Closure;
 use ereminmdev\yii2\crud\components\Crud;
 use ereminmdev\yii2\crud\models\CrudExportForm;
 use ereminmdev\yii2\crud\models\CrudImportForm;
+use Exception;
 use PhpOffice\PhpSpreadsheet\Exception as PhpSpreadsheetException;
+use Throwable;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
@@ -143,7 +146,7 @@ class DefaultController extends Controller
      * @return Response
      * @throws InvalidConfigException
      * @throws StaleObjectException
-     * @throws \Exception|\Throwable
+     * @throws Exception|Throwable
      */
     public function actionDelete($id)
     {
@@ -179,7 +182,7 @@ class DefaultController extends Controller
             }
 
             $beforeDuplicate = $this->getCrud()->getConfig('onBeforeDuplicate');
-            if (is_callable($beforeDuplicate)) {
+            if ($beforeDuplicate instanceof Closure) {
                 call_user_func($beforeDuplicate, $cloneModel);
             }
 
@@ -196,7 +199,7 @@ class DefaultController extends Controller
                 }
 
                 $afterDuplicate = $this->getCrud()->getConfig('onAfterDuplicate');
-                if (is_callable($afterDuplicate)) {
+                if ($afterDuplicate instanceof Closure) {
                     call_user_func($afterDuplicate, $cloneModel);
                 }
 
@@ -477,7 +480,7 @@ class DefaultController extends Controller
     public function getActionSuccessUrl($action, $params = [])
     {
         $url = $this->getCrud()->getConfig('actionSuccessUrl.' . $action, $this->getReturnUrl());
-        $url = is_callable($url) ? call_user_func_array($url, $params) : $url;
+        $url = $url instanceof Closure ? call_user_func_array($url, $params) : $url;
         return $url;
     }
 }

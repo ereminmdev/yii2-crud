@@ -2,6 +2,8 @@
 
 namespace ereminmdev\yii2\crud\grid;
 
+use Closure;
+use Exception;
 use yii\bootstrap\ButtonDropdown;
 use yii\grid\DataColumn;
 use yii\helpers\ArrayHelper;
@@ -55,7 +57,7 @@ class DropDownButtonColumn extends DataColumn
 
     /**
      * @inheritdoc
-     * @throws \Exception
+     * @throws Exception
      */
     protected function renderDataCellContent($model, $key, $index)
     {
@@ -80,6 +82,6 @@ class DropDownButtonColumn extends DataColumn
      */
     protected function getItems($model, $key, $index)
     {
-        return is_callable($this->items) ? call_user_func_array($this->items, [$model, $key, $index]) : $this->items;
+        return $this->items instanceof Closure ? call_user_func_array($this->items, [$model, $key, $index]) : $this->items;
     }
 }

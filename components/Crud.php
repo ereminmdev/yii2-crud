@@ -2,11 +2,13 @@
 
 namespace ereminmdev\yii2\crud\components;
 
+use Closure;
 use ereminmdev\yii2\crud\controllers\DefaultController;
 use ereminmdev\yii2\crud\grid\DropDownButtonColumn;
 use ereminmdev\yii2\crud\models\CrudExportForm;
 use ereminmdev\yii2\crud\models\CrudImportForm;
 use ereminmdev\yii2\tinymce\TinyMce;
+use Exception;
 use PhpOffice\PhpSpreadsheet\Exception as PhpSpreadsheetException;
 use Yii;
 use yii\base\BaseObject;
@@ -15,6 +17,7 @@ use yii\base\InvalidConfigException;
 use yii\bootstrap\ButtonDropdown;
 use yii\bootstrap\Tabs;
 use yii\data\ActiveDataProvider;
+use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\db\Schema;
 use yii\grid\CheckboxColumn;
@@ -124,12 +127,15 @@ class Crud extends BaseObject
             ],
         ]);
 
+        /** @var ActiveQuery $query */
+        $query = $dataProvider->query;
+
         if ($pagination !== true) {
             $dataProvider->setPagination($pagination);
         }
 
         $configDataProvider = $this->getConfig('dataProvider');
-        if (is_callable($configDataProvider)) {
+        if ($configDataProvider instanceof Closure) {
             call_user_func($configDataProvider, $dataProvider);
         }
 
@@ -140,7 +146,7 @@ class Crud extends BaseObject
             $filterId = Yii::$app->request->get('id', 'all');
             if ($filterId != 'all') {
                 $filterId = explode(',', $filterId);
-                $dataProvider->query->andWhere([$model->tableName() . '.[[id]]' => $filterId]);
+                $query->andWhere([$model->tableName() . '.[[id]]' => $filterId]);
             }
         }
 
@@ -158,27 +164,27 @@ class Crud extends BaseObject
                         case Schema::TYPE_DATETIME:
                         case 'array':
                         case 'url':
-                            $dataProvider->query->andFilterWhere([$attribute => $value]);
+                        $query->andFilterWhere([$attribute => $value]);
                             break;
                         case 'relation':
                             if (isset($columnsSchema[$attribute]['relatedAttribute'])) {
-                                $dataProvider->query->andFilterWhere([$columnsSchema[$attribute]['relatedAttribute'] => $value]);
-                                $dataProvider->query->joinWith($columnsSchema[$attribute]['relation']);
+                                $query->andFilterWhere([$columnsSchema[$attribute]['relatedAttribute'] => $value]);
+                                $query->joinWith($columnsSchema[$attribute]['relation']);
                                 break;
                             } else {
-                                $dataProvider->query->andFilterWhere([$attribute => $value]);
+                                $query->andFilterWhere([$attribute => $value]);
                                 break;
                             }
                         case 'list':
                             if (!empty($value)) {
-                                $dataProvider->query->andWhere('FIND_IN_SET(:value,[[' . $attribute . ']])', [':value' => $value]);
+                                $query->andWhere('FIND_IN_SET(:value,[[' . $attribute . ']])', [':value' => $value]);
                             }
                             break;
                         default:
-                            $dataProvider->query->andFilterWhere(['like', $attribute, $value]);
+                            $query->andFilterWhere(['like', $attribute, $value]);
                     }
                 } else {
-                    $dataProvider->query->andFilterWhere([$attribute => $value]);
+                    $query->andFilterWhere([$attribute => $value]);
                 }
             }
         }
@@ -191,28 +197,28 @@ class Crud extends BaseObject
 
                     if ($schema['rtype'] == 'hasOne') {
                         if (in_array($schema['titleField'], $model->attributes())) {
-                            $dataProvider->query->with([
-                                $relation => function ($query) use ($schema, $relation) {
+                            $query->with([
+                                $relation => function (ActiveQuery $query) use ($schema, $relation) {
                                     $query->select(['id', $schema['titleField']]);
                                 },
                             ]);
                         } else {
-                            $dataProvider->query->with($relation);
+                            $query->with($relation);
                         }
                     } elseif ($schema['rtype'] == 'hasMany') {
                         if (ArrayHelper::getValue($schema, 'queryWith', true)) {
-                            $dataProvider->query->with([
-                                $relation => function ($query) use ($schema, $relation, $model) {
+                            $query->with([
+                                $relation => function (ActiveQuery $query) use ($schema, $relation, $model) {
                                     $linkAttribute = array_keys($model->{'get' . $relation}()->link)[0];
                                     $query->select($linkAttribute);
                                 },
                             ]);
                         }
                     } elseif ($schema['rtype'] == 'manyMany') {
-                        $dataProvider->query->with($relation);
+                        $query->with($relation);
                         // select only `id` for count()
-                        /*$dataProvider->query->with([
-                            $relation => function ($query) use ($schema, $relation, $model) {
+                        /*$query->with([
+                            $relation => function (ActiveQuery $query) use ($schema, $relation, $model) {
                                 $linkAttribute = array_keys($model->{'get' . $relation}()->link)[0];
                                 $query->select($linkAttribute);
                             },
@@ -266,7 +272,7 @@ class Crud extends BaseObject
 
                 $customActions = $this->getConfig('gridActions', []);
                 foreach ($customActions as $key => $customAction) {
-                    $actions[$key] = is_callable($customAction) ? call_user_func_array($customAction, [$model, $key, $this]) : $customAction;
+                    $actions[$key] = $customAction instanceof Closure ? call_user_func_array($customAction, [$model, $key, $this]) : $customAction;
                 }
 
                 $items = explode("\n", $template);
@@ -310,7 +316,7 @@ class Crud extends BaseObject
         $columns = ArrayHelper::merge($columns, $append);
 
         foreach ($columns as $key => $field) {
-            if (is_callable($field)) {
+            if ($field instanceof Closure) {
                 $columns[$key] = call_user_func($field);
                 continue;
             } elseif (!is_string($field)) {
@@ -318,7 +324,7 @@ class Crud extends BaseObject
             }
 
             if (isset($paramColumns[$field]) && ($paramColumns[$field] !== true)) {
-                if (is_callable($paramColumns[$field])) {
+                if ($paramColumns[$field] instanceof Closure) {
                     $columns[$key] = call_user_func($paramColumns[$field]);
                 } elseif ($paramColumns[$field] === false) {
                     unset($columns[$key]);
@@ -435,7 +441,7 @@ class Crud extends BaseObject
                         unset($columns[$key]);
                         break;
                     case 'array':
-                        $itemList = is_callable($schema['itemList']) ? call_user_func($schema['itemList']) : $schema['itemList'];
+                        $itemList = $schema['itemList'] instanceof Closure ? call_user_func($schema['itemList']) : $schema['itemList'];
 
                         if (ArrayHelper::getValue($schema, 'gridDropButton', false)) {
                             $dropList = ArrayHelper::getValue($schema, 'gridDropButtonList', $itemList);
@@ -521,7 +527,7 @@ class Crud extends BaseObject
                             ];
                         } elseif ($schema['rtype'] == 'manyMany') {
                             if (isset($schema['relatedAttribute']) && isset($schema['itemList'])) {
-                                $itemList = is_callable($schema['itemList']) ? call_user_func($schema['itemList']) : $schema['itemList'];
+                                $itemList = $schema['itemList'] instanceof Closure ? call_user_func($schema['itemList']) : $schema['itemList'];
                                 $columns[$key] = [
                                     'filter' => $itemList,
                                     'attribute' => $field,
@@ -569,7 +575,7 @@ class Crud extends BaseObject
      * @param ActiveRecord $model
      * @param string $content
      * @return string
-     * @throws \Exception
+     * @throws Exception
      * @throws InvalidConfigException
      */
     public function renderFormFields(ActiveForm $form, ActiveRecord $model, $content = '')
@@ -635,7 +641,7 @@ class Crud extends BaseObject
     {
         $formField = '';
         if (isset($param) && ($param !== true)) {
-            if (is_callable($param)) {
+            if ($param instanceof Closure) {
                 $formField = call_user_func($param, $form, $model);
             }
         } elseif ($schema) {
@@ -716,7 +722,7 @@ class Crud extends BaseObject
                     }
                     break;
                 case 'array':
-                    $itemList = is_callable($schema['itemList']) ? call_user_func($schema['itemList']) : $schema['itemList'];
+                    $itemList = $schema['itemList'] instanceof Closure ? call_user_func($schema['itemList']) : $schema['itemList'];
                     $formField = $form->field($model, $field)->dropDownList($itemList);
                     break;
                 case 'list':
@@ -969,7 +975,7 @@ class Crud extends BaseObject
 
         $customActions = $this->getConfig('gridCheckedActions', []);
         foreach ($customActions as $key => $customAction) {
-            $actions[$key] = is_callable($customAction) ? call_user_func_array($customAction, [$this]) : $customAction;
+            $actions[$key] = $customAction instanceof Closure ? call_user_func_array($customAction, [$this]) : $customAction;
         }
 
         $items = explode("\n", $template);
@@ -985,7 +991,7 @@ class Crud extends BaseObject
     /**
      * @param string $gridId
      * @return string
-     * @throws \Exception
+     * @throws Exception
      */
     public function renderCheckedActions($gridId)
     {
@@ -1118,7 +1124,7 @@ $(".js-checked-action").on("click", function () {
             ->orderBy(['crud_title_field' => SORT_ASC])
             ->indexBy($index);
 
-        if (is_callable($queryFunc)) {
+        if ($queryFunc instanceof Closure) {
             call_user_func($queryFunc, $query);
         }
 

@@ -1,14 +1,17 @@
 <?php
 
+use ereminmdev\yii2\crud\components\Crud;
 use ereminmdev\yii2\crud\components\PerPage;
+use ereminmdev\yii2\crud\controllers\DefaultController;
 use yii\bootstrap\ButtonDropdown;
+use yii\grid\GridView;
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
-/* @var $gridViewWidget \yii\grid\GridView */
-/* @var $crud \ereminmdev\yii2\crud\components\Crud */
+/* @var $gridViewWidget GridView */
+/* @var $crud Crud */
 
-/** @var \ereminmdev\yii2\crud\controllers\DefaultController $controller */
+/** @var DefaultController $controller */
 $controller = $this->context;
 
 ?>
@@ -74,7 +77,7 @@ $controller = $this->context;
 
     $customActions = $crud->getConfig('gridToolbarActions', []);
     foreach ($customActions as $key => $customAction) {
-        $actions[$key] = is_callable($customAction) ? call_user_func_array($customAction, [$gridViewWidget, $crud, $this]) : $customAction;
+        $actions[$key] = $customAction instanceof Closure ? call_user_func_array($customAction, [$gridViewWidget, $crud, $this]) : $customAction;
     }
 
     echo strtr($template, $actions);
