@@ -1,12 +1,15 @@
 <?php
 
+use ereminmdev\yii2\crud\components\Crud;
+use ereminmdev\yii2\crud\controllers\DefaultController;
+use yii\db\ActiveRecord;
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
-/* @var $crud \ereminmdev\yii2\crud\components\Crud */
-/* @var $model \yii\db\ActiveRecord */
+/* @var $crud Crud */
+/* @var $model ActiveRecord */
 
-/** @var \ereminmdev\yii2\crud\controllers\DefaultController $controller */
+/** @var DefaultController $controller */
 $controller = $this->context;
 
 $this->title = Yii::t('crud', 'Create');

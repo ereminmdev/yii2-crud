@@ -1,5 +1,6 @@
 <?php
 
+use ereminmdev\yii2\crud\controllers\DefaultController;
 use ereminmdev\yii2\crud\models\CrudExportForm;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
@@ -7,7 +8,7 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model CrudExportForm */
 
-/** @var \ereminmdev\yii2\crud\controllers\DefaultController $controller */
+/** @var DefaultController $controller */
 $controller = $this->context;
 
 $this->title = Yii::t('crud', 'Export');

@@ -1,14 +1,17 @@
 <?php
 
+use ereminmdev\yii2\crud\controllers\DefaultController;
+use yii\base\DynamicModel;
 use yii\bootstrap\ActiveForm;
+use yii\db\ActiveRecord;
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
-/* @var $model \yii\db\ActiveRecord */
-/* @var $setModel \yii\base\DynamicModel */
+/* @var $model ActiveRecord */
+/* @var $setModel DynamicModel */
 /* @var $form ActiveForm */
 
-/** @var \ereminmdev\yii2\crud\controllers\DefaultController $controller */
+/** @var DefaultController $controller */
 $controller = $this->context;
 
 $this->title = Yii::t('crud', 'Set values');
