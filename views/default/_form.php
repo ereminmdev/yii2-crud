@@ -33,7 +33,7 @@ $controller = $this->context;
         <?= Html::submitButton($model->isNewRecord ? Yii::t('crud', 'Create') : Yii::t('crud', 'Update'),
             ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
         &nbsp;
-        <?= Html::a(Yii::t('crud', 'Cancel'), $controller->getReturnUrl(), ['class' => 'btn btn-link']) ?>
+        <?= Html::a(Yii::t('crud', 'Cancel'), $controller->getReturnUrl(), ['class' => 'btn btn-link', 'onclick' => 'window.history.back(); return false']) ?>
 
         <?php if (!$model->isNewRecord && $crud->getConfig('access.delete', true)): ?>
             <div class="pull-right">

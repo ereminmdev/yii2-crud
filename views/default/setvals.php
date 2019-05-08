@@ -44,8 +44,8 @@ $this->params['breadcrumbs'][] = Yii::t('crud', 'Set values');
         <div class="form-group">
             <?= Html::submitButton(Yii::t('crud', 'Set values'),
                 ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
-            &nbsp; &nbsp;
-            <?= Html::a(Yii::t('crud', 'Cancel'), $controller->urlCreate(['index'])) ?>
+            &nbsp;
+            <?= Html::a(Yii::t('crud', 'Cancel'), $controller->urlCreate(['index']), ['class' => 'btn btn-link', 'onclick' => 'window.history.back(); return false']) ?>
         </div>
 
         <?php ActiveForm::end(); ?>
