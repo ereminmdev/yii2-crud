@@ -12,7 +12,7 @@
 
 .crud-grid__sort-handle {
     text-align: center;
-    cursor: move;
+    cursor: n-resize;
 }
 
 .cms-crud-grid .col-width-sm {
