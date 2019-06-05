@@ -164,7 +164,7 @@ class Crud extends BaseObject
                         case Schema::TYPE_DATETIME:
                         case 'array':
                         case 'url':
-                        $query->andFilterWhere([$attribute => $value]);
+                            $query->andFilterWhere([$attribute => $value]);
                             break;
                         case 'relation':
                             if (isset($columnsSchema[$attribute]['relatedAttribute'])) {
@@ -685,12 +685,11 @@ class Crud extends BaseObject
                 case 'file':
                     $value = $model->$field;
                     $behavior = $model->getBehavior($field) ?? $model;
-                    $formField = $form->field($model, $field, ['template' => "{label}\n{hint}\n{input}\n{error}"])->fileInput();
+                    $formField = $form->field($model, $field, ['template' => "{label}\n{hint}\n{input}\n{error}\n{file}"])->fileInput();
                     if ($value) {
-                        $formField->hint(Html::a('<i class="fa fa-file"></i> ' . $value, $behavior->getUploadUrl($field), ['class' => 'btn btn-link', 'target' => '_blank']) .
+                        $formField->parts['{file}'] = Html::tag('p', Html::a('<i class="fa fa-file"></i> ' . $value, $behavior->getUploadUrl($field), ['class' => 'btn btn-link', 'target' => '_blank']) .
                             ' &nbsp; ' . Html::a('<i class="fa fa-remove"></i> ' . Yii::t('crud', 'Delete file'), $this->columnUrlCreator('delete-upload-file', $model, $model->id, ['field' => $field, 'returnUrl' => Url::current()]),
-                                ['class' => 'btn js-delete-file', 'data-message' => Yii::t('crud', 'Are you sure you want to delete this file?')])
-                        );
+                                ['class' => 'btn js-delete-file', 'data-message' => Yii::t('crud', 'Are you sure you want to delete this file?')]), ['class' => 'help-block']);
                     }
                     break;
                 case 'image':
@@ -708,11 +707,11 @@ class Crud extends BaseObject
                 case 'cropper-image-upload':
                     $thumb = isset($schema['thumb']) ? $schema['thumb'] : 'thumb';
                     $url = $model->getImageUrl($field, $thumb);
-                    $hint = Html::img($url, ['class' => 'img-responsive crud-field-img img-result', 'data-src' => $model->getUploadUrl($field)]);
-                    $hint .= $model->$field ? '<p class="help-block">' .
-                        Html::a('<i class="fa fa-remove"></i> ' . Yii::t('crud', 'Delete image'), $this->columnUrlCreator('delete-upload-image', $model, $model->id, ['field' => $field, 'returnUrl' => Url::current()]),
-                            ['class' => 'btn btn-default btn-xs js-delete-file', 'data-message' => Yii::t('crud', 'Are you sure you want to delete this image?')]) . '</p>' : '';
-                    $formField = $form->field($model, $field)->fileInput(['accept' => 'image/*'])->hint($hint);
+                    $file = Html::tag('p', Html::img($url, ['class' => 'img-responsive crud-field-img img-result', 'data-src' => $model->getUploadUrl($field)]), ['class' => 'help-block']);
+                    $file .= $model->$field ? Html::tag('p', Html::a('<i class="fa fa-remove"></i> ' . Yii::t('crud', 'Delete image'), $this->columnUrlCreator('delete-upload-image', $model, $model->id, ['field' => $field, 'returnUrl' => Url::current()]),
+                        ['class' => 'btn btn-default btn-xs js-delete-file', 'data-message' => Yii::t('crud', 'Are you sure you want to delete this image?')]), ['class' => 'help-block']) : '';
+                    $formField = $form->field($model, $field, ['template' => "{label}\n{input}\n{hint}\n{error}\n{file}"])->fileInput(['accept' => 'image/*']);
+                    $formField->parts['{file}'] = $file;
                     if ($schema['type'] == 'crop-image-upload') {
                         $formField->widget(\ereminmdev\yii2\cropimageupload\CropImageUploadWidget::class);
                     } elseif ($schema['type'] == 'croppie-image-upload') {
