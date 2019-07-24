@@ -9,7 +9,6 @@ use ereminmdev\yii2\crud\models\CrudExportForm;
 use ereminmdev\yii2\crud\models\CrudImportForm;
 use ereminmdev\yii2\tinymce\TinyMce;
 use Exception;
-use PhpOffice\PhpSpreadsheet\Exception as PhpSpreadsheetException;
 use Yii;
 use yii\base\BaseObject;
 use yii\base\DynamicModel;
@@ -636,6 +635,7 @@ class Crud extends BaseObject
      * @param array $schema
      * @param string $content
      * @return string
+     * @throws Exception
      */
     public function renderFormField(ActiveForm $form, ActiveRecord $model, $field, $param, $schema, $content = '')
     {
@@ -1063,7 +1063,7 @@ $(".js-checked-action").on("click", function () {
     /**
      * @param CrudExportForm $model
      * @return $this|mixed
-     * @throws PhpSpreadsheetException
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
      * @throws InvalidConfigException
      * @throws RangeNotSatisfiableHttpException
      */
@@ -1084,7 +1084,7 @@ $(".js-checked-action").on("click", function () {
      * @param CrudImportForm $model
      * @param UploadedFile $file
      * @return bool
-     * @throws PhpSpreadsheetException
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
      * @throws InvalidConfigException
      */
     public function import(CrudImportForm $model, UploadedFile $file)
@@ -1120,8 +1120,11 @@ $(".js-checked-action").on("click", function () {
     {
         $query = $class::find()
             ->select(['crud_title_field' => $title, $index])
-            ->orderBy(['crud_title_field' => SORT_ASC])
             ->indexBy($index);
+
+        if ($query->orderBy === null) {
+            $query->orderBy(['crud_title_field' => SORT_ASC]);
+        }
 
         if ($queryFunc instanceof Closure) {
             call_user_func($queryFunc, $query);
