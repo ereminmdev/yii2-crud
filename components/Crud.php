@@ -195,7 +195,9 @@ class Crud extends BaseObject
                     $relation = $schema['relation'];
 
                     if ($schema['rtype'] == 'hasOne') {
-                        if (in_array($schema['titleField'], $model->attributes())) {
+                        if (ArrayHelper::getValue($schema, 'queryWith')) {
+                            $query->with($relation);
+                        } elseif (in_array($schema['titleField'], $model->attributes())) {
                             $query->with([
                                 $relation => function (ActiveQuery $query) use ($schema, $relation) {
                                     $query->select(['id', $schema['titleField']]);
