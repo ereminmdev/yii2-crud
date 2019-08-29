@@ -10,6 +10,7 @@ use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use Yii;
 use yii\base\BaseObject;
 use yii\db\ActiveRecord;
+use yii\db\IntegrityException;
 use yii\db\Schema;
 use yii\helpers\ArrayHelper;
 
@@ -114,11 +115,15 @@ class CrudImport extends BaseObject
             }
             $model->setAttributes($values);
 
-            if ($model->save()) {
-                $this->insertCount++;
-            } else {
-                $errors = array_values($model->getFirstErrors());
-                $this->_errors[] = Yii::t('crud', 'String') . ' ' . ($idx + 3) . ': ' . $errors[0];
+            try {
+                if ($model->save()) {
+                    $this->insertCount++;
+                } else {
+                    $errors = array_values($model->getFirstErrors());
+                    $this->_errors[] = Yii::t('crud', 'String') . ' ' . ($idx + 3) . ': ' . $errors[0];
+                }
+            } catch (IntegrityException $e) {
+                $this->_errors[] = Yii::t('crud', 'String') . ' ' . ($idx + 3) . ': ' . $e->getMessage();
             }
         }
 
