@@ -1,7 +1,6 @@
 <?php
 
 use ereminmdev\yii2\crud\components\Crud;
-use ereminmdev\yii2\crud\components\PerPage;
 use ereminmdev\yii2\crud\controllers\DefaultController;
 use yii\bootstrap\ButtonDropdown;
 use yii\grid\GridView;
@@ -27,6 +26,7 @@ $controller = $this->context;
     $actions['{create}'] = Html::a(Yii::t('crud', 'Create'), $controller->urlCreate(['create']), ['class' => 'btn btn-success']);
 
     $actions['{custom}'] = '';
+    $actions['{filter}'] = '';
 
     $actions['{full}'] = ButtonDropdown::widget([
         'label' => '<span class="glyphicon glyphicon-asterisk"></span>',
@@ -35,6 +35,8 @@ $controller = $this->context;
             'items' => [
                 ['label' => Yii::t('crud', 'Export'), 'url' => $controller->urlCreate(['export'])],
                 ['label' => Yii::t('crud', 'Import'), 'url' => $controller->urlCreate(['import'])],
+                '<li role="presentation" class="divider"></li>',
+                ['label' => Yii::t('crud', 'Reset filter'), 'url' => $controller->urlCreate([], false, false)],
                 '<li role="presentation" class="divider"></li>',
                 [
                     'label' => Yii::t('crud', 'Delete all'),
@@ -50,25 +52,6 @@ $controller = $this->context;
             'class' => 'btn btn-default',
         ],
         'containerOptions' => ['class' => 'pull-right'],
-    ]);
-
-    $items = (new PerPage())->getMenuItems();
-    $items[] = '<li role="presentation" class="divider"></li>';
-    $items[] = [
-        'label' => Yii::t('crud', 'Reset filter'),
-        'url' => $controller->urlCreate([], false, false),
-    ];
-    $actions['{filter}'] = ButtonDropdown::widget([
-        'label' => '<span class="glyphicon glyphicon-filter"></span>',
-        'encodeLabel' => false,
-        'dropdown' => ['items' => $items],
-        'options' => [
-            'title' => Yii::t('crud', 'Items per page'),
-            'class' => 'btn btn-default',
-        ],
-        'containerOptions' => [
-            'class' => 'pull-right',
-        ],
     ]);
 
     if (!$crud->getConfig('access.delete', true)) {

@@ -39,6 +39,7 @@ $gridViewWidget = new GridView(ArrayHelper::merge([
     'filterModel' => $searchModel,
     'filterPosition' => GridView::FILTER_POS_BODY,
     'tableOptions' => ['class' => 'table table-hover'],
+    'pager' => ['class' => 'ereminmdev\yii2\crud\components\Pager'],
 ], $crud->getConfig('gridViewOptions', [])));
 
 ?>

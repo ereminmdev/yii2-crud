@@ -116,8 +116,8 @@ class Crud extends BaseObject
         $dataProvider = new ActiveDataProvider([
             'query' => $modelClass::find(),
             'pagination' => [
-                'pageSizeLimit' => [0, 50],
-                'defaultPageSize' => 30,
+                'class' => 'ereminmdev\yii2\crud\components\Pagination',
+                'cookieName' => basename($modelClass) . '-per-page',
             ],
             'sort' => [
                 'defaultOrder' => [

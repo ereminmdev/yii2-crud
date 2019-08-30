@@ -44,10 +44,8 @@ return [
     'Are you sure you want to delete all items?' => 'Вы действительно уверены, что хотите удалить все элементы?',
     'Please select a one entry at least.' => 'Выберите хотя бы одну запись.',
 
-    'Items per page' => 'Записей на странице',
-    '{variant, number} {variant, plural, one{item} other{items}}' =>
-        '{variant, number} {variant, plural, =1{запись} few{записи} many{записей} other{запись}}',
-    'Show all' => 'Показать все',
+    '{variant, number} {variant, plural, one{item} other{items}} per page' => '{variant, number} {variant, plural, =1{запись} few{записи} many{записей} other{запись}} на страницу',
+    'All items' => 'Все записи',
 
     'Delete file' => 'Удалить файл',
     'Are you sure you want to delete this file?' => 'Вы уверены, что хотите удалить файл?',
