@@ -68,17 +68,18 @@ class Pager extends LinkPager
             ],
         ]);
 
-        echo ButtonDropdown::widget([
-            'label' => $this->pageSize != 0 ? Yii::t('crud', '{variant, number} {variant, plural, one{item} other{items}} per page', ['variant' => $this->pageSize]) : Yii::t('crud', 'All items'),
-            'dropdown' => [
-                'items' => $items,
-            ],
-            'containerOptions' => [
-                'class' => 'pagination pull-right',
-            ],
-            'options' => [
-                'class' => 'btn-default',
-            ],
-        ]);
+        echo '<ul class="pagination pull-right">' .
+            ButtonDropdown::widget([
+                'label' => $this->pageSize != 0 ? Yii::t('crud', '{variant, number} {variant, plural, one{item} other{items}} per page', ['variant' => $this->pageSize]) : Yii::t('crud', 'All items'),
+                'tagName' => 'a',
+                'dropdown' => [
+                    'items' => $items,
+                ],
+                'containerOptions' => [
+                    'tag' => 'li',
+                    'style' => ['display' => 'inline-block'],
+                ],
+            ]) .
+            '</ul>';
     }
 }
