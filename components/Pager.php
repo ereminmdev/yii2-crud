@@ -24,7 +24,7 @@ class Pager extends LinkPager
     /**
      * @var array[int] page sizes to show
      */
-    public $pageSizes = [1, 5, 10, 20, 30, 50];
+    public $pageSizes = [1, 5, 10, 20, 30, 50, 100];
 
     /**
      * @inheritDoc
@@ -57,14 +57,15 @@ class Pager extends LinkPager
             $items[] = [
                 'label' => Yii::t('crud', '{variant, number} {variant, plural, one{item} other{items}} per page', ['variant' => $value]),
                 'url' => Url::current([$requestParam => $value, $pageParam => null]),
-                'active' => $this->pageSize == $value,
+                'options' => ['class' => $this->pageSize == $value ? 'active' : null],
             ];
         }
         $items = array_merge($items, [
+            '<li role="separator" class="divider"></li>',
             [
                 'label' => Yii::t('crud', 'All items'),
                 'url' => Url::current([$requestParam => 0, $pageParam => null]),
-                'active' => !$this->pageSize,
+                'options' => ['class' => !$this->pageSize ? 'active' : null],
             ],
         ]);
 
