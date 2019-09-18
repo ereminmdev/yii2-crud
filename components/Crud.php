@@ -357,11 +357,39 @@ class Crud extends BaseObject
                         ];
                         break;
                     case Schema::TYPE_BOOLEAN:
-                        $columns[$key] = [
-                            'attribute' => $field,
-                            'format' => 'boolean',
-                            'filter' => Yii::$app->formatter->booleanFormat,
-                        ];
+                        if (ArrayHelper::getValue($schema, 'gridDropButton', true)) {
+                            $columns[$key] = [
+                                'class' => DropDownButtonColumn::class,
+                                'attribute' => $field,
+                                'filter' => $itemList,
+                                'items' => function ($model, $key, $index) use ($field) {
+                                    $items = [];
+                                    $dropList = [
+                                        1 => Yii::$app->formatter->booleanFormat[1],
+                                        0 => Yii::$app->formatter->booleanFormat[0],
+                                    ];
+                                    foreach ($dropList as $itemKey => $itemValue) {
+                                        $items[$itemKey] = [
+                                            'label' => $itemValue,
+                                            'url' => $this->columnUrlCreator('update', $model, $model->id, ['useReturnUrl' => 0]),
+                                            'linkOptions' => [
+                                                'class' => 'js-crud-post-refresh',
+                                                'data-params' => [
+                                                    Html::getInputName($model, $field) => $itemKey,
+                                                ],
+                                            ],
+                                        ];
+                                    }
+                                    return $items;
+                                },
+                            ];
+                        } else {
+                            $columns[$key] = [
+                                'attribute' => $field,
+                                'format' => 'boolean',
+                                'filter' => Yii::$app->formatter->booleanFormat,
+                            ];
+                        }
                         break;
                     case Schema::TYPE_DATE:
                         $columns[$key] = [
