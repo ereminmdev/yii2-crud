@@ -358,17 +358,14 @@ class Crud extends BaseObject
                         break;
                     case Schema::TYPE_BOOLEAN:
                         if (ArrayHelper::getValue($schema, 'gridDropButton', true)) {
+                            $itemList = array_reverse(Yii::$app->formatter->booleanFormat, true);
                             $columns[$key] = [
                                 'class' => DropDownButtonColumn::class,
                                 'attribute' => $field,
                                 'filter' => $itemList,
-                                'items' => function ($model, $key, $index) use ($field) {
+                                'items' => function ($model, $key, $index) use ($field, $itemList) {
                                     $items = [];
-                                    $dropList = [
-                                        1 => Yii::$app->formatter->booleanFormat[1],
-                                        0 => Yii::$app->formatter->booleanFormat[0],
-                                    ];
-                                    foreach ($dropList as $itemKey => $itemValue) {
+                                    foreach ($itemList as $itemKey => $itemValue) {
                                         $items[$itemKey] = [
                                             'label' => $itemValue,
                                             'url' => $this->columnUrlCreator('update', $model, $model->id, ['useReturnUrl' => 0]),
