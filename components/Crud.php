@@ -357,13 +357,16 @@ class Crud extends BaseObject
                         ];
                         break;
                     case Schema::TYPE_BOOLEAN:
+                        $itemList = array_reverse(Yii::$app->formatter->booleanFormat, true);
+                        $columns[$key] = [
+                            'attribute' => $field,
+                            'format' => 'boolean',
+                            'filter' => $itemList,
+                        ];
                         if (ArrayHelper::getValue($schema, 'gridDropButton', true)) {
-                            $itemList = array_reverse(Yii::$app->formatter->booleanFormat, true);
-                            $columns[$key] = [
+                            $columns[$key] = ArrayHelper::merge($columns[$key], [
                                 'class' => DropDownButtonColumn::class,
-                                'attribute' => $field,
-                                'filter' => $itemList,
-                                'items' => function ($model, $key, $index) use ($field, $itemList) {
+                                'items' => function ($model) use ($field, $itemList) {
                                     $items = [];
                                     foreach ($itemList as $itemKey => $itemValue) {
                                         $items[$itemKey] = [
@@ -379,13 +382,7 @@ class Crud extends BaseObject
                                     }
                                     return $items;
                                 },
-                            ];
-                        } else {
-                            $columns[$key] = [
-                                'attribute' => $field,
-                                'format' => 'boolean',
-                                'filter' => Yii::$app->formatter->booleanFormat,
-                            ];
+                            ]);
                         }
                         break;
                     case Schema::TYPE_DATE:
@@ -425,6 +422,7 @@ class Crud extends BaseObject
                         ];
                         break;
                     case 'url':
+                    case 'file':
                         $columns[$key] = $field . ':url';
                         break;
                     case 'email':
@@ -438,9 +436,6 @@ class Crud extends BaseObject
                                 return Html::a($model->$field, 'tel:' . preg_replace('/[^\+\d]/', '', $model->$field));
                             },
                         ];
-                        break;
-                    case 'file':
-                        $columns[$key] = $field . ':url';
                         break;
                     case 'image':
                         $columns[$key] = $field . ':image';
@@ -468,7 +463,6 @@ class Crud extends BaseObject
                         break;
                     case 'array':
                         $itemList = $schema['itemList'] instanceof Closure ? call_user_func($schema['itemList']) : $schema['itemList'];
-
                         if (ArrayHelper::getValue($schema, 'gridDropButton', false)) {
                             $dropList = ArrayHelper::getValue($schema, 'gridDropButtonList', $itemList);
                             $dropOptions = ArrayHelper::getValue($schema, 'gridDropButtonOptions', []);
@@ -476,7 +470,7 @@ class Crud extends BaseObject
                                 'class' => DropDownButtonColumn::class,
                                 'attribute' => $field,
                                 'filter' => $itemList,
-                                'items' => function ($model, $key, $index) use ($field, $dropList) {
+                                'items' => function ($model) use ($field, $dropList) {
                                     $items = [];
                                     foreach ($dropList as $itemKey => $itemValue) {
                                         $items[$itemKey] = [
