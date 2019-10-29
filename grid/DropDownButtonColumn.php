@@ -30,7 +30,7 @@ class DropDownButtonColumn extends DataColumn
     /**
      * @var boolean set true to hide dropdown caret icon
      */
-    public $showCaret = false;
+    public $showCaret = true;
     /**
      * @var boolean encode button and dropdown labels
      */

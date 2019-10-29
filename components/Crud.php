@@ -250,6 +250,7 @@ class Crud extends BaseObject
                     'class' => $this->isSortableJs() ? ['crud-grid__sort-handle'] : [],
                 ],
             ],
+            'showCaret' => false,
             'options' => ['class' => 'col-width-sm'],
             'items' => function ($model, $key) {
                 $template = $this->getConfig('gridActionsTemplate', "{custom}\n{update}\n{--}\n{delete}");
@@ -433,7 +434,7 @@ class Crud extends BaseObject
                             'attribute' => $field,
                             'format' => 'html',
                             'value' => function (ActiveRecord $model) use ($field) {
-                                return Html::a($model->$field, 'tel:' . preg_replace('/[^\+\d]/', '', $model->$field));
+                                return Html::a($model->$field, 'tel:' . preg_replace('/[^+0-9]/', '', $model->$field));
                             },
                         ];
                         break;
