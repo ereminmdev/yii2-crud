@@ -191,7 +191,7 @@ class Crud extends BaseObject
         if ($relations) {
             $columnsSchema = $this->columnsSchema();
             foreach ($columnsSchema as $column => $schema) {
-                if ($schema['type'] == 'relation') {
+                if (isset($schema['type']) && ($schema['type'] == 'relation')) {
                     $relation = $schema['relation'];
 
                     if ($schema['rtype'] == 'hasOne') {
