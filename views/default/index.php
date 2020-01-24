@@ -63,7 +63,7 @@ $gridViewWidget = new GridView(ArrayHelper::merge([
 
     <br>
 
-    <div class="cms-crud-grid table-responsive">
+    <div class="cms-crud-grid">
         <?php $gridViewWidget->run() ?>
     </div>
 
