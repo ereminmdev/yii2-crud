@@ -67,4 +67,6 @@ $gridViewWidget = new GridView(ArrayHelper::merge([
         <?php $gridViewWidget->run() ?>
     </div>
 
+    <?= ($view = $crud->getConfig('views.index.footer')) !== null ? $this->render($view, ['crud' => $crud]) : '' ?>
+
 </div>
