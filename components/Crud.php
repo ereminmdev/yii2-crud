@@ -336,7 +336,7 @@ class Crud extends BaseObject
                 continue;
             }
 
-            if (isset($columnsSchema[$field])) {
+            if (isset($columnsSchema[$field]) && ($columnsSchema[$field] !== false)) {
                 $schema = $columnsSchema[$field];
 
                 switch ($schema['type']) {
