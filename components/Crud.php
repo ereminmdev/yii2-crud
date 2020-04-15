@@ -317,6 +317,8 @@ class Crud extends BaseObject
         $append = $this->getConfig('gridColumnsAppend', []);
         $columns = ArrayHelper::merge($columns, $append);
 
+        $columns = array_diff($columns, $this->getConfig('excludeColumns', []));
+
         foreach ($columns as $key => $field) {
             if ($field instanceof Closure) {
                 $columns[$key] = call_user_func($field);
@@ -336,7 +338,7 @@ class Crud extends BaseObject
                 continue;
             }
 
-            if (isset($columnsSchema[$field]) && ($columnsSchema[$field] !== false)) {
+            if (isset($columnsSchema[$field])) {
                 $schema = $columnsSchema[$field];
 
                 switch ($schema['type']) {
@@ -844,6 +846,7 @@ class Crud extends BaseObject
             if (($fields = $this->getConfig('fieldsOnly')) === null) {
                 $model = $this->getModel('getfields');
                 $fields = array_keys($model->attributeLabels());
+                $fields = array_diff($fields, $this->getConfig('excludeColumns', []));
                 //$safeFields = $model->safeAttributes();
                 //$fields = !empty($fields) ? array_intersect($fields, $safeFields) : $safeFields;
             }
