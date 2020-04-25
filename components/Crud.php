@@ -664,11 +664,16 @@ class Crud extends BaseObject
     public function renderFormField(ActiveForm $form, ActiveRecord $model, $field, $param, $schema, $content = '')
     {
         $formField = '';
-        if (isset($param) && ($param !== true)) {
-            if ($param instanceof Closure) {
-                $formField = call_user_func($param, $form, $model);
-            }
-        } elseif ($schema) {
+        if (isset($param) && ($param instanceof Closure)) {
+            $formField = call_user_func($param, $form, $model);
+        }
+        if (($schema === false) || ($formField === false)) {
+            return '';
+        }
+        if (is_string($formField) && mb_strlen($formField)) {
+            return $formField;
+        }
+        if (isset($schema['type'])) {
             switch ($schema['type']) {
                 case false:
                     break;
@@ -817,11 +822,11 @@ class Crud extends BaseObject
                 default:
                     $formField = $form->field($model, $field)->textInput();
             }
-            if (isset($schema['hint']) && ($formField instanceof ActiveField)) {
-                $formField->hint($schema['hint']);
-            }
-        } elseif ($schema !== false) {
+        } else {
             $formField = $form->field($model, $field)->textInput();
+        }
+        if (isset($schema['hint']) && ($formField instanceof ActiveField)) {
+            $formField->hint($schema['hint']);
         }
 
         return $content . $formField;
