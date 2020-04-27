@@ -664,11 +664,14 @@ class Crud extends BaseObject
     public function renderFormField(ActiveForm $form, ActiveRecord $model, $field, $param, $schema, $content = '')
     {
         $formField = '';
+        if (($param === false) || ($schema === false)) {
+            return '';
+        }
         if (isset($param) && ($param instanceof Closure)) {
             $formField = call_user_func($param, $form, $model);
-        }
-        if (($schema === false) || ($formField === false)) {
-            return '';
+            if ($formField === false) {
+                return '';
+            }
         }
         if (is_string($formField) && mb_strlen($formField)) {
             return $formField;
