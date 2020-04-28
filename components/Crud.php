@@ -671,10 +671,9 @@ class Crud extends BaseObject
             $formField = call_user_func($param, $form, $model);
             if ($formField === false) {
                 return '';
+            } elseif ($formField !== true) {
+                return $formField;
             }
-        }
-        if (is_string($formField) && mb_strlen($formField)) {
-            return $formField;
         }
         if (isset($schema['type'])) {
             switch ($schema['type']) {
