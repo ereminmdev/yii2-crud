@@ -441,7 +441,13 @@ class Crud extends BaseObject
                         ];
                         break;
                     case 'image':
-                        $columns[$key] = $field . ':image';
+                        $columns[$key] = [
+                            'attribute' => $field,
+                            'format' => 'html',
+                            'value' => function (ActiveRecord $model) use ($field) {
+                                return Html::img($model->$field, ['class' => 'img-responsive crud-field-img']);
+                            },
+                        ];
                         break;
                     case 'upload-image':
                     case 'crop-image-upload':
