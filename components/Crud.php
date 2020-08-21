@@ -617,7 +617,7 @@ class Crud extends BaseObject
                 foreach ($fields as $field) {
                     if ($field == '*') {
                         $oFields = [];
-                        foreach ($formTabs as $title => $fields) $oFields = array_merge($oFields, $fields);
+                        foreach ($formTabs as $fields) $oFields = array_merge($oFields, $fields);
                         $oFields = array_diff($formFields, $oFields);
                         foreach ($oFields as $oField) {
                             $param = isset($paramFields[$oField]) ? $paramFields[$oField] : null;
