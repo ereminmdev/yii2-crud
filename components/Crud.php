@@ -462,7 +462,7 @@ class Crud extends BaseObject
                                 $thumb2 = isset($schema['thumb2']) ? $schema['thumb2'] : $thumb;
                                 $url = $model->getImageUrl($field, $thumb);
                                 $url2 = $model->getImageUrl($field, $thumb2);
-                                return Html::a(Html::img($url, ['class' => 'img-responsive crud-column-img']), $url2, ['target' => '_blank']);
+                                return Html::a(Html::img($url, ['class' => 'img-responsive crud-field-img']), $url2, ['target' => '_blank']);
                             },
                         ];
                         break;
