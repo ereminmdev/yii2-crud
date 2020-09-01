@@ -723,6 +723,7 @@ class Crud extends BaseObject
                     $value = $model->$field;
                     $behavior = $model->getBehavior($field) ?? $model;
                     $formField = $form->field($model, $field, ['template' => "{label}\n{hint}\n{input}\n{error}\n{file}"])->fileInput();
+                    $formField->parts['{file}'] = $value;
                     if ($value) {
                         $formField->parts['{file}'] = Html::tag('p', Html::a('<i class="fa fa-file"></i> ' . $value, $behavior->getUploadUrl($field), ['class' => 'btn btn-link', 'target' => '_blank']) .
                             ' &nbsp; ' . Html::a('<i class="fa fa-remove"></i> ' . Yii::t('crud', 'Delete file'), $this->columnUrlCreator('delete-upload-file', $model, $model->id, ['field' => $field, 'returnUrl' => Url::current()]),
