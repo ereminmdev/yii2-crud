@@ -426,7 +426,17 @@ class Crud extends BaseObject
                         break;
                     case 'url':
                     case 'file':
-                        $columns[$key] = $field . ':url';
+                        //$columns[$key] = $field . ':url';
+                        $columns[$key] = [
+                            'attribute' => $field,
+                            'format' => 'html',
+                            'filter' => false,
+                            'content' => function (ActiveRecord $model) use ($field) {
+                                $behavior = $model->getBehavior($field) ?? $model;
+                                $url = $behavior->getUploadUrl($field);
+                                return Html::a($url, $url, ['target' => '_blank']);
+                            },
+                        ];
                         break;
                     case 'email':
                         $columns[$key] = $field . ':email';
