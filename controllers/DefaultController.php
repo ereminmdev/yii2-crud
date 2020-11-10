@@ -285,6 +285,7 @@ class DefaultController extends Controller
     public function actionExport()
     {
         $model = new CrudExportForm;
+        $model->load(Yii::$app->request->get());
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             return $this->getCrud()->export($model);
@@ -303,6 +304,7 @@ class DefaultController extends Controller
     public function actionImport()
     {
         $model = new CrudImportForm;
+        $model->load(Yii::$app->request->get());
 
         if ($model->load(Yii::$app->request->post())) {
             $model->file = UploadedFile::getInstance($model, 'file');
