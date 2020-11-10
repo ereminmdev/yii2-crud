@@ -154,6 +154,9 @@ class Crud extends BaseObject
             $formName = $model->formName();
             //foreach ($model->attributes() as $attribute) {
             foreach ($filterParams[$formName] as $attribute => $value) {
+                if (!in_array($attribute, $model->attributes())) {
+                    continue;
+                }
                 if (isset($columnsSchema[$attribute]['type'])) {
                     switch ($columnsSchema[$attribute]['type']) {
                         case Schema::TYPE_INTEGER:
