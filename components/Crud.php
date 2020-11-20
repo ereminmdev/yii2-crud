@@ -1146,14 +1146,22 @@ $(".js-checked-action").on("click", function () {
      */
     public function import(CrudImportForm $model, UploadedFile $file)
     {
+        $filename = $file->tempName . '.' . $file->extension;
+
         $importer = new CrudImport([
             'format' => $file->extension,
-            'fileName' => $file->tempName,
+            'fileName' => $filename,
             'modelClass' => $this->modelClass,
             'columnsSchema' => $this->columnsSchema(),
         ]);
 
-        $result = $importer->import();
+        @copy($file->tempName, $filename);
+        try {
+            $result = $importer->import();
+        } finally {
+            @unlink($filename);
+        }
+
         $model->count = $importer->insertCount;
 
         if (!$result) {
