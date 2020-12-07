@@ -154,7 +154,7 @@ class Crud extends BaseObject
             $formName = $model->formName();
             //foreach ($model->attributes() as $attribute) {
             foreach ($filterParams[$formName] as $attribute => $value) {
-                if (!in_array($attribute, $model->attributes())) {
+                if (!in_array($attribute, $model->attributes()) && !isset($columnsSchema[$attribute]['relatedAttribute'])) {
                     continue;
                 }
                 if (isset($columnsSchema[$attribute]['type'])) {
