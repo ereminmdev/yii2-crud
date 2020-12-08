@@ -20,29 +20,27 @@ $this->params['breadcrumbs'][] = Yii::t('crud', 'Import');
 
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <p><?= Yii::t('crud', 'Import items from file') ?>.</p>
-
-    <div class="well">
-        Формат оформления таблицы можно посмотреть, вначале экспортировав данные.<br>
-        Первые две строки таблицы необходимо оставить без изменения.<br>
-        Количество и расположение колонок можно изменять.
-    </div>
-
-    <p>Поддерживаемые форматы файлов: <?= Html::dropDownList('format', null, CrudImportForm::fileFormats()) ?></p>
-
-    <br>
-
     <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
 
     <?= $form->errorSummary($model) ?>
 
-    <?php $accept = '.' . implode(', .', array_keys(CrudImportForm::fileFormats())); ?>
-    <?= $form->field($model, 'file')->fileInput(['accept' => $accept]) ?>
+    <div class="well">
+        <p><?= Yii::t('crud', 'Import items from file') ?>.</p>
 
-    <hr>
+        <p>Формат оформления таблицы можно посмотреть, вначале экспортировав данные.<br>
+            Первые две строки таблицы необходимо оставить без изменения.<br>
+            Количество и расположение колонок можно изменять.</p>
+
+        <p>Поддерживаемые форматы файлов: <?= implode(', ', CrudImportForm::fileFormats()) ?></p>
+
+        <br>
+
+        <?php $accept = '.' . implode(', .', array_keys(CrudImportForm::fileFormats())); ?>
+        <?= $form->field($model, 'file')->fileInput(['accept' => $accept]) ?>
+    </div>
 
     <div class="form-group">
-        <?= Html::submitButton(Yii::t('crud', 'Import'), ['class' => 'btn btn-primary']) ?>
+        <?= Html::submitButton('<span class="glyphicon glyphicon-ok"></span> ' . Yii::t('crud', 'Import'), ['class' => 'btn btn-primary']) ?>
         &nbsp;
         <?= Html::a(Yii::t('crud', 'Cancel'), $controller->urlCreate(['index']), ['class' => 'btn btn-link', 'onclick' => 'window.history.back(); return false']) ?>
     </div>

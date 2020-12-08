@@ -27,11 +27,8 @@ $controller = $this->context;
 
     <?= $controller->crud->renderFormFields($form, $model) ?>
 
-    <hr>
-
     <div class="form-group form-buttons">
-        <?= Html::submitButton('<span class="glyphicon glyphicon-ok"></span> ' . ($model->isNewRecord ? Yii::t('crud', 'Create') : Yii::t('crud', 'Update')),
-            ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+        <?= Html::submitButton('<span class="glyphicon glyphicon-ok"></span> ' . ($model->isNewRecord ? Yii::t('crud', 'Create') : Yii::t('crud', 'Update')), ['class' => 'btn btn-primary']) ?>
         &nbsp;
         <?= Html::a(Yii::t('crud', 'Cancel'), $controller->getReturnUrl(), ['class' => 'btn btn-link', 'onclick' => 'window.history.back(); return false']) ?>
 

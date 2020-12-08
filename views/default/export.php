@@ -20,22 +20,22 @@ $this->params['breadcrumbs'][] = Yii::t('crud', 'Export');
 
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <p><?= Yii::t('crud', 'Export items to file') ?>.</p>
-
-    <div class="well"><?= Yii::t('crud', 'When unloading accounted applied to the filter table') ?>.</div>
-
-    <p>&nbsp;</p>
-
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'fileFormat')->dropDownList(CrudExportForm::fileFormats()) ?>
+    <div class="well">
+        <p><?= Yii::t('crud', 'Export items to file') ?>.</p>
 
-    <?= $form->field($model, 'needRenderData')->checkbox() ?>
+        <p><?= Yii::t('crud', 'When unloading accounted applied to the filter table') ?>.</p>
 
-    <hr>
+        <p>&nbsp;</p>
+
+        <?= $form->field($model, 'fileFormat')->dropDownList(CrudExportForm::fileFormats()) ?>
+
+        <?= $form->field($model, 'needRenderData')->checkbox() ?>
+    </div>
 
     <div class="form-group">
-        <?= Html::submitButton(Yii::t('crud', 'Export'), ['class' => 'btn btn-primary']) ?>
+        <?= Html::submitButton('<span class="glyphicon glyphicon-ok"></span> ' . Yii::t('crud', 'Export'), ['class' => 'btn btn-primary']) ?>
         &nbsp;
         <?= Html::a(Yii::t('crud', 'Cancel'), $controller->urlCreate(['index']), ['class' => 'btn btn-link', 'onclick' => 'window.history.back(); return false']) ?>
     </div>

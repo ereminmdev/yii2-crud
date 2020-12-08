@@ -672,7 +672,7 @@ class Crud extends BaseObject
             }
         }
 
-        return $content;
+        return '<div class="well">' . $content . '</div>';
     }
 
     /**
