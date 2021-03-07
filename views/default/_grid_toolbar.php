@@ -23,7 +23,7 @@ $controller = $this->context;
 
     $actions['{checks}'] = $crud->renderCheckedActions($gridViewWidget->id);
 
-    $actions['{create}'] = Html::a(Yii::t('crud', 'Create'), $controller->urlCreate(['create']), ['class' => 'btn btn-success']);
+    $actions['{create}'] = Html::a('<span class="glyphicon glyphicon-plus"></span> ' . Yii::t('crud', 'Create'), $controller->urlCreate(['create']), ['class' => 'btn btn-success']);
 
     $actions['{custom}'] = '';
     $actions['{filter}'] = '';
