@@ -140,7 +140,7 @@ public static function crudConfig()
                     return [
                         'label' => 'Custom label',
                         'url' => ['#'],
-                    ],
+                    ];
                 },
             ],
             'titleBlock' => function (self $model, DefaultController $controller, Crud $crud) {
