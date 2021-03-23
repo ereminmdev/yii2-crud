@@ -93,7 +93,7 @@ public static function crudConfig()
             '{custom}' => Html::a('Моя кнопка', '#', ['class' => 'btn btn-default']),
         ],
         'gridActions' => [
-            '{custom}' => function(self $model, mixed $key, Crud $this) {
+            '{custom}' => function(self $model, mixed $key, Crud $crud) {
                 return [
                    'label' => 'Мое действие',
                    'url' => '#',
@@ -136,7 +136,7 @@ public static function crudConfig()
             'sortField' => 'position', // false - disable sorting
             'itemActionsTemplate' => "{custom}\n{--}\n{create1}\n{create2}\n{--}",
             'itemActions' => [
-                '{custom}' => function ($model, $controller, $crud) {
+                '{custom}' => function (self $model, DefaultController $controller, Crud $crud) {
                     return [
                         'label' => 'Custom label',
                         'url' => ['#'],
