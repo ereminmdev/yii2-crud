@@ -14,6 +14,9 @@ return [
 
     'Reset filter' => 'Сбросить фильтр',
 
+    'Grid view' => 'Вид таблица',
+    'Tree view' => 'Вид дерево',
+
     'File' => 'Файл',
     'File type' => 'Тип файла',
     'Render relative data' => 'Преобразовать зависимые данные',

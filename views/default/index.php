@@ -57,10 +57,7 @@ $gridViewWidget = new GridView(ArrayHelper::merge([
 
     <?= ($view = $crud->getConfig('views.index.filter')) !== null ? $this->render($view, ['crud' => $crud]) : '' ?>
 
-    <?= $this->render('_grid_toolbar', [
-        'gridViewWidget' => $gridViewWidget,
-        'crud' => $crud,
-    ]) ?>
+    <?= $this->render('_index-toolbar', ['crud' => $crud, 'gridViewWidget' => $gridViewWidget]) ?>
 
     <br>
 

@@ -1011,6 +1011,14 @@ class Crud extends BaseObject
     /**
      * @return bool
      */
+    public function canViewAsTree()
+    {
+        return ($this->getConfig('viewAs') == self::VIEW_AS_TREE) || ($this->getConfig('tree', false) !== false);
+    }
+
+    /**
+     * @return bool
+     */
     public function isViewAsTree()
     {
         return $this->getViewAs() == self::VIEW_AS_TREE;
@@ -1021,9 +1029,8 @@ class Crud extends BaseObject
      */
     public function getViewAs()
     {
-        return Yii::$app->session->get($this->getViewAsKey()) ??
-            ArrayHelper::getValue($this->config, 'viewAs') ??
-            (ArrayHelper::getValue($this->config, 'tree') ? self::VIEW_AS_TREE : self::VIEW_AS_GRID);
+        return Yii::$app->session->get($this->getViewAsKey()) ?? $this->getConfig('viewAs') ??
+            ($this->canViewAsTree() ? self::VIEW_AS_TREE : self::VIEW_AS_GRID);
     }
 
     /**

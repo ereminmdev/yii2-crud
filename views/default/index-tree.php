@@ -34,7 +34,7 @@ window.treeCloseUrl = "' . $controller->urlCreate(['tree-close', 'ids' => '_ids_
 
     <?= ($view = $crud->getConfig('views.index.filter')) !== null ? $this->render($view, ['crud' => $crud]) : '' ?>
 
-    <?= $this->render('_tree-toolbar', ['crud' => $crud]) ?>
+    <?= $this->render('_index-toolbar', ['crud' => $crud]) ?>
 
     <br>
 
