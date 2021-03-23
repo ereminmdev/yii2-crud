@@ -1,5 +1,4 @@
-(function ($) {
-    'use strict';
+jQuery(function ($) {
 
     // views/_grid_toolbar
     if ($('.cms-crud-index').length) {
@@ -22,6 +21,39 @@
                 });
             });
             event.preventDefault();
+        });
+
+        function treeOpen($item) {
+            $.get(treeOpenUrl.replace('_id_', $item.data('id')), function (data) {
+                $item.append(data);
+            });
+        }
+
+        function treeClose($item) {
+            const $sub = $item.find('.tree-items');
+
+            let ids = [$item.data('id')];
+            $sub.find('.tree-items').each(function () {
+                ids.push($(this).data('parent-id'));
+            });
+
+            $.get(treeCloseUrl.replace('_ids_', ids.join(',')));
+
+            $sub.remove();
+        }
+
+        $(document).on('click', '.js-tree-open, .js-tree-close', function () {
+            const $item = $(this).closest('.tree-item');
+
+            if (!$item.hasClass('open')) {
+                treeOpen($item);
+            } else {
+                treeClose($item);
+            }
+
+            $item.toggleClass('open');
+
+            return false;
         });
     }
 
@@ -74,4 +106,4 @@
         }).trigger('change');
     }
 
-}(jQuery));
+});

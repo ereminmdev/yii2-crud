@@ -5,11 +5,9 @@ namespace ereminmdev\yii2\crud\components;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\bootstrap\ButtonDropdown;
-use yii\bootstrap\Dropdown;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\LinkPager;
-use yii\widgets\Menu;
 
 /**
  * Class Pager
@@ -27,7 +25,7 @@ class Pager extends LinkPager
     public $pageSizes = [1, 5, 10, 20, 30, 50, 100];
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      * @throws InvalidConfigException
      */
     public function init()
@@ -37,7 +35,7 @@ class Pager extends LinkPager
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     public function run()
     {

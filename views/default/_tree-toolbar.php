@@ -3,11 +3,9 @@
 use ereminmdev\yii2\crud\components\Crud;
 use ereminmdev\yii2\crud\controllers\DefaultController;
 use yii\bootstrap\ButtonDropdown;
-use yii\grid\GridView;
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
-/* @var $gridViewWidget GridView */
 /* @var $crud Crud */
 
 /** @var DefaultController $controller */
@@ -17,16 +15,13 @@ $controller = $this->context;
 <div class="btn-toolbar" role="toolbar">
     <?php
 
-    $template = $crud->getConfig('gridToolbarTemplate', "{checks}\n{create}\n{custom}\n{full}\n{filter}");
+    $template = $crud->getConfig('treeToolbarTemplate', "{create}\n{custom}\n{full}");
 
     $actions = [];
-
-    $actions['{checks}'] = $crud->renderCheckedActions($gridViewWidget->id);
 
     $actions['{create}'] = Html::a('<span class="glyphicon glyphicon-plus"></span> ' . Yii::t('crud', 'Create'), $controller->urlCreate(['create']), ['class' => 'btn btn-success']);
 
     $actions['{custom}'] = '';
-    $actions['{filter}'] = '';
 
     $actions['{full}'] = ButtonDropdown::widget([
         'label' => '<span class="glyphicon glyphicon-asterisk"></span>',
@@ -58,9 +53,9 @@ $controller = $this->context;
         $actions['{checks}'] = $actions['{full}'] = '';
     }
 
-    $customActions = $crud->getConfig('gridToolbarActions', []);
+    $customActions = $crud->getConfig('treeToolbarActions', []);
     foreach ($customActions as $key => $customAction) {
-        $actions[$key] = $customAction instanceof Closure ? call_user_func_array($customAction, [$gridViewWidget, $crud, $this]) : $customAction;
+        $actions[$key] = $customAction instanceof Closure ? call_user_func_array($customAction, [$crud, $this]) : $customAction;
     }
 
     echo strtr($template, $actions);

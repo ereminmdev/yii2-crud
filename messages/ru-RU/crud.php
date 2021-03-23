@@ -9,6 +9,9 @@ return [
     'delete' => 'удалить',
     'Delete all' => 'Удалить все',
 
+    'Create nearby' => 'Создать рядом',
+    'Create as sublevel' => 'Создать как подуровень',
+
     'Reset filter' => 'Сбросить фильтр',
 
     'File' => 'Файл',

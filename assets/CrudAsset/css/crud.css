@@ -10,10 +10,9 @@
     display: none;
 }
 
-.crud-grid__sort-handle {
-    text-align: center;
-    cursor: n-resize;
-}
+/***********************************************************************************************************************
+    Grid
+***********************************************************************************************************************/
 
 .cms-crud-grid .col-width-sm {
     width: 30px;
@@ -23,9 +22,85 @@
     border-bottom-width: 1px;
 }
 
+.crud-grid__sort-handle {
+    text-align: center;
+    cursor: n-resize;
+}
+
 .cms-crud-grid .sortable-chosen {
     outline: 1px dashed rgba(0, 0, 0, .3);
 }
+
+/***********************************************************************************************************************
+    Tree
+***********************************************************************************************************************/
+
+.tree-item > .tree-items {
+    display: none;
+    margin-left: 25px;
+}
+
+.tree-item.open > .tree-items {
+    display: block;
+}
+
+.tree-item-row {
+    display: flex;
+    margin: 0;
+    padding: 7px;
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, .02);
+}
+
+.tree-item-row:hover {
+    background: rgba(0, 0, 0, .01);
+}
+
+.tree-item--opener, .tree-item--menu, .tree-item--right {
+    flex: none;
+}
+
+.tree-item--opener, .tree-item--menu {
+    width: 25px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.tree-item .js-tree-close {
+    display: none;
+}
+
+.tree-item.open > .tree-item-row > .tree-item--opener > .js-tree-open {
+    display: none;
+}
+
+.tree-item.open > .tree-item-row > .tree-item--opener > .js-tree-close {
+    display: initial;
+}
+
+.tree-item--menu {
+    visibility: hidden;
+}
+
+.tree-item-row:hover .tree-item--menu {
+    visibility: visible;
+}
+
+.tree-item--sort-handle {
+    cursor: n-resize;
+}
+
+.tree-item.sortable-chosen {
+    outline: 1px dashed rgba(0, 0, 0, .3);
+}
+
+.tree-item--title {
+    flex: auto;
+}
+
+/***********************************************************************************************************************
+    Responsive
+***********************************************************************************************************************/
 
 @media (min-width: 992px) {
     .cms-crud-grid.table-responsive {
@@ -36,5 +111,9 @@
 @media (max-width: 767px) {
     .crud-field-img {
         max-width: 100%;
+    }
+
+    .tree-item--menu {
+        visibility: visible;
     }
 }

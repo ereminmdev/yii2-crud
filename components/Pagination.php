@@ -25,7 +25,7 @@ class Pagination extends \yii\data\Pagination
     public $cookieName = 'per-page';
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     public function getPageSize()
     {

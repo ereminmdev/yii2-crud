@@ -8,6 +8,7 @@ use ereminmdev\yii2\crud\grid\DropDownButtonColumn;
 use ereminmdev\yii2\crud\models\CrudExportForm;
 use ereminmdev\yii2\crud\models\CrudImportForm;
 use ereminmdev\yii2\tinymce\TinyMce;
+use Error;
 use Exception;
 use Yii;
 use yii\base\BaseObject;
@@ -38,11 +39,18 @@ use yii\widgets\ActiveForm;
  * @property ActiveRecord|null $searchModel
  * @property mixed $fields
  * @property DynamicModel $setvalsModel
+ *
+ * @property string $treeParentField
+ * @property string $treeChildrenRelation
+ * @property string $treeSortField
  */
 class Crud extends BaseObject
 {
+    const VIEW_AS_GRID = 'grid';
+    const VIEW_AS_TREE = 'tree';
+
     /**
-     * @var ActiveRecord model class name
+     * @var ActiveRecord|string model class name
      */
     public $modelClass;
     /**
@@ -622,8 +630,7 @@ class Crud extends BaseObject
      * @param ActiveRecord $model
      * @param string $content
      * @return string
-     * @throws Exception
-     * @throws InvalidConfigException
+     * @throws Exception|InvalidConfigException
      */
     public function renderFormFields(ActiveForm $form, ActiveRecord $model, $content = '')
     {
@@ -994,7 +1001,47 @@ class Crud extends BaseObject
      */
     public function getConfig($key, $default = null)
     {
-        return ArrayHelper::getValue($this->config, $key, $default);
+        try {
+            return ArrayHelper::getValue($this->config, $key, $default);
+        } catch (Error $e) {
+            return $default;
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    public function isViewAsTree()
+    {
+        return $this->getViewAs() == self::VIEW_AS_TREE;
+    }
+
+    /**
+     * @return string
+     */
+    public function getViewAs()
+    {
+        return Yii::$app->session->get($this->getViewAsKey()) ??
+            ArrayHelper::getValue($this->config, 'viewAs') ??
+            (ArrayHelper::getValue($this->config, 'tree') ? self::VIEW_AS_TREE : self::VIEW_AS_GRID);
+    }
+
+    /**
+     * @param string $view
+     */
+    public function setViewAs($view)
+    {
+        if (in_array($view, [self::VIEW_AS_GRID, self::VIEW_AS_TREE])) {
+            Yii::$app->session->set($this->getViewAsKey(), $view);
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function getViewAsKey()
+    {
+        return 'crud-' . $this->modelClass . '-view-as';
     }
 
     /**
@@ -1060,12 +1107,12 @@ class Crud extends BaseObject
 
         $this->context->view->registerJs('
 $(".js-checked-action").on("click", function () {
-    var keys = $("#' . $gridId . '").yiiGridView("getSelectedRows");
+    const keys = $("#' . $gridId . '").yiiGridView("getSelectedRows");
     if (keys.length === 0) {
         alert("' . Yii::t('crud', 'Please select a one entry at least.') . '");
         return false;
     } else {
-        var url = $(this).attr("href");
+        let url = $(this).attr("href");
         url += url.indexOf("?") === -1 ? "?" : "&";
         $(this).attr("href", url + "id=" + keys.toString());
     }
@@ -1118,11 +1165,109 @@ $(".js-checked-action").on("click", function () {
     }
 
     /**
+     * @param ActiveRecord $model
+     * @param DefaultController $controller
+     * @return string[]
+     */
+    public function getTreeActions($model, $controller)
+    {
+        $template = $this->getConfig('tree.itemActionsTemplate', "{custom}\n{update}\n{--}\n{create1}\n{create2}\n{--}\n{delete}");
+
+        $parentField = $this->treeParentField;
+
+        $actions = [
+            '{custom}' => '',
+            '{--}' => '<li role="presentation" class="divider"></li>',
+            '{update}' => [
+                'label' => Yii::t('crud', 'Edit'),
+                'url' => $controller->urlCreate(['update', 'id' => $model->id]),
+            ],
+            '{create1}' => [
+                'label' => Yii::t('crud', 'Create nearby'),
+                'url' => $controller->urlCreate(['create', basename(get_class($model)) => [$parentField => $model->$parentField]]),
+            ],
+            '{create2}' => [
+                'label' => Yii::t('crud', 'Create as sublevel') . ' →',
+                'url' => $controller->urlCreate(['create', basename(get_class($model)) => [$parentField => $model->id]]),
+            ],
+            '{delete}' => [
+                'label' => Yii::t('crud', 'Delete'),
+                'url' => $controller->urlCreate(['delete', 'id' => $model->id]),
+                'linkOptions' => [
+                    'data-confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),
+                ],
+                'visible' => $this->getConfig('access.delete', true),
+            ],
+        ];
+
+        $customActions = $this->getConfig('tree.itemActions', []);
+        foreach ($customActions as $key => $customAction) {
+            $actions[$key] = $customAction instanceof Closure ? call_user_func_array($customAction, [$model, $controller, $this]) : $customAction;
+        }
+
+        $items = explode("\n", $template);
+        foreach ($actions as $key => $action) {
+            foreach (array_keys($items, $key) as $pos) {
+                $items[$pos] = $action;
+            }
+        }
+
+        return $items;
+    }
+
+    /**
+     * @param ActiveRecord $model
+     * @param DefaultController $controller
+     * @return string
+     */
+    public function getTreeTitleBlock($model, $controller)
+    {
+        $block = $this->getConfig('tree.titleBlock', function ($model, $controller, $crud) {
+            return Html::a($model->title, $controller->urlCreate(['update', 'id' => $model->id]));
+        });
+        return $block instanceof Closure ? call_user_func_array($block, [$model, $controller, $this]) : $block;
+    }
+
+    /**
+     * @param ActiveRecord $model
+     * @param DefaultController $controller
+     * @return string
+     */
+    public function getTreeRightBlock($model, $controller)
+    {
+        $block = $this->getConfig('tree.rightBlock', '');
+        return $block instanceof Closure ? call_user_func_array($block, [$model, $controller, $this]) : $block;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTreeParentField()
+    {
+        return $block = $this->getConfig('tree.parentField', 'parent_id');
+    }
+
+    /**
+     * @return string
+     */
+    public function getTreeChildrenRelation()
+    {
+        return $block = $this->getConfig('tree.childrenRelation', 'children');
+    }
+
+    /**
+     * @return string
+     */
+    public function getTreeSortField()
+    {
+        return $block = $this->getConfig('tree.sortField', 'position');
+    }
+
+    /**
      * @param CrudExportForm $model
      * @return $this|mixed
      * @throws \PhpOffice\PhpSpreadsheet\Exception
-     * @throws InvalidConfigException
-     * @throws RangeNotSatisfiableHttpException
+     * @throws InvalidConfigException|RangeNotSatisfiableHttpException
      */
     public function export(CrudExportForm $model)
     {

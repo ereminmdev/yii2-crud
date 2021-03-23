@@ -47,7 +47,7 @@ class DefaultController extends Controller
      */
     public function beforeAction($action)
     {
-        if (in_array($action->id, ['sortable'])) {
+        if (in_array($action->id, ['sortable', 'tree-sortable'])) {
             $this->enableCsrfValidation = false;
         }
         return parent::beforeAction($action);
@@ -74,19 +74,55 @@ class DefaultController extends Controller
      */
     public function actionIndex()
     {
+        if ($this->getCrud()->isViewAsTree()) {
+            return $this->actionTree();
+        } else {
+            return $this->actionGrid();
+        }
+    }
+
+    /**
+     * @return string
+     * @throws InvalidConfigException
+     */
+    public function actionGrid()
+    {
         $crud = $this->getCrud();
-        $view = $this->getCrud()->getConfig('views.index.view', 'index');
+        $crud->setViewAs(Crud::VIEW_AS_GRID);
+
+        $view = $crud->getConfig('views.index.view', 'index');
+
         $params = [
             'crud' => $crud,
             'searchModel' => $crud->getSearchModel(),
             'dataProvider' => $crud->getDataProvider(true, true, true),
             'columns' => $crud->gridColumns(),
         ];
+
         if (Yii::$app->request->isAjax) {
-            return $this->renderPartial($view, $params);
+            return $this->renderAjax($view, $params);
         } else {
             return $this->render($view, $params);
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function actionTree()
+    {
+        $crud = $this->getCrud();
+        $crud->setViewAs(Crud::VIEW_AS_TREE);
+
+        $openIds = $this->getTreeOpenIds();
+        $models = $this->findTreeModelsByParentId($openIds);
+
+        $view = $crud->getConfig('views.index.view', 'index-tree');
+
+        return $this->render($view, [
+            'crud' => $crud,
+            'models' => $models,
+        ]);
     }
 
     /**
@@ -150,9 +186,14 @@ class DefaultController extends Controller
      */
     public function actionDelete($id)
     {
+        $crud = $this->getCrud();
+
         $models = $this->getCrud()->getModels();
 
         foreach ($models as $model) {
+            if ($crud->isViewAsTree()) {
+                $this->deleteTreeChildModels($model);
+            }
             $model->delete();
         }
 
@@ -160,6 +201,87 @@ class DefaultController extends Controller
             'models' => $models,
         ]);
         return $this->redirect($url);
+    }
+
+    /**
+     * @param int $id
+     * @return string|Response
+     */
+    public function actionTreeOpen($id)
+    {
+        $ids = $this->getTreeOpenIds();
+        $ids[] = $id;
+        $this->setTreeOpenIds($ids);
+
+        if (Yii::$app->request->isAjax) {
+            $models = $this->findTreeModelsByParentId($id);
+
+            return $this->renderAjax('_tree-items', [
+                'crud' => $this->getCrud(),
+                'parentId' => $id,
+                'models' => $models,
+            ]);
+        } else {
+            return $this->redirect($this->urlCreate(['index']));
+        }
+    }
+
+    /**
+     * @param string $ids
+     * @return string|Response
+     */
+    public function actionTreeClose($ids)
+    {
+        $ids = explode(',', $ids);
+        $this->removeTreeOpenIds($ids);
+
+        if (Yii::$app->request->isAjax) {
+            return '';
+        } else {
+            return $this->redirect($this->urlCreate(['index']));
+        }
+    }
+
+    /**
+     * @throws InvalidConfigException
+     */
+    public function actionTreeSortable()
+    {
+        $order = Yii::$app->request->post('order', []);
+        $oldOrder = Yii::$app->request->post('oldOrder', []);
+        $newOrder = array_diff($order, $oldOrder);
+        if ((count($order) < 2) || (count($order) < count($oldOrder))) {
+            return;
+        }
+
+        $crud = $this->getCrud();
+        $modelClass = $crud->modelClass;
+        $sortField = $crud->treeSortField;
+        $positions = $modelClass::find()->andWhere(['id' => $order])->all();
+
+        $parent_id = 0;
+        foreach ($positions as $position) {
+            if (!in_array($position->id, $newOrder)) {
+                $parent_id = $position->{$crud->treeParentField};
+                break;
+            }
+        }
+
+        foreach ($order as $id) {
+            $position = array_shift($positions);
+            if ($position !== null) {
+                $model = $modelClass::findOne($id);
+                if ($model !== null) {
+                    if (in_array($model->id, $newOrder)) {
+                        $model->{$crud->treeParentField} = $parent_id;
+                    }
+                    $model->$sortField = $position->$sortField;
+                    $model->save(false);
+                }
+            } else {
+                break;
+            }
+        }
     }
 
     /**
@@ -484,5 +606,67 @@ class DefaultController extends Controller
         $url = $this->getCrud()->getConfig('actionSuccessUrl.' . $action, $this->getReturnUrl());
         $url = $url instanceof Closure ? call_user_func_array($url, $params) : $url;
         return $url;
+    }
+
+    /**
+     * @param int|array $parent_id
+     * @return ActiveRecord[]
+     */
+    public function findTreeModelsByParentId($parent_id)
+    {
+        $crud = $this->getCrud();
+        return ($crud->modelClass)::find()
+            ->andWhere([$crud->treeParentField => $parent_id])
+            ->with([$crud->treeChildrenRelation])
+            ->all();
+    }
+
+    /**
+     * @param ActiveRecord $model
+     */
+    public function deleteTreeChildModels($model)
+    {
+        $children = $model->{$this->getCrud()->treeChildrenRelation};
+        foreach ($children as $child) {
+            $this->deleteTreeChildModels($child);
+            $child->delete();
+        }
+    }
+
+    /**
+     * @return array
+     */
+    public function getTreeOpenIds()
+    {
+        return Yii::$app->session->get($this->getTreeStoreKey(), [0 => 0]);
+    }
+
+    /**
+     * @param array $ids
+     */
+    public function setTreeOpenIds($ids)
+    {
+        $ids[] = 0;
+        $ids = array_unique($ids);
+        $ids = array_map('intval', $ids);
+        Yii::$app->session->set($this->getTreeStoreKey(), $ids);
+    }
+
+    /**
+     * @param array $removeIds
+     */
+    public function removeTreeOpenIds($removeIds)
+    {
+        $ids = $this->getTreeOpenIds();
+        $ids = array_diff($ids, $removeIds);
+        $this->setTreeOpenIds($ids);
+    }
+
+    /**
+     * @return string
+     */
+    public function getTreeStoreKey()
+    {
+        return 'crud-tree-' . $this->getCrud()->modelClass;
     }
 }

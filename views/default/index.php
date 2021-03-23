@@ -22,6 +22,7 @@ $this->title = $controller->pageTitle;
 $this->params['breadcrumbs'][] = $this->title;
 
 if ($crud->isSortableJs()) {
+    $this->registerJs('if (Sortable.active) Sortable.active.destroy();');
     echo SortableJs::widget([
         'elementSelector' => '.cms-crud-grid table > tbody',
         'storeSetAction' => $controller->urlCreate(['/crud/default/sortable']),

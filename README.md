@@ -8,7 +8,7 @@ Crud module for Yii framework.
 
 ## Use
 
-1) Add module to config file:
+1) Add Crud module to config file:
 
 ```
 'modules' => [
@@ -18,7 +18,7 @@ Crud module for Yii framework.
 ],
 ```
 
-2) Add crudConfig() function to ActiveRecord model class:
+2) Add crudConfig() static function to ActiveRecord model:
 
 ```
 public static function crudConfig()
@@ -29,7 +29,7 @@ public static function crudConfig()
 }
 ```
 
-or with some customizations:
+More options:
 
 ```
 public static function crudConfig()
@@ -117,11 +117,44 @@ public static function crudConfig()
                 ],
             ],
         ],
+        'access.delete' => false, // hide Delete menu items and buttons
     ];
 }
 ```
 
-3) Add link in view file:
+Set tree view:
+
+```
+public static function crudConfig()
+{
+    return [
+    ...
+        'viewAs' => 'tree', // enable tree as default index view
+        'tree' => [
+            'parentField' => 'parent_id',
+            'childrenRelation' => 'children',
+            'sortField' => 'position', // false - disable sorting
+            'itemActionsTemplate' => "{custom}\n{--}\n{create1}\n{create2}\n{--}",
+            'itemActions' => [
+                '{custom}' => function ($model, $controller, $crud) {
+                    return [
+                        'label' => 'Custom label',
+                        'url' => ['#'],
+                    ],
+                },
+            ],
+            'titleBlock' => function (self $model, DefaultController $controller, Crud $crud) {
+                return Html::encode($model->title);
+            },
+            'rightBlock' => function (self $model, DefaultController $controller, Crud $crud) {
+                return $model->status;
+            },
+        ],
+    ];
+}
+```
+
+3) Insert link into view:
 
 ```
 <?= Url::toRoute(['/crud', 'model' => Product::class]); ?>
