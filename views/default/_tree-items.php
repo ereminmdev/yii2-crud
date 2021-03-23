@@ -46,7 +46,7 @@ if ($crud->treeSortField) {
         ?>
         <div class="tree-item<?= count($children) ? ' open' : '' ?>" data-id="<?= $model->id ?>">
             <div class="tree-item-row">
-                <div class="tree-item--menu tree-item--on-hover">
+                <div class="tree-item--menu">
                     <div class="dropdown">
                         <a href="#" data-toggle="dropdown"
                            class="dropdown-toggle<?= $crud->treeSortField ? ' tree-item--sort-handle' : '' ?>"><i
