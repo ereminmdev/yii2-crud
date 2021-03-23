@@ -78,11 +78,11 @@
     display: initial;
 }
 
-.tree-item--menu {
+.tree-item--on-hover {
     visibility: hidden;
 }
 
-.tree-item-row:hover .tree-item--menu {
+.tree-item-row:hover .tree-item--on-hover {
     visibility: visible;
 }
 
@@ -113,7 +113,7 @@
         max-width: 100%;
     }
 
-    .tree-item--menu {
+    .tree-item--on-hover {
         visibility: visible;
     }
 }
