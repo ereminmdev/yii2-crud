@@ -125,7 +125,7 @@ class Crud extends BaseObject
             'query' => $modelClass::find(),
             'pagination' => [
                 'class' => 'ereminmdev\yii2\crud\components\Pagination',
-                'cookieName' => basename($modelClass) . '-per-page',
+                'storeKey' => basename($modelClass) . '-per-page',
             ],
             'sort' => [
                 'defaultOrder' => [

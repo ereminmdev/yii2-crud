@@ -3,7 +3,6 @@
 namespace ereminmdev\yii2\crud\components;
 
 use Yii;
-use yii\web\Cookie;
 
 /**
  * Class Pagination
@@ -20,21 +19,22 @@ class Pagination extends \yii\data\Pagination
      */
     public $pageSizeLimit = [0, 100];
     /**
-     * @var string cookie name to store page size
+     * @var string key to store page size
      */
-    public $cookieName = 'per-page';
+    public $storeKey = 'per-page';
 
     /**
      * @inheritdoc
      */
     public function getPageSize()
     {
-        if (($pageSize = $this->getQueryParam($this->pageSizeParam)) !== null) {
+        $pageSize = $this->getQueryParam($this->pageSizeParam) ?? $this->restorePageSize();
+
+        if ($pageSize !== null) {
             $this->setPageSize($pageSize, true);
-            $this->storePageSize($pageSize);
-        } elseif (($pageSize = $this->restorePageSize()) !== null) {
-            $this->setPageSize($pageSize, true);
+            $this->storePageSize();
         }
+
         return parent::getPageSize();
     }
 
@@ -43,24 +43,17 @@ class Pagination extends \yii\data\Pagination
      */
     protected function restorePageSize()
     {
-        return Yii::$app->request->cookies->getValue($this->cookieName);
+        return Yii::$app->session->get($this->storeKey);
     }
 
-    /**
-     * @param int $pageSize
-     */
-    protected function storePageSize($pageSize)
+    protected function storePageSize()
     {
-        $cookie = new Cookie([
-            'name' => $this->cookieName,
-            'value' => $pageSize,
-            'expire' => time() + 60 * 60 * 24 * 365,
-        ]);
+        $pageSize = parent::getPageSize();
 
         if ($pageSize != $this->defaultPageSize) {
-            Yii::$app->response->cookies->add($cookie);
+            Yii::$app->session->set($this->storeKey, $pageSize);
         } else {
-            Yii::$app->response->cookies->remove($cookie);
+            Yii::$app->session->remove($this->storeKey);
         }
     }
 }
