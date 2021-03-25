@@ -1,6 +1,6 @@
 jQuery(function ($) {
 
-    // views/_grid_toolbar
+    // views/_index_toolbar
     if ($('.cms-crud-index').length) {
         // stop form submitting when only part of value is written
         $('.cms-crud-grid tr.filters').find('input[type=date], input[type=time]').each(function () {
