@@ -137,6 +137,9 @@ class DefaultController extends Controller
         $model->loadDefaultValues(true);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            if (Yii::$app->request->post('submit-apply') && !Yii::$app->request->isAjax) {
+                return $this->redirect($this->urlCreate(['update', 'id' => $model->id]));
+            }
             $url = $this->getActionSuccessUrl('create', [
                 'model' => $model,
             ]);
@@ -161,14 +164,15 @@ class DefaultController extends Controller
         $model = $crud->findModel($id, 'update');
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            if (Yii::$app->request->isAjax) {
+            if (Yii::$app->request->post('submit-apply') && !Yii::$app->request->isAjax) {
+                return $this->refresh();
+            } elseif (Yii::$app->request->isAjax) {
                 return Json::encode($model->getAttributes());
-            } else {
-                $url = $this->getActionSuccessUrl('update', [
-                    'model' => $model,
-                ]);
-                return $this->redirect($url);
             }
+            $url = $this->getActionSuccessUrl('update', [
+                'model' => $model,
+            ]);
+            return $this->redirect($url);
         } else {
             return $this->render($crud->getConfig('views.update.view', 'update'), [
                 'crud' => $crud,
