@@ -28,7 +28,7 @@ $controller = $this->context;
     <?= $controller->crud->renderFormFields($form, $model) ?>
 
     <div class="form-group form-buttons">
-        <?= Html::submitButton('<span class="glyphicon glyphicon-ok"></span> ' . ($model->isNewRecord ? Yii::t('crud', 'Create') : Yii::t('crud', 'Update')), ['class' => 'btn btn-primary']) ?>
+        <?= Html::submitButton('<span class="glyphicon glyphicon-ok"></span> ' . ($model->isNewRecord ? Yii::t('crud', 'Create') : Yii::t('crud', 'Save')), ['class' => 'btn btn-primary']) ?>
         &nbsp;
         <?= Html::submitButton(Yii::t('crud', 'Apply'), ['class' => 'btn btn-default', 'name' => 'submit-apply', 'value' => 1]) ?>
         &nbsp;
