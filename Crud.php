@@ -18,7 +18,7 @@ class Crud extends Module
     public $controllerNamespace = 'ereminmdev\yii2\crud\controllers';
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @throws InvalidConfigException
      */
     public function init()
@@ -31,7 +31,7 @@ class Crud extends Module
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function registerTranslations()
     {

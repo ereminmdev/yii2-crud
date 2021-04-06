@@ -42,7 +42,7 @@ class DefaultController extends Controller
     public $modelUrlParam = 'model';
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @throws BadRequestHttpException
      */
     public function beforeAction($action)
@@ -54,7 +54,7 @@ class DefaultController extends Controller
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {

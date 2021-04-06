@@ -22,7 +22,7 @@ class CrudExportForm extends Model
     public $needRenderData = false;
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
@@ -33,7 +33,7 @@ class CrudExportForm extends Model
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function attributeLabels()
     {

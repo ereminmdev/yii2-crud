@@ -24,7 +24,7 @@ class Pagination extends \yii\data\Pagination
     public $storeKey = 'per-page';
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getPageSize()
     {

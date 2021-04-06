@@ -35,7 +35,7 @@ class PerPage extends Component
     public $perPageParam = 'per-page';
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {

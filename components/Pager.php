@@ -25,7 +25,7 @@ class Pager extends LinkPager
     public $pageSizes = [1, 5, 10, 20, 30, 50, 100];
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @throws InvalidConfigException
      */
     public function init()
@@ -35,7 +35,7 @@ class Pager extends LinkPager
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function run()
     {

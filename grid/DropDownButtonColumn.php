@@ -37,7 +37,7 @@ class DropDownButtonColumn extends DataColumn
     public $encodeLabels = true;
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -56,7 +56,7 @@ class DropDownButtonColumn extends DataColumn
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @throws Exception
      */
     protected function renderDataCellContent($model, $key, $index)
