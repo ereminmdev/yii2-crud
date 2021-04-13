@@ -99,6 +99,9 @@ class CrudImport extends BaseObject
         $fields = array_shift($rows);
         array_shift($rows); // extract 2nd row
 
+        /* @var $modelClass ActiveRecord */
+        $modelClass = $this->modelClass;
+
         foreach ($rows as $idx => $row) {
             $values = array_combine($fields, $row);
             foreach ($values as $key => $value) {
@@ -107,11 +110,14 @@ class CrudImport extends BaseObject
 
             $this->prepareData($values);
 
-            /* @var $model ActiveRecord */
-            $model = new $this->modelClass;
+            $model = new $modelClass;
+
             if ($id = ArrayHelper::getValue($values, 'id')) {
-                $model->setAttribute('id', $id);
-                $model->setIsNewRecord(false);
+                $model = $modelClass::findOne($id);
+                if ($model === null) {
+                    $model = new $modelClass;
+                    $model->setAttribute('id', $id);
+                }
             }
             $model->setAttributes($values);
 
