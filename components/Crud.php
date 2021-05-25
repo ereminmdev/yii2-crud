@@ -127,12 +127,11 @@ class Crud extends BaseObject
                 'class' => 'ereminmdev\yii2\crud\components\Pagination',
                 'storeKey' => basename($modelClass) . '-per-page',
             ],
-            'sort' => [
-                'defaultOrder' => [
-                    'id' => SORT_DESC,
-                ],
-            ],
         ]);
+
+        if (!empty($dataProvider->sort->getAttributeOrders())) {
+            $dataProvider->query->orderBy([]);
+        }
 
         /** @var ActiveQuery $query */
         $query = $dataProvider->query;
