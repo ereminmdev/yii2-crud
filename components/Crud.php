@@ -718,7 +718,8 @@ class Crud extends BaseObject
                     $formField = $form->field($model, $field)->textarea(['rows' => 6]);
                     break;
                 case 'html':
-                    $formField = $form->field($model, $field)->widget(TinyMce::class);
+                    $widgetOptions = isset($schema['widgetOptions']) ? $schema['widgetOptions'] : [];
+                    $formField = $form->field($model, $field)->widget(TinyMce::class, $widgetOptions);
                     break;
                 case Schema::TYPE_BOOLEAN:
                     $formField = $form->field($model, $field)->checkbox();
@@ -774,12 +775,13 @@ class Crud extends BaseObject
                         ['class' => 'btn btn-default btn-xs js-delete-file', 'data-message' => Yii::t('crud', 'Are you sure you want to delete this image?')]), ['class' => 'help-block']) : '';
                     $formField = $form->field($model, $field, ['template' => "{label}\n{input}\n{hint}\n{error}\n{file}"])->fileInput(['accept' => 'image/*']);
                     $formField->parts['{file}'] = $file;
+                    $widgetOptions = isset($schema['widgetOptions']) ? $schema['widgetOptions'] : [];
                     if ($schema['type'] == 'crop-image-upload') {
-                        $formField->widget(\ereminmdev\yii2\cropimageupload\CropImageUploadWidget::class);
+                        $formField->widget(\ereminmdev\yii2\cropimageupload\CropImageUploadWidget::class, $widgetOptions);
                     } elseif ($schema['type'] == 'croppie-image-upload') {
-                        $formField->widget(\ereminmdev\yii2\croppieimageupload\CroppieImageUploadWidget::class);
+                        $formField->widget(\ereminmdev\yii2\croppieimageupload\CroppieImageUploadWidget::class, $widgetOptions);
                     } elseif ($schema['type'] == 'cropper-image-upload') {
-                        $formField->widget(\ereminmdev\yii2\cropperimageupload\CropperImageUploadWidget::class);
+                        $formField->widget(\ereminmdev\yii2\cropperimageupload\CropperImageUploadWidget::class, $widgetOptions);
                     }
                     break;
                 case 'array':
