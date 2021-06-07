@@ -16,6 +16,7 @@ use yii\db\ActiveRecord;
 use yii\db\StaleObjectException;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
+use yii\helpers\StringHelper;
 use yii\helpers\Url;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
@@ -63,7 +64,7 @@ class DefaultController extends Controller
         $this->setCrud();
 
         $crud = $this->getCrud();
-        $this->pageTitle = $crud->getConfig('title') ?: Yii::t('app', basename($crud->modelClass));
+        $this->pageTitle = $crud->getConfig('title') ?: Yii::t('app', StringHelper::basename($crud->modelClass));
         $this->view->params['breadcrumbs'] = $crud->getConfig('breadcrumbs', []);
         $this->attachBehaviors($crud->getConfig('controller.behaviors', []));
     }

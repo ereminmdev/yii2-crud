@@ -15,6 +15,7 @@ use yii\data\ActiveDataProvider;
 use yii\db\ActiveRecord;
 use yii\grid\DataColumn;
 use yii\grid\GridView;
+use yii\helpers\StringHelper;
 use yii\web\RangeNotSatisfiableHttpException;
 
 /**
@@ -109,7 +110,7 @@ class CrudExport extends BaseObject
             }
         }
 
-        $fileName = $this->fileName ?: 'Export_' . basename(get_class($this->model)) . '_' . date('d.m.Y');
+        $fileName = $this->fileName ?: 'Export_' . $this->model->formName() . '_' . date('d.m.Y');
 
         switch ($this->format) {
             case 'xlsx':

@@ -125,7 +125,7 @@ class Crud extends BaseObject
             'query' => $modelClass::find(),
             'pagination' => [
                 'class' => 'ereminmdev\yii2\crud\components\Pagination',
-                'storeKey' => basename($modelClass) . '-per-page',
+                'storeKey' => $model->formName() . '-per-page',
             ],
         ]);
 
@@ -1192,11 +1192,11 @@ $(".js-checked-action").on("click", function () {
             ],
             '{create1}' => [
                 'label' => Yii::t('crud', 'Create nearby'),
-                'url' => $controller->urlCreate(['create', basename(get_class($model)) => [$parentField => $model->$parentField]]),
+                'url' => $controller->urlCreate(['create', $model->formName() => [$parentField => $model->$parentField]]),
             ],
             '{create2}' => [
                 'label' => Yii::t('crud', 'Create as sublevel') . ' →',
-                'url' => $controller->urlCreate(['create', basename(get_class($model)) => [$parentField => $model->id]]),
+                'url' => $controller->urlCreate(['create', $model->formName() => [$parentField => $model->id]]),
             ],
             '{delete}' => [
                 'label' => Yii::t('crud', 'Delete'),
