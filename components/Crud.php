@@ -1181,6 +1181,7 @@ $(".js-checked-action").on("click", function () {
     {
         $template = $this->getConfig('tree.itemActionsTemplate', "{custom}\n{update}\n{--}\n{create1}\n{create2}\n{--}\n{delete}");
 
+        $returnUrl = Url::current();
         $parentField = $this->treeParentField;
 
         $actions = [
@@ -1192,11 +1193,11 @@ $(".js-checked-action").on("click", function () {
             ],
             '{create1}' => [
                 'label' => Yii::t('crud', 'Create nearby'),
-                'url' => $controller->urlCreate(['create', $model->formName() => [$parentField => $model->$parentField]]),
+                'url' => $controller->urlCreate(['create', $model->formName() => [$parentField => $model->$parentField], 'returnUrl' => $returnUrl]),
             ],
             '{create2}' => [
                 'label' => Yii::t('crud', 'Create as sublevel') . ' →',
-                'url' => $controller->urlCreate(['create', $model->formName() => [$parentField => $model->id]]),
+                'url' => $controller->urlCreate(['create', $model->formName() => [$parentField => $model->id], 'returnUrl' => $returnUrl]),
             ],
             '{delete}' => [
                 'label' => Yii::t('crud', 'Delete'),

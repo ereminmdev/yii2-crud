@@ -52,8 +52,8 @@ $controller = $this->context;
     if ($crud->canViewAsTree()) {
         $items = array_merge($items, [
             '<li role="presentation" class="divider"></li>',
-            ['label' => Yii::t('crud', 'Grid view'), 'url' => $controller->urlCreate(['grid'])],
-            ['label' => Yii::t('crud', 'Tree view'), 'url' => $controller->urlCreate(['tree'])],
+            ['label' => Yii::t('crud', 'Grid view'), 'url' => $controller->urlCreate(['grid'], false, false)],
+            ['label' => Yii::t('crud', 'Tree view'), 'url' => $controller->urlCreate(['tree'], false, false)],
         ]);
     }
 
