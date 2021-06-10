@@ -1232,7 +1232,13 @@ $(".js-checked-action").on("click", function () {
     public function getTreeTitleBlock($model, $controller)
     {
         $block = $this->getConfig('tree.titleBlock', function ($model, $controller, $crud) {
-            return Html::a($model->title, $controller->urlCreate(['update', 'id' => $model->id]));
+            $text = $this->getConfig('tree.titleBlockText', $model->title);
+
+            $hover = $this->getConfig('tree.titleBlockOnHover', '');
+            $hover = $hover instanceof Closure ? call_user_func_array($hover, [$model, $controller, $this]) : $hover;
+            $hover = !empty($hover) ? '<span class="tree-item--on-hover"> &nbsp; &nbsp; &nbsp; ' . $hover . '</span>' : '';
+
+            return Html::a($text, $controller->urlCreate(['update', 'id' => $model->id])) . $hover;
         });
         return $block instanceof Closure ? call_user_func_array($block, [$model, $controller, $this]) : $block;
     }
