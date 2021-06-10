@@ -146,6 +146,15 @@ public static function crudConfig()
             'titleBlock' => function (self $model, DefaultController $controller, Crud $crud) {
                 return Html::encode($model->title);
             },
+            'titleBlock_text' => function (self $model, DefaultController $controller, Crud $crud) {
+                return Html::encode($model->name);
+            },
+            'titleBlock_options' => function (self $model, DefaultController $controller, Crud $crud) {
+                return ['class' => 'red'];
+            },
+            'titleBlock_onHover' => function (self $model, DefaultController $controller, Crud $crud) {
+                return Html::encode($model->statusText);
+            },
             'rightBlock' => function (self $model, DefaultController $controller, Crud $crud) {
                 return $model->status;
             },
