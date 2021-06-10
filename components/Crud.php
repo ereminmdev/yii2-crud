@@ -1233,7 +1233,9 @@ $(".js-checked-action").on("click", function () {
     {
         $block = $this->getConfig('tree.titleBlock', function ($model, $controller, $crud) {
             $text = $this->getConfig('tree.titleBlock_text', $model->title);
+
             $options = $this->getConfig('tree.titleBlock_options', []);
+            $options = $options instanceof Closure ? call_user_func_array($options, [$model, $controller, $this]) : $options;
 
             $hover = $this->getConfig('tree.titleBlock_onHover', '');
             $hover = $hover instanceof Closure ? call_user_func_array($hover, [$model, $controller, $this]) : $hover;
