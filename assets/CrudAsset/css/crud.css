@@ -46,6 +46,8 @@
 
 .tree-item-row {
     display: flex;
+    align-items: baseline;
+    gap: 15px;
     margin: 0;
     padding: 7px;
     background: #fff;
@@ -56,12 +58,12 @@
     background: rgba(0, 0, 0, .01);
 }
 
-.tree-item--opener, .tree-item--menu, .tree-item--right {
+.tree-item--checkbox, .tree-item--opener, .tree-item--menu, .tree-item--right {
     flex: none;
 }
 
-.tree-item--opener, .tree-item--menu {
-    width: 25px;
+.tree-item--opener {
+    width: 15px;
     text-align: center;
     cursor: pointer;
 }
@@ -78,11 +80,11 @@
     display: initial;
 }
 
-.tree-item--menu, .tree-item--on-hover {
+.tree-item--menu, .tree-item--checkbox:not(:checked), .tree-item--on-hover {
     visibility: hidden;
 }
 
-.tree-item-row:hover .tree-item--menu, .tree-item-row:hover .tree-item--on-hover {
+.tree-item-row:hover .tree-item--menu, .tree-item-row:hover .tree-item--checkbox, .tree-item-row:hover .tree-item--on-hover {
     visibility: visible;
 }
 
@@ -113,7 +115,7 @@
         max-width: 100%;
     }
 
-    .tree-item--menu {
+    .tree-item--menu, .tree-item--checkbox:not(:checked), .tree-item--on-hover {
         visibility: visible;
     }
 }

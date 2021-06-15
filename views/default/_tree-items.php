@@ -46,6 +46,7 @@ if ($crud->treeSortField) {
         ?>
         <div class="tree-item<?= count($children) ? ' open' : '' ?>" data-id="<?= $model->id ?>">
             <div class="tree-item-row">
+                <input type="checkbox" value="<?= $model->getPrimaryKey() ?>" class="tree-item--checkbox js-check-action">
                 <div class="tree-item--menu">
                     <div class="dropdown">
                         <a href="#" data-toggle="dropdown"

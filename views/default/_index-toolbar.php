@@ -18,16 +18,14 @@ $controller = $this->context;
     <?php
 
     if ($crud->isViewAsTree()) {
-        $template = $crud->getConfig('treeToolbarTemplate', "{create}\n{custom}\n{full}");
+        $template = $crud->getConfig('treeToolbarTemplate', "{checks}\n{create}\n{custom}\n{full}");
     } else {
         $template = $crud->getConfig('gridToolbarTemplate', "{checks}\n{create}\n{custom}\n{full}\n{filter}");
     }
 
     $actions = [];
 
-    if (!$crud->isViewAsTree()) {
-        $actions['{checks}'] = $crud->renderCheckedActions($gridViewWidget->id);
-    }
+    $actions['{checks}'] = $crud->renderCheckedActions();
 
     $actions['{create}'] = Html::a('<span class="glyphicon glyphicon-plus"></span> ' . Yii::t('crud', 'Create'), $controller->urlCreate(['create']), ['class' => 'btn btn-success']);
 

@@ -301,6 +301,7 @@ class Crud extends BaseObject
         array_unshift($columns, [
             'class' => CheckboxColumn::class,
             'options' => ['class' => 'col-width-sm'],
+            'checkboxOptions' => ['class' => 'js-check-action'],
         ]);
 
         return $columns;
@@ -1100,11 +1101,10 @@ class Crud extends BaseObject
     }
 
     /**
-     * @param string $gridId
      * @return string
      * @throws Exception
      */
-    public function renderCheckedActions($gridId)
+    public function renderCheckedActions()
     {
         $checked = $this->checkedActions();
         foreach ($checked as $key => $check) {
@@ -1115,7 +1115,12 @@ class Crud extends BaseObject
 
         $this->context->view->registerJs('
 $(".js-checked-action").on("click", function () {
-    const keys = $("#' . $gridId . '").yiiGridView("getSelectedRows");
+    let keys = [];
+    $(".js-check-action").each(function() {
+        if (this.checked) {
+            keys.push(parseInt($(this).val()));
+        }
+    });
     if (keys.length === 0) {
         alert("' . Yii::t('crud', 'Please select a one entry at least.') . '");
         return false;
