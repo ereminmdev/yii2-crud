@@ -553,9 +553,20 @@ class Crud extends BaseObject
                             $model = $this->getModel('getfields');
                             $relatedClass = $model->{'get' . $relation}()->modelClass;
                             $list = isset($schema['getList']) ? call_user_func($schema['getList']) : static::getList($relatedClass, $columnsSchema[$field]['titleField']);
+                            $filter = $list;
+                            if (array_key_exists('select2', $schema)) {
+                                $schema['select2'] = is_array($schema['select2']) ? $schema['select2'] : [];
+                                $filter = \conquer\select2\Select2Widget::widget(ArrayHelper::merge([
+                                    'model' => $model,
+                                    'attribute' => $field,
+                                    'items' => ArrayHelper::merge(['' => ''], $list),
+                                    'placeholder' => ['id' => '', 'text' => ''],
+                                    'settings' => ['allowClear' => true],
+                                ], $schema['select2']));
+                            }
                             $columns[$key] = [
                                 'attribute' => $field,
-                                'filter' => $list,
+                                'filter' => $filter,
                                 'content' => function (ActiveRecord $model) use ($field, $schema, $relation, $list) {
                                     $relatedClass = $model->{'get' . $relation}()->modelClass;
                                     $relatedPureClass = StringHelper::basename($relatedClass);
