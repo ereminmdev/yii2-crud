@@ -11,7 +11,7 @@ use yii\helpers\Html;
 /** @var DefaultController $controller */
 $controller = $this->context;
 
-$this->title = Yii::t('crud', 'Import');
+$this->title = $controller->pageTitle . ' › ' . Yii::t('crud', 'Import');
 $this->params['breadcrumbs'][] = ['label' => $controller->pageTitle, 'url' => $controller->urlCreate(['index'])];
 $this->params['breadcrumbs'][] = Yii::t('crud', 'Import');
 

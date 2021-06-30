@@ -14,7 +14,7 @@ use yii\helpers\Html;
 /** @var DefaultController $controller */
 $controller = $this->context;
 
-$this->title = Yii::t('crud', 'Set values');
+$this->title = $controller->pageTitle . ' › ' . Yii::t('crud', 'Set values');
 $this->params['breadcrumbs'][] = ['label' => $controller->pageTitle, 'url' => $controller->urlCreate(['index'])];
 $this->params['breadcrumbs'][] = Yii::t('crud', 'Set values');
 
