@@ -553,20 +553,28 @@ class Crud extends BaseObject
                             $model = $this->getModel('getfields');
                             $relatedClass = $model->{'get' . $relation}()->modelClass;
                             $list = isset($schema['getList']) ? call_user_func($schema['getList']) : static::getList($relatedClass, $columnsSchema[$field]['titleField']);
-                            $filter = $list;
+                            $filter = null;
                             if (array_key_exists('select2', $schema)) {
                                 $schema['select2'] = is_array($schema['select2']) ? $schema['select2'] : [];
+                                $title = $model->$field;
+                                if (isset($schema['relativeTitle'])) {
+                                    $title = $model->$relation->{$schema['relativeTitle']};
+                                }
                                 $filter = \conquer\select2\Select2Widget::widget(ArrayHelper::merge([
                                     'model' => $model,
                                     'attribute' => $field,
-                                    'items' => ArrayHelper::merge(['' => ''], $list),
+                                    'ajax' => $this->context->urlCreate(['select2filter', 'field' => $field]),
                                     'placeholder' => ['id' => '', 'text' => ''],
-                                    'settings' => ['allowClear' => true],
+                                    'settings' => ['allowClear' => true, 'dropdownAutoWidth' => true],
+                                    'data' => [
+                                        ['id' => '', 'text' => '', 'search' => '', 'hidden' => true],
+                                        ['id' => $model->$field ?? '', 'text' => $title ?? '', 'selected' => 'selected'],
+                                    ],
                                 ], $schema['select2']));
                             }
                             $columns[$key] = [
                                 'attribute' => $field,
-                                'filter' => $filter,
+                                'filter' => $filter ?? $list,
                                 'content' => function (ActiveRecord $model) use ($field, $schema, $relation, $list) {
                                     $relatedClass = $model->{'get' . $relation}()->modelClass;
                                     $relatedPureClass = StringHelper::basename($relatedClass);
@@ -817,10 +825,23 @@ class Crud extends BaseObject
 
                         if (array_key_exists('select2', $schema)) {
                             $schema['select2'] = is_array($schema['select2']) ? $schema['select2'] : [];
+                            $title = $model->$field;
+                            if (isset($schema['relativeTitle'])) {
+                                $title = $model->$relation->{$schema['relativeTitle']};
+                            }
                             $formField = $form->field($model, $field)->widget(
                                 \conquer\select2\Select2Widget::class,
-                                ArrayHelper::merge(['items' => $list], $schema['select2'])
-                            );
+                                ArrayHelper::merge([
+                                    'model' => $model,
+                                    'attribute' => $field,
+                                    'ajax' => $this->context->urlCreate(['select2filter', 'field' => $field]),
+                                    'placeholder' => ['id' => '', 'text' => ''],
+                                    'settings' => ['allowClear' => true, 'dropdownAutoWidth' => true],
+                                    'data' => [
+                                        ['id' => '', 'text' => '', 'search' => '', 'hidden' => true],
+                                        ['id' => $model->$field ?? '', 'text' => $title ?? '', 'selected' => 'selected'],
+                                    ],
+                                ], $schema['select2']));
                         } else {
                             $formField = $form->field($model, $field)->dropDownList($list, $options);
                         }

@@ -516,6 +516,34 @@ class DefaultController extends Controller
         }
     }
 
+    public function actionSelect2filter($field)
+    {
+        $q = Yii::$app->request->get('q', '');
+
+        $crud = $this->getCrud();
+        $columnsSchema = $crud->columnsSchema();
+        $schema = $columnsSchema[$field] ?? [];
+        $model = $crud->getModel('getfields');
+        $relatedClass = $model->{'get' . $schema['relation']}()->modelClass;
+        $titleField = $schema['titleField'] ?? $field;
+
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        Yii::$app->response->formatters[Response::FORMAT_JSON] = [
+            'class' => 'yii\web\JsonResponseFormatter',
+            'encodeOptions' => JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE,
+        ];
+
+        return [
+            'results' => $relatedClass::find()
+                ->select(['id', 'text' => $titleField])
+                ->andWhere(['like', $titleField, $q])
+                ->orderBy(['text' => SORT_ASC])
+                ->asArray()
+                ->limit(50)
+                ->all(),
+        ];
+    }
+
     /**
      * Create url for crud
      *
