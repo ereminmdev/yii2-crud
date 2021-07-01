@@ -556,10 +556,7 @@ class Crud extends BaseObject
                             $filter = null;
                             if (array_key_exists('select2', $schema)) {
                                 $schema['select2'] = is_array($schema['select2']) ? $schema['select2'] : [];
-                                $title = $model->$field;
-                                if (isset($schema['relativeTitle'])) {
-                                    $title = $model->$relation->{$schema['relativeTitle']};
-                                }
+                                $title = isset($schema['relativeTitle']) ? $model->$relation->{$schema['relativeTitle']} : $model->$field;
                                 $filter = \conquer\select2\Select2Widget::widget(ArrayHelper::merge([
                                     'model' => $model,
                                     'attribute' => $field,
@@ -822,13 +819,9 @@ class Crud extends BaseObject
                         if (array_key_exists('allowNull', $schema) && $schema['allowNull']) {
                             $options = ['prompt' => ''];
                         }
-
                         if (array_key_exists('select2', $schema)) {
                             $schema['select2'] = is_array($schema['select2']) ? $schema['select2'] : [];
-                            $title = $model->$field;
-                            if (isset($schema['relativeTitle'])) {
-                                $title = $model->$relation->{$schema['relativeTitle']};
-                            }
+                            $title = isset($schema['relativeTitle']) ? $model->$relation->{$schema['relativeTitle']} : $model->$field;
                             $formField = $form->field($model, $field)->widget(
                                 \conquer\select2\Select2Widget::class,
                                 ArrayHelper::merge([
@@ -841,7 +834,8 @@ class Crud extends BaseObject
                                         ['id' => '', 'text' => '', 'search' => '', 'hidden' => true],
                                         ['id' => $model->$field ?? '', 'text' => $title ?? '', 'selected' => 'selected'],
                                     ],
-                                ], $schema['select2']));
+                                ], $schema['select2'])
+                            );
                         } else {
                             $formField = $form->field($model, $field)->dropDownList($list, $options);
                         }
