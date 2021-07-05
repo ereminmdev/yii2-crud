@@ -557,17 +557,10 @@ class Crud extends BaseObject
                             if (array_key_exists('select2', $schema)) {
                                 $schema['select2'] = is_array($schema['select2']) ? $schema['select2'] : [];
                                 $title = isset($schema['relativeTitle']) ? $model->$relation->{$schema['relativeTitle']} : $model->$field;
-                                $filter = \conquer\select2\Select2Widget::widget(ArrayHelper::merge([
-                                    'model' => $model,
-                                    'attribute' => $field,
-                                    'ajax' => $this->context->urlCreate(['select2filter', 'field' => $field]),
-                                    'placeholder' => ['id' => '', 'text' => ''],
-                                    'settings' => ['allowClear' => true, 'dropdownAutoWidth' => true],
-                                    'data' => [
-                                        ['id' => '', 'text' => '', 'search' => '', 'hidden' => true],
-                                        ['id' => $model->$field ?? '', 'text' => $title ?? '', 'selected' => 'selected'],
-                                    ],
-                                ], $schema['select2']));
+                                $filter = \conquer\select2\Select2Widget::widget(ArrayHelper::merge(
+                                    $this->getSelect2Options($model, $field, $title),
+                                    $schema['select2'],
+                                ));
                             }
                             $columns[$key] = [
                                 'attribute' => $field,
@@ -824,17 +817,7 @@ class Crud extends BaseObject
                             $title = isset($schema['relativeTitle']) ? $model->$relation->{$schema['relativeTitle']} : $model->$field;
                             $formField = $form->field($model, $field)->widget(
                                 \conquer\select2\Select2Widget::class,
-                                ArrayHelper::merge([
-                                    'model' => $model,
-                                    'attribute' => $field,
-                                    'ajax' => $this->context->urlCreate(['select2filter', 'field' => $field]),
-                                    'placeholder' => ['id' => '', 'text' => ''],
-                                    'settings' => ['allowClear' => true, 'dropdownAutoWidth' => true],
-                                    'data' => [
-                                        ['id' => '', 'text' => '', 'search' => '', 'hidden' => true],
-                                        ['id' => $model->$field ?? '', 'text' => $title ?? '', 'selected' => 'selected'],
-                                    ],
-                                ], $schema['select2'])
+                                ArrayHelper::merge($this->getSelect2Options($model, $field, $title), $schema['select2'])
                             );
                         } else {
                             $formField = $form->field($model, $field)->dropDownList($list, $options);
@@ -1365,6 +1348,27 @@ $(".js-checked-action").on("click", function () {
         }
 
         return $result;
+    }
+
+    /**
+     * @param ActiveRecord $model
+     * @param string $field
+     * @param string $title
+     * @return array
+     */
+    public function getSelect2Options($model, $field, $title)
+    {
+        return [
+            'model' => $model,
+            'attribute' => $field,
+            'ajax' => $this->context->urlCreate(['select2filter', 'field' => $field]),
+            'placeholder' => ['id' => '', 'text' => ''],
+            'settings' => ['allowClear' => true, 'dropdownAutoWidth' => true],
+            'data' => [
+                ['id' => '', 'text' => '', 'search' => '', 'hidden' => true],
+                ['id' => $model->$field ?? '', 'text' => $title ?? '', 'selected' => 'selected'],
+            ],
+        ];
     }
 
     /**

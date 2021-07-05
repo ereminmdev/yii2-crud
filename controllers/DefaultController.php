@@ -516,6 +516,13 @@ class DefaultController extends Controller
         }
     }
 
+    /**
+     * Find data for select2 widget
+     *
+     * @param string $field
+     * @return array
+     * @throws InvalidConfigException
+     */
     public function actionSelect2filter($field)
     {
         $q = Yii::$app->request->get('q', '');
@@ -525,7 +532,7 @@ class DefaultController extends Controller
         $schema = $columnsSchema[$field] ?? [];
         $model = $crud->getModel('getfields');
         $relatedClass = $model->{'get' . $schema['relation']}()->modelClass;
-        $titleField = $schema['titleField'] ?? $field;
+        $titleField = $schema['select2TitleField'] ?? ($schema['titleField'] ?? $field);
 
         Yii::$app->response->format = Response::FORMAT_JSON;
         Yii::$app->response->formatters[Response::FORMAT_JSON] = [
@@ -533,15 +540,19 @@ class DefaultController extends Controller
             'encodeOptions' => JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE,
         ];
 
-        return [
-            'results' => $relatedClass::find()
-                ->select(['id', 'text' => $titleField])
+        $query = $relatedClass::find();
+
+        if (isset($schema['select2Query']) && is_callable($schema['select2Query'])) {
+            call_user_func_array($schema['select2Query'], [$query, $q, $crud]);
+        } else {
+            $query->select(['id', 'text' => $titleField])
                 ->andWhere(['like', $titleField, $q])
-                ->orderBy(['text' => SORT_ASC])
-                ->asArray()
-                ->limit(50)
-                ->all(),
-        ];
+                ->orderBy(['text' => SORT_ASC]);
+        }
+
+        $query->asArray()->limit(50);
+
+        return ['results' => $query->all()];
     }
 
     /**
