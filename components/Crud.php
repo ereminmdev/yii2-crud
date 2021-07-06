@@ -556,7 +556,7 @@ class Crud extends BaseObject
                             $filter = null;
                             if (array_key_exists('select2', $schema)) {
                                 $schema['select2'] = is_array($schema['select2']) ? $schema['select2'] : [];
-                                $title = isset($schema['relativeTitle']) ? $model->$relation->{$schema['relativeTitle']} : $model->$field;
+                                $title = isset($schema['relativeTitle']) ? $model->$relation->{$schema['relativeTitle']} : ($model->hasAttribute('title') ? $model->getAttribute('title') : $model->$field);
                                 $filter = \conquer\select2\Select2Widget::widget(ArrayHelper::merge(
                                     $this->getSelect2Options($model, $field, $title),
                                     $schema['select2'],
@@ -814,7 +814,7 @@ class Crud extends BaseObject
                         }
                         if (array_key_exists('select2', $schema)) {
                             $schema['select2'] = is_array($schema['select2']) ? $schema['select2'] : [];
-                            $title = isset($schema['relativeTitle']) ? $model->$relation->{$schema['relativeTitle']} : $model->$field;
+                            $title = isset($schema['relativeTitle']) ? $model->$relation->{$schema['relativeTitle']} : ($model->hasAttribute('title') ? $model->getAttribute('title') : $model->$field);
                             $formField = $form->field($model, $field)->widget(
                                 \conquer\select2\Select2Widget::class,
                                 ArrayHelper::merge($this->getSelect2Options($model, $field, $title), $schema['select2'])
