@@ -552,27 +552,26 @@ class Crud extends BaseObject
                         if ($schema['rtype'] == 'hasOne') {
                             $model = $this->getModel('getfields');
                             $relatedClass = $model->{'get' . $relation}()->modelClass;
-                            $list = isset($schema['getList']) ? call_user_func($schema['getList']) : static::getList($relatedClass, $columnsSchema[$field]['titleField']);
-                            $filter = null;
-                            if (array_key_exists('select2', $schema)) {
-                                $schema['select2'] = is_array($schema['select2']) ? $schema['select2'] : [];
-                                $title = isset($schema['relativeTitle']) ? $model->$relation->{$schema['relativeTitle']} : ($model->hasAttribute('title') ? $model->getAttribute('title') : $model->$field);
-                                $filter = \conquer\select2\Select2Widget::widget(ArrayHelper::merge(
-                                    $this->getSelect2Options($model, $field, $title),
-                                    $schema['select2'],
-                                ));
-                            }
+                            $list = isset($schema['getList']) ? call_user_func($schema['getList']) : static::getList($relatedClass, $schema['titleField']);
                             $columns[$key] = [
                                 'attribute' => $field,
                                 'filter' => $filter ?? $list,
                                 'content' => function (ActiveRecord $model) use ($field, $schema, $relation, $list) {
                                     $relatedClass = $model->{'get' . $relation}()->modelClass;
                                     $relatedPureClass = StringHelper::basename($relatedClass);
-                                    $id = $model->$field;
-                                    $text = array_key_exists($id, $list) ? $list[$id] : '';
+                                    $text = $list[$model->$field] ?? '';
                                     return $model->$relation ? Html::a($text, ['index', 'model' => $relatedClass, $relatedPureClass . '[id]' => $model->$field]) : '';
                                 },
                             ];
+                            if (array_key_exists('select2', $schema)) {
+                                //$title = isset($schema['relativeTitle']) ? $relModel->{$schema['relativeTitle']} : ($relModel && $relModel->hasAttribute('title') ? $relModel->getAttribute('title') : $model->$field);
+                                $title = $list[$model->$field] ?? '';
+                                $items = isset($schema['getList']) ? $list : [];
+                                $columns[$key]['filter'] = \conquer\select2\Select2Widget::widget(ArrayHelper::merge(
+                                    $this->getSelect2Options($model, $field, $title, $items),
+                                    is_array($schema['select2']) ? $schema['select2'] : [],
+                                ));
+                            }
                         } elseif ($schema['rtype'] == 'hasMany') {
                             $schema['title'] = array_key_exists('title', $schema) ? $schema['title'] : $model->getAttributeLabel($field);
                             $columns[$key] = [
@@ -813,11 +812,11 @@ class Crud extends BaseObject
                             $options = ['prompt' => ''];
                         }
                         if (array_key_exists('select2', $schema)) {
-                            $schema['select2'] = is_array($schema['select2']) ? $schema['select2'] : [];
-                            $title = isset($schema['relativeTitle']) ? $model->$relation->{$schema['relativeTitle']} : ($model->hasAttribute('title') ? $model->getAttribute('title') : $model->$field);
+                            $title = $list[$model->$field] ?? '';
+                            $items = isset($schema['getList']) ? $list : [];
                             $formField = $form->field($model, $field)->widget(
                                 \conquer\select2\Select2Widget::class,
-                                ArrayHelper::merge($this->getSelect2Options($model, $field, $title), $schema['select2'])
+                                ArrayHelper::merge($this->getSelect2Options($model, $field, $title, $items), is_array($schema['select2']) ? $schema['select2'] : [])
                             );
                         } else {
                             $formField = $form->field($model, $field)->dropDownList($list, $options);
@@ -1354,21 +1353,30 @@ $(".js-checked-action").on("click", function () {
      * @param ActiveRecord $model
      * @param string $field
      * @param string $title
+     * @param array $items
      * @return array
      */
-    public function getSelect2Options($model, $field, $title)
+    public function getSelect2Options($model, $field, $title, $items = [])
     {
-        return [
-            'model' => $model,
-            'attribute' => $field,
-            'ajax' => $this->context->urlCreate(['select2filter', 'field' => $field]),
-            'placeholder' => ['id' => '', 'text' => ''],
-            'settings' => ['allowClear' => true, 'dropdownAutoWidth' => true],
-            'data' => [
-                ['id' => '', 'text' => '', 'search' => '', 'hidden' => true],
-                ['id' => $model->$field ?? '', 'text' => $title ?? '', 'selected' => 'selected'],
-            ],
-        ];
+        return !empty($items) ?
+            [
+                'model' => $model,
+                'attribute' => $field,
+                'items' => $items,
+                'placeholder' => ['id' => '', 'text' => ''],
+                'settings' => ['allowClear' => true, 'dropdownAutoWidth' => true],
+            ] :
+            [
+                'model' => $model,
+                'attribute' => $field,
+                'ajax' => $this->context->urlCreate(['select2filter', 'field' => $field]),
+                'placeholder' => ['id' => '', 'text' => ''],
+                'settings' => ['allowClear' => true, 'dropdownAutoWidth' => true],
+                'data' => [
+                    ['id' => '', 'text' => '', 'search' => '', 'hidden' => true],
+                    ['id' => $model->$field ?? '', 'text' => $title ?? '', 'selected' => 'selected'],
+                ],
+            ];
     }
 
     /**
