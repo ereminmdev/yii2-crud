@@ -589,21 +589,24 @@ class Crud extends BaseObject
                                 },
                             ];
                         } elseif ($schema['rtype'] == 'manyMany') {
+                            $columns[$key] = [
+                                'content' => function (ActiveRecord $model) use ($field, $schema, $relation) {
+                                    return $model->getAttributeLabel($field) . ' (' . count($model->$relation) . ')';
+                                },
+                            ];
                             if (isset($schema['relatedAttribute']) && isset($schema['itemList'])) {
                                 $itemList = $schema['itemList'] instanceof Closure ? call_user_func($schema['itemList']) : $schema['itemList'];
-                                $columns[$key] = [
+                                $columns[$key] = ArrayHelper::merge($columns[$key], [
                                     'filter' => $itemList,
                                     'attribute' => $field,
-                                    'content' => function (ActiveRecord $model) use ($field, $schema, $relation) {
-                                        return $model->getAttributeLabel($field) . ' (' . count($model->$relation) . ')';
-                                    },
-                                ];
-                            } else {
-                                $columns[$key] = [
-                                    'content' => function (ActiveRecord $model) use ($field, $schema, $relation) {
-                                        return $model->getAttributeLabel($field) . ' (' . count($model->$relation) . ')';
-                                    },
-                                ];
+                                ]);
+                                if (!isset($schema['gridContentAsList']) || $schema['gridContentAsList']) {
+                                    $columns[$key]['content'] = function (ActiveRecord $model) use ($field, $schema, $relation, $itemList) {
+                                        $ids = array_column($model->$relation, 'id');
+                                        $list = array_intersect_key($itemList, array_flip($ids));
+                                        return implode(', ', $list);
+                                    };
+                                }
                             }
                         }
                         break;
