@@ -485,9 +485,9 @@ class Crud extends BaseObject
                             'filter' => false,
                             'content' => function (ActiveRecord $model) use ($field, $schema) {
                                 $thumb = isset($schema['thumb']) ? $schema['thumb'] : 'thumb';
-                                $thumb2 = isset($schema['thumb2']) ? $schema['thumb2'] : $thumb;
+                                $thumb2 = isset($schema['thumb2']) ? $schema['thumb2'] : null;
                                 $url = $model->getImageUrl($field, $thumb);
-                                $url2 = $model->getImageUrl($field, $thumb2);
+                                $url2 = $thumb2 ? $model->getImageUrl($field, $thumb2) : $model->getUploadUrl($field);
                                 return Html::a(Html::img($url, ['class' => 'img-responsive crud-field-img']), $url2, ['target' => '_blank']);
                             },
                         ];
