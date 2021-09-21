@@ -159,8 +159,10 @@ class Crud extends BaseObject
         if ($model->load($filterParams)) {
             $columnsSchema = $this->columnsSchema();
             $formName = $model->formName();
+            $tableName = $modelClass::tableName();
             //foreach ($model->attributes() as $attribute) {
             foreach ($filterParams[$formName] as $attribute => $value) {
+                $attributeFullName = $tableName . '.[[' . $attribute . ']]';
                 if (!in_array($attribute, $model->attributes()) && !isset($columnsSchema[$attribute]['relatedAttribute'])) {
                     continue;
                 }
@@ -173,7 +175,7 @@ class Crud extends BaseObject
                         case Schema::TYPE_DATETIME:
                         case 'array':
                         case 'url':
-                            $query->andFilterWhere([$attribute => $value]);
+                            $query->andFilterWhere([$attributeFullName => $value]);
                             break;
                         case 'relation':
                             if (isset($columnsSchema[$attribute]['relatedAttribute'])) {
@@ -181,19 +183,19 @@ class Crud extends BaseObject
                                 $query->joinWith($columnsSchema[$attribute]['relation']);
                                 break;
                             } else {
-                                $query->andFilterWhere([$attribute => $value]);
+                                $query->andFilterWhere([$attributeFullName => $value]);
                                 break;
                             }
                         case 'list':
                             if (!empty($value)) {
-                                $query->andWhere('FIND_IN_SET(:value,[[' . $attribute . ']])', [':value' => $value]);
+                                $query->andWhere('FIND_IN_SET(:value,' . $attributeFullName . ')', [':value' => $value]);
                             }
                             break;
                         default:
-                            $query->andFilterWhere(['like', $attribute, $value]);
+                            $query->andFilterWhere(['like', $attributeFullName, $value]);
                     }
                 } else {
-                    $query->andFilterWhere([$attribute => $value]);
+                    $query->andFilterWhere([$attributeFullName => $value]);
                 }
             }
         }
