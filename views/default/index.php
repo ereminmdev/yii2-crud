@@ -21,7 +21,7 @@ $controller = $this->context;
 $this->title = $controller->pageTitle;
 $this->params['breadcrumbs'][] = $this->title;
 
-if ($crud->isSortableJs()) {
+if ($crud->sortableJs) {
     $this->registerJs('if (Sortable.active) Sortable.active.destroy();');
     echo SortableJs::widget([
         'elementSelector' => '.cms-crud-grid table > tbody',
@@ -31,6 +31,9 @@ if ($crud->isSortableJs()) {
             'handle' => '.crud-grid__sort-handle',
         ],
     ]);
+}
+if ($crud->jsEditPrompt) {
+    $this->registerJs('window.jsEditPromptUrl = "' . $controller->urlCreate(['js-edit-prompt']) . '";');
 }
 
 $gridViewWidget = new GridView(ArrayHelper::merge([

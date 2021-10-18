@@ -65,6 +65,14 @@ class Crud extends BaseObject
      * @var string crud scenario, like model scenario
      */
     public $scenario = 'default';
+    /**
+     * @var bool
+     */
+    public $sortableJs = false;
+    /**
+     * @var bool
+     */
+    public $jsEditPrompt = false;
 
     /**
      * @param string $scenario
@@ -259,7 +267,7 @@ class Crud extends BaseObject
                 'label' => '<i class="glyphicon glyphicon-option-vertical"></i>',
                 'encodeLabel' => false,
                 'options' => [
-                    'class' => $this->isSortableJs() ? ['crud-grid__sort-handle'] : [],
+                    'class' => $this->sortableJs ? ['crud-grid__sort-handle'] : [],
                 ],
             ],
             'showCaret' => false,
@@ -364,7 +372,10 @@ class Crud extends BaseObject
                         unset($columns[$key]);
                         break;
                     case Schema::TYPE_TEXT:
-                        $columns[$key] = $field . ':ntext';
+                        $columns[$key] = [
+                            'attribute' => $field,
+                            'format' => 'ntext',
+                        ];
                         break;
                     case 'html':
                         $columns[$key] = [
@@ -612,10 +623,21 @@ class Crud extends BaseObject
                             }
                         }
                         break;
+                    default:
+                        $columns[$key] = [
+                            'attribute' => $field,
+                        ];
                 }
 
-                if (isset($columns[$key]) && is_array($columns[$key]) && isset($schema['gridColumnOptions'])) {
-                    $columns[$key] = ArrayHelper::merge($columns[$key], (array)$schema['gridColumnOptions']);
+                if (isset($columns[$key]) && is_array($columns[$key])) {
+                    if (isset($schema['gridColumnOptions'])) {
+                        $columns[$key] = ArrayHelper::merge($columns[$key], (array)$schema['gridColumnOptions']);
+                    }
+                    if (isset($schema['jsEditPrompt'])) {
+                        Html::addCssClass($columns[$key]['contentOptions'], 'js-edit-prompt');
+                        $columns[$key]['contentOptions']['data']['column'] = $field;
+                        $this->jsEditPrompt = true;
+                    }
                 }
             }
         }
@@ -1408,18 +1430,5 @@ $(".js-checked-action").on("click", function () {
         }
 
         return $query->column();
-    }
-
-    /**
-     * @var bool
-     */
-    protected $sortableJs = false;
-
-    /**
-     * @return bool
-     */
-    public function isSortableJs()
-    {
-        return $this->sortableJs;
     }
 }

@@ -377,6 +377,37 @@ class DefaultController extends Controller
         ]);
     }
 
+    public function actionJsEditPrompt()
+    {
+        $this->response->format = Response::FORMAT_RAW;
+        Yii::$app->response->statusCode = 400;
+
+        if (Yii::$app->request->isPost) {
+            try {
+                $id = (int)Yii::$app->request->post('id', 0);
+                $column = Yii::$app->request->post('column', '');
+                $value = Yii::$app->request->post('value', '');
+
+                $crud = $this->getCrud();
+
+                $model = $crud->findModel($id, 'update');
+                $model->setAttribute($column, $value);
+
+                if ($model->save()) {
+                    Yii::$app->response->statusCode = 200;
+                    return $value;
+                } elseif ($model->hasErrors($column)) {
+                    return $model->getFirstError($column);
+                }
+
+            } catch (Exception $e) {
+                return $e->getMessage();
+            }
+        }
+
+        return 'Bad Request';
+    }
+
     /**
      * @throws InvalidConfigException
      */

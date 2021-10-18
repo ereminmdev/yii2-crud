@@ -87,6 +87,7 @@ public static function crudConfig()
                 },
                 'gridDropButton' => true,
             ],
+            'comment' => ['jsEditPrompt' => true],
             'colors3' => false,
         ],
         'gridToolbarActions' => [

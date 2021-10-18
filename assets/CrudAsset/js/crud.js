@@ -55,6 +55,32 @@ jQuery(function ($) {
 
             return false;
         });
+
+        $('.js-edit-prompt').on('click', function () {
+            const that = this;
+
+            const id = $(that).closest('tr').data('key');
+            const message = $(that).data('message');
+            const column = $(that).data('column');
+
+            const oldValue = $(that).text();
+            const value = prompt(message, oldValue);
+
+            if ((value !== null) && (value !== oldValue)) {
+                const url = window.jsEditPromptUrl || location.href;
+
+                $.post(url, {id: id, column: column, value: value})
+                    .done(function (data) {
+                        $(that).text(data);
+                    })
+                    .fail(function (jqXHR) {
+                        console.log(jqXHR);
+                        alert(jqXHR.responseText);
+                    });
+            }
+
+            return false;
+        });
     }
 
     // views/_form
