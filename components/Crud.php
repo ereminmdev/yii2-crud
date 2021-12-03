@@ -579,10 +579,10 @@ class Crud extends BaseObject
                             if (array_key_exists('select2', $schema)) {
                                 //$title = isset($schema['relativeTitle']) ? $relModel->{$schema['relativeTitle']} : ($relModel && $relModel->hasAttribute('title') ? $relModel->getAttribute('title') : $model->$field);
                                 $title = $list[$model->$field] ?? '';
-                                $items = isset($schema['getList']) ? $list : [];
+                                $items = isset($schema['getList']) ? ArrayHelper::merge(['' => ''], $list) : [];
                                 $columns[$key]['filter'] = \conquer\select2\Select2Widget::widget(ArrayHelper::merge(
                                     $this->getSelect2Options($model, $field, $title, $items),
-                                    is_array($schema['select2']) ? $schema['select2'] : [],
+                                    is_array($schema['select2']) ? $schema['select2'] : []
                                 ));
                             }
                         } elseif ($schema['rtype'] == 'hasMany') {

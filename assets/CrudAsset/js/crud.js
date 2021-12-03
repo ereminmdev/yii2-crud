@@ -74,7 +74,6 @@ jQuery(function ($) {
                         $(that).text(data);
                     })
                     .fail(function (jqXHR) {
-                        console.log(jqXHR);
                         alert(jqXHR.responseText);
                     });
             }
