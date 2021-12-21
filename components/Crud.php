@@ -783,7 +783,7 @@ class Crud extends BaseObject
                 case 'file':
                     $value = $model->$field;
                     $behavior = $model->getBehavior($field) ?? $model;
-                    $formField = $form->field($model, $field, ['template' => "{label}\n{hint}\n{input}\n{error}\n{file}"])->fileInput();
+                    $formField = $form->field($model, $field, ['template' => "{label}\n{file}\n{input}\n{hint}\n{error}"])->fileInput();
                     $formField->parts['{file}'] = $value;
                     if ($value) {
                         $formField->parts['{file}'] = Html::tag('p', Html::a('<i class="fa fa-file"></i> ' . $value, $behavior->getUploadUrl($field), ['class' => 'btn btn-link', 'target' => '_blank']) .
@@ -792,9 +792,9 @@ class Crud extends BaseObject
                     }
                     break;
                 case 'image':
-                    $formField = $form->field($model, $field)->fileInput(['accept' => 'image/*']);
+                    $formField = $form->field($model, $field, ['template' => "{label}\n{image}\n{input}\n{hint}\n{error}"])->fileInput(['accept' => 'image/*']);
                     if ($model->$field) {
-                        $formField .= '<div class="form-group field-' . Html::getInputId($model, $field) . '">' .
+                        $formField->parts['{image}'] = '<div class="form-group field-' . Html::getInputId($model, $field) . '">' .
                             '<div>' . Html::checkbox($field . '__delete', false, ['label' => Yii::t('crud', 'delete')]) . '</div>' .
                             '<div>' . Html::img($model->$field, ['class' => 'img-responsive crud-field-img']) . '</div>' .
                             '</div>';
@@ -809,7 +809,7 @@ class Crud extends BaseObject
                     $file = Html::tag('p', Html::img($url, ['class' => 'img-responsive crud-field-img img-result', 'data-src' => $model->getUploadUrl($field)]), ['class' => 'help-block']);
                     $file .= $model->$field ? Html::tag('p', Html::a('<i class="fa fa-remove"></i> ' . Yii::t('crud', 'Delete image'), $this->columnUrlCreator('delete-upload-image', $model, $model->id, ['field' => $field, 'returnUrl' => Url::current()]),
                         ['class' => 'btn btn-default btn-xs js-delete-file', 'data-message' => Yii::t('crud', 'Are you sure you want to delete this image?')]), ['class' => 'help-block']) : '';
-                    $formField = $form->field($model, $field, ['template' => "{label}\n{input}\n{hint}\n{error}\n{file}"])->fileInput(['accept' => 'image/*']);
+                    $formField = $form->field($model, $field, ['template' => "{label}\n{file}\n{input}\n{hint}\n{error}"])->fileInput(['accept' => 'image/*']);
                     $formField->parts['{file}'] = $file;
                     $widgetOptions = isset($schema['widgetOptions']) ? $schema['widgetOptions'] : [];
                     if ($schema['type'] == 'crop-image-upload') {
