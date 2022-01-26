@@ -635,6 +635,7 @@ class Crud extends BaseObject
                     }
                     if (isset($schema['jsEditPrompt'])) {
                         Html::addCssClass($columns[$key]['contentOptions'], 'js-edit-prompt');
+                        $columns[$key]['contentOptions']['data']['message'] = $model->getAttributeLabel($field);
                         $columns[$key]['contentOptions']['data']['column'] = $field;
                         $this->jsEditPrompt = true;
                     }
