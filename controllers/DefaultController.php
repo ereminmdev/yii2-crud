@@ -413,24 +413,31 @@ class DefaultController extends Controller
      */
     public function actionSortable()
     {
-        $class = Yii::$app->request->get('model', $this->crud->modelClass);
+        $order = (array)Yii::$app->request->post('order');
+        $oldOrder = (array)Yii::$app->request->post('oldOrder');
 
-        $order = Yii::$app->request->post('order', []);
-        if (count($order) < 2) return;
+        if ((count($order) < 2) || (count($order) !== count($oldOrder))) {
+            return;
+        }
 
-        $positions = $this->getCrud()->getDataProvider(true, true, true)->getModels();
+        $crud = $this->getCrud();
+        $modelClass = $crud->modelClass;
+        $models = $modelClass::find()->andWhere(['id' => $order])->indexBy('id')->all();
 
-        foreach ($order as $id) {
-            $position = array_shift($positions);
-            if ($position !== null) {
-                $model = $class::findOne(['id' => $id]);
-                if ($model !== null) {
-                    $model->position = $position->position;
-                    $model->save(false);
-                }
-            } else {
-                break;
-            }
+        $positions = [];
+        foreach ($models as $model) {
+            $positions[$model->id] = $model->position;
+        }
+
+        foreach ($order as $idx => $id) {
+            $model = $models[$id] ?? null;
+            $oldId = $oldOrder[$idx] ?? null;
+            $position = $positions[$oldId] ?? null;
+
+            if (!$model || !$oldId || !$position || ($id == $oldId)) continue;
+
+            $model->position = $position;
+            $model->save(false, ['position']);
         }
     }
 
