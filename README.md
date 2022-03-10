@@ -4,7 +4,7 @@ Crud module for Yii framework.
 
 ## Install
 
-``composer require ereminmdev/yii2-crud``
+``composer require --prefer-dist ereminmdev/yii2-crud``
 
 ## Use
 

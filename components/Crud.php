@@ -168,7 +168,6 @@ class Crud extends BaseObject
             $columnsSchema = $this->columnsSchema();
             $formName = $model->formName();
             $tableName = $modelClass::tableName();
-            //foreach ($model->attributes() as $attribute) {
             foreach ($filterParams[$formName] as $attribute => $value) {
                 $attributeFullName = $tableName . '.[[' . $attribute . ']]';
                 if (!in_array($attribute, $model->attributes()) && !isset($columnsSchema[$attribute]['relatedAttribute'])) {
@@ -196,6 +195,7 @@ class Crud extends BaseObject
                             }
                         case 'list':
                             if (!empty($value)) {
+                                $attributeFullName = $columnsSchema[$attribute]['relatedAttribute'] ?: $attributeFullName;
                                 $query->andWhere('FIND_IN_SET(:value,' . $attributeFullName . ')', [':value' => $value]);
                             }
                             break;
