@@ -195,7 +195,7 @@ class Crud extends BaseObject
                             }
                         case 'list':
                             if (!empty($value)) {
-                                $attributeFullName = $columnsSchema[$attribute]['relatedAttribute'] ?: $attributeFullName;
+                                $attributeFullName = isset($columnsSchema[$attribute]['relatedAttribute']) ? $tableName . '.[[' . $columnsSchema[$attribute]['relatedAttribute'] . ']]' : $attributeFullName;
                                 $query->andWhere('FIND_IN_SET(:value,' . $attributeFullName . ')', [':value' => $value]);
                             }
                             break;
