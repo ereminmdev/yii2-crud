@@ -169,20 +169,24 @@ class Crud extends BaseObject
             $formName = $model->formName();
             $tableName = $modelClass::tableName();
             foreach ($filterParams[$formName] as $attribute => $value) {
-                $attributeFullName = $tableName . '.[[' . $attribute . ']]';
-                if (!in_array($attribute, $model->attributes()) && !isset($columnsSchema[$attribute]['relatedAttribute'])) {
+                if (empty($value) || (!in_array($attribute, $model->attributes()) && !isset($columnsSchema[$attribute]['relatedAttribute']))) {
                     continue;
                 }
+                $attributeFullName = $tableName . '.[[' . $attribute . ']]';
                 if (isset($columnsSchema[$attribute]['type'])) {
                     switch ($columnsSchema[$attribute]['type']) {
                         case Schema::TYPE_INTEGER:
                         case Schema::TYPE_BOOLEAN:
-                        case Schema::TYPE_DATE:
                         case Schema::TYPE_TIME:
-                        case Schema::TYPE_DATETIME:
                         case 'array':
                         case 'url':
                             $query->andFilterWhere([$attributeFullName => $value]);
+                            break;
+                        case Schema::TYPE_DATE:
+                        case Schema::TYPE_DATETIME:
+                            $value = ($value && !is_numeric($value)) ? strtotime($value) : $value;
+                            $attributeFullName = ($model->getTableSchema()->getColumn($attribute)->type == 'integer') ? 'FROM_UNIXTIME(' . $attributeFullName . ')' : $attributeFullName;
+                            $query->andFilterWhere(['DATE(' . $attributeFullName . ')' => date('Y-m-d', $value)]);
                             break;
                         case 'relation':
                             if (isset($columnsSchema[$attribute]['relatedAttribute'])) {
@@ -445,7 +449,7 @@ class Crud extends BaseObject
                         $columns[$key] = [
                             'attribute' => $field,
                             //'format' => 'datetime',
-                            'filterInputOptions' => ['type' => 'datetime-local', 'class' => 'form-control', 'id' => null],
+                            'filterInputOptions' => ['type' => 'date', 'class' => 'form-control', 'id' => null],
                             'value' => function (ActiveRecord $model) use ($field) {
                                 $value = $model->$field;
                                 $value = ($value && !is_numeric($value)) ? strtotime($value) : $value;
@@ -768,7 +772,9 @@ class Crud extends BaseObject
                     $formField = $form->field($model, $field)->input('time');
                     break;
                 case Schema::TYPE_DATETIME:
-                    $value = $model->$field ? date('Y-m-d\TH:i:s', strtotime($model->$field)) : '';
+                    $value = $model->$field;
+                    $value = ($value && !is_numeric($value)) ? strtotime($value) : $value;
+                    $value = $value ? date('Y-m-d\TH:i:s', $value) : '';
                     $formField = $form->field($model, $field)->input('datetime-local', ['value' => $value]);
                     break;
                 case 'url':
