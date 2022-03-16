@@ -169,7 +169,7 @@ class Crud extends BaseObject
             $formName = $model->formName();
             $tableName = $modelClass::tableName();
             foreach ($filterParams[$formName] as $attribute => $value) {
-                if (empty($value) || (!in_array($attribute, $model->attributes()) && !isset($columnsSchema[$attribute]['relatedAttribute']))) {
+                if (($value == '') || (!in_array($attribute, $model->attributes()) && !isset($columnsSchema[$attribute]['relatedAttribute']))) {
                     continue;
                 }
                 $attributeFullName = $tableName . '.[[' . $attribute . ']]';
@@ -180,21 +180,21 @@ class Crud extends BaseObject
                         case Schema::TYPE_TIME:
                         case 'array':
                         case 'url':
-                            $query->andFilterWhere([$attributeFullName => $value]);
+                            $query->andWhere([$attributeFullName => $value]);
                             break;
                         case Schema::TYPE_DATE:
                         case Schema::TYPE_DATETIME:
                             $value = ($value && !is_numeric($value)) ? strtotime($value) : $value;
                             $attributeFullName = ($model->getTableSchema()->getColumn($attribute)->type == 'integer') ? 'FROM_UNIXTIME(' . $attributeFullName . ')' : $attributeFullName;
-                            $query->andFilterWhere(['DATE(' . $attributeFullName . ')' => date('Y-m-d', $value)]);
+                            $query->andWhere(['DATE(' . $attributeFullName . ')' => date('Y-m-d', $value)]);
                             break;
                         case 'relation':
                             if (isset($columnsSchema[$attribute]['relatedAttribute'])) {
-                                $query->andFilterWhere([$columnsSchema[$attribute]['relatedAttribute'] => $value]);
+                                $query->andWhere([$columnsSchema[$attribute]['relatedAttribute'] => $value]);
                                 $query->joinWith($columnsSchema[$attribute]['relation']);
                                 break;
                             } else {
-                                $query->andFilterWhere([$attributeFullName => $value]);
+                                $query->andWhere([$attributeFullName => $value]);
                                 break;
                             }
                         case 'list':
@@ -204,10 +204,10 @@ class Crud extends BaseObject
                             }
                             break;
                         default:
-                            $query->andFilterWhere(['like', $attributeFullName, $value]);
+                            $query->andWhere(['like', $attributeFullName, $value]);
                     }
                 } else {
-                    $query->andFilterWhere([$attributeFullName => $value]);
+                    $query->andWhere([$attributeFullName => $value]);
                 }
             }
         }
