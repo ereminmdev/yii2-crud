@@ -116,6 +116,22 @@ jQuery(function ($) {
 
             return false;
         });
+
+        inputAutoHeight('.input-auto-height');
+
+        function inputAutoHeight(selector) {
+            document.querySelectorAll(selector).forEach(el => {
+                el.style.overflow = 'hidden';
+                el.style.resize = 'none';
+                el.addEventListener('input', autoResize, false);
+                autoResize.bind(el)();
+            });
+
+            function autoResize() {
+                this.style.height = 'auto';
+                this.style.height = this.scrollHeight + 'px';
+            }
+        }
     }
 
     // components/Crud:renderFormSetvals
