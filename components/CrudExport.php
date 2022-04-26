@@ -88,9 +88,9 @@ class CrudExport extends BaseObject
         $colI = 1;
         $model = $this->model;
         foreach ($columns as $column) {
-            $sheet->setCellValueByColumnAndRow($colI, $rowI, $column->attribute);
+            $sheet->setCellValue([$colI, $rowI], $column->attribute);
             $headerValue = $this->needRenderData ? strip_tags($column->renderHeaderCell()) : (string)$model->getAttributeLabel($column->attribute);
-            $sheet->setCellValueByColumnAndRow($colI, $rowI + 1, $headerValue);
+            $sheet->setCellValue([$colI, $rowI + 1], $headerValue);
             $colI++;
         }
         $rowI = 2;
@@ -105,7 +105,7 @@ class CrudExport extends BaseObject
             foreach ($columns as $column) {
                 $attribute = $column->attribute;
                 $value = $this->needRenderData ? strip_tags($column->renderDataCell($model, $key, $index)) : (string)$model->getAttribute($attribute);
-                $sheet->setCellValueByColumnAndRow($colI, $rowI, $value);
+                $sheet->setCellValue([$colI, $rowI], $value);
                 $colI++;
             }
         }
