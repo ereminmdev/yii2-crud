@@ -285,11 +285,13 @@ class Crud extends BaseObject
                     '{update}' => [
                         'label' => Yii::t('crud', 'Edit'),
                         'url' => $this->columnUrlCreator('update', $model, $key),
+                        'linkOptions' => ['class' => 'js-store-page-scroll'],
                     ],
                     '{delete}' => [
                         'label' => Yii::t('crud', 'Delete'),
                         'url' => $this->columnUrlCreator('delete', $model, $key),
                         'linkOptions' => [
+                            'class' => 'js-store-page-scroll',
                             'data-confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),
                         ],
                         'visible' => $this->getConfig('access.delete', true),
@@ -1237,19 +1239,23 @@ $(".js-checked-action").on("click", function () {
             '{update}' => [
                 'label' => Yii::t('crud', 'Edit'),
                 'url' => $controller->urlCreate(['update', 'id' => $model->id]),
+                'linkOptions' => ['class' => 'js-store-page-scroll'],
             ],
             '{create1}' => [
                 'label' => Yii::t('crud', 'Create nearby'),
                 'url' => $controller->urlCreate(['create', $model->formName() => [$parentField => $model->$parentField], 'returnUrl' => $returnUrl]),
+                'linkOptions' => ['class' => 'js-store-page-scroll'],
             ],
             '{create2}' => [
                 'label' => Yii::t('crud', 'Create as sublevel') . ' →',
                 'url' => $controller->urlCreate(['create', $model->formName() => [$parentField => $model->id], 'returnUrl' => $returnUrl]),
+                'linkOptions' => ['class' => 'js-store-page-scroll'],
             ],
             '{delete}' => [
                 'label' => Yii::t('crud', 'Delete'),
                 'url' => $controller->urlCreate(['delete', 'id' => $model->id]),
                 'linkOptions' => [
+                    'class' => 'js-store-page-scroll',
                     'data-confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),
                 ],
                 'visible' => $this->getConfig('access.delete', true),

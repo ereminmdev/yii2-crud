@@ -1,8 +1,8 @@
 jQuery(function ($) {
 
-    // views/_index_toolbar
+    // views/index
     if ($('.cms-crud-index').length) {
-        // stop form submitting when only part of value is written
+        // Stop submitting a form when only part of the value is written
         $('.cms-crud-grid tr.filters').find('input[type=date], input[type=time]').each(function () {
             $(this).on('change', function () {
                 return false;
@@ -80,12 +80,26 @@ jQuery(function ($) {
 
             return false;
         });
+
+        // Based on: https://github.com/evaldsurtans/maintainscroll.jquery.js
+        const pageNameSep = '\uE000'; // an unusual char: unicode 'Private Use, First'
+
+        if (window.name && window.name.indexOf(pageNameSep) > -1) {
+            const parts = window.name.split(pageNameSep);
+            if (parts.length >= 3) {
+                window.name = parts[0];
+                window.scrollTo(parseFloat(parts[parts.length - 2]), parseFloat(parts[parts.length - 1]));
+            }
+        }
+
+        $('.js-store-page-scroll').on('click', event => {
+            window.name += pageNameSep + window.pageXOffset + pageNameSep + window.pageYOffset;
+        });
     }
 
     // views/_form
     if ($('.cms-crud-form').length) {
-        let $crudForm = $('#crudFormData'),
-            isDataChanged = false;
+        let $crudForm = $('#crudFormData'), isDataChanged = false;
 
         $crudForm.on('change', function () {
             isDataChanged = true;
@@ -105,8 +119,7 @@ jQuery(function ($) {
         });
 
         $(document).on('click', '.js-delete-file', function () {
-            let that = this,
-                message = $(this).data('message');
+            let that = this, message = $(this).data('message');
 
             if (window.confirm(message)) {
                 $.get($(this).attr('href'), function () {
@@ -134,7 +147,7 @@ jQuery(function ($) {
         }
     }
 
-    // components/Crud:renderFormSetvals
+    // views/setvals
     if ($('.cms-crud-setvals').length) {
         $('.js-toggle-block').on('change', function () {
             let destination = $(this).data('destination');
