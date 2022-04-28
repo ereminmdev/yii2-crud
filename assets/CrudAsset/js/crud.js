@@ -81,19 +81,20 @@ jQuery(function ($) {
             return false;
         });
 
-        // Based on: https://github.com/evaldsurtans/maintainscroll.jquery.js
-        const pageNameSep = '\uE000'; // an unusual char: unicode 'Private Use, First'
+        // Maintain page scroll position
+        const pageScrollKey = location.href;
+        const pageScrollX = sessionStorage.getItem(pageScrollKey + 'X');
+        const pageScrollY = sessionStorage.getItem(pageScrollKey + 'Y');
+        sessionStorage.removeItem(pageScrollKey + 'X');
+        sessionStorage.removeItem(pageScrollKey + 'Y');
 
-        if (window.name && window.name.indexOf(pageNameSep) > -1) {
-            const parts = window.name.split(pageNameSep);
-            if (parts.length >= 3) {
-                window.name = parts[0];
-                window.scrollTo(parseFloat(parts[parts.length - 2]), parseFloat(parts[parts.length - 1]));
-            }
+        if ((pageScrollX !== null) && (pageScrollY !== null)) {
+            window.scrollTo(parseFloat(pageScrollX), parseFloat(pageScrollY));
         }
 
-        $('.js-store-page-scroll').on('click', event => {
-            window.name += pageNameSep + window.pageXOffset + pageNameSep + window.pageYOffset;
+        $('.js-store-page-scroll').on('click', () => {
+            sessionStorage.setItem(pageScrollKey + 'X', window.scrollX.toString());
+            sessionStorage.setItem(pageScrollKey + 'Y', window.scrollY.toString());
         });
     }
 
