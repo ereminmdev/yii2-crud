@@ -81,21 +81,22 @@ jQuery(function ($) {
             return false;
         });
 
-        // Maintain page scroll position
-        const pageScrollKey = location.href;
-        const pageScrollX = sessionStorage.getItem(pageScrollKey + 'X');
-        const pageScrollY = sessionStorage.getItem(pageScrollKey + 'Y');
-        sessionStorage.removeItem(pageScrollKey + 'X');
-        sessionStorage.removeItem(pageScrollKey + 'Y');
+        function savePageScrollPosition() {
+            const key = 'pageScrollPos.' + location.href;
+            const data = sessionStorage.getItem(key);
 
-        if ((pageScrollX !== null) && (pageScrollY !== null)) {
-            window.scrollTo(parseFloat(pageScrollX), parseFloat(pageScrollY));
+            if (data !== null) {
+                const pos = JSON.parse(data);
+                window.scrollTo(pos.x, pos.y);
+                sessionStorage.removeItem(key);
+            }
+
+            $('.js-store-page-scroll').on('click', () => {
+                sessionStorage.setItem(key, JSON.stringify({x: window.scrollX, y: window.scrollY}));
+            });
         }
 
-        $('.js-store-page-scroll').on('click', () => {
-            sessionStorage.setItem(pageScrollKey + 'X', window.scrollX.toString());
-            sessionStorage.setItem(pageScrollKey + 'Y', window.scrollY.toString());
-        });
+        savePageScrollPosition();
     }
 
     // views/_form
