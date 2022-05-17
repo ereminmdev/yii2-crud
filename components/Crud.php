@@ -796,7 +796,7 @@ class Crud extends BaseObject
                     $formField->parts['{file}'] = $value;
                     if ($value) {
                         $formField->parts['{file}'] = Html::tag('p', Html::a('<span class="glyphicon glyphicon-file"></span> ' . $value, $behavior->getUploadUrl($field), ['class' => 'btn btn-link', 'target' => '_blank']) .
-                            ' &nbsp; ' . Html::a('<span class="glyphicon glyphicon-remove"></span> ' . Yii::t('crud', 'Delete file'), $this->columnUrlCreator('delete-upload-file', $model, $model->id, ['field' => $field, 'returnUrl' => Url::current()]),
+                            ' &nbsp; ' . Html::a('<span class="glyphicon glyphicon-remove"></span> ' . Yii::t('crud', 'Delete'), $this->columnUrlCreator('delete-upload-file', $model, $model->id, ['field' => $field, 'returnUrl' => Url::current()]),
                                 ['class' => 'btn js-delete-file', 'data-message' => Yii::t('crud', 'Are you sure you want to delete this file?')]), ['class' => 'help-block']);
                     }
                     break;
@@ -820,8 +820,8 @@ class Crud extends BaseObject
                         $file .= '<div class="help-block">' .
                             Html::a('<span class="glyphicon glyphicon-download-alt"></span> ' . Yii::t('crud', 'Download'), $model->getUploadUrl($field), ['class' => 'btn btn-default btn-xs', 'download' => true]) .
                             ' &nbsp; ' .
-                            Html::a('<span class="glyphicon glyphicon-remove"></span> ' . Yii::t('crud', 'Delete image'), $this->columnUrlCreator('delete-upload-image', $model, $model->id, ['field' => $field, 'returnUrl' => Url::current()]),
-                                ['class' => 'btn btn-default btn-xs js-delete-file', 'data-message' => Yii::t('crud', 'Are you sure you want to delete this image?')]) .
+                            Html::a('<span class="glyphicon glyphicon-remove"></span> ' . Yii::t('crud', 'Delete'), $this->columnUrlCreator('delete-upload-image', $model, $model->id, ['field' => $field, 'returnUrl' => Url::current()]),
+                                ['class' => 'btn btn-default btn-xs js-delete-file pull-right', 'data-message' => Yii::t('crud', 'Are you sure you want to delete this image?')]) .
                             '</div>';
                     }
                     $formField = $form->field($model, $field, ['template' => "{label}\n{file}\n{input}\n{hint}\n{error}"])->fileInput(['accept' => 'image/*']);

@@ -56,8 +56,6 @@ return [
     '{variant, number} {variant, plural, one{item} other{items}} per page' => '{variant, number} {variant, plural, =1{запись} few{записи} many{записей} other{запись}} на страницу',
     'All items' => 'Все записи',
 
-    'Delete file' => 'Удалить файл',
     'Are you sure you want to delete this file?' => 'Вы уверены, что хотите удалить файл?',
-    'Delete image' => 'Удалить изображение',
     'Are you sure you want to delete this image?' => 'Вы уверены, что хотите удалить изображение?',
 ];
