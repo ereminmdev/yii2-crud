@@ -654,7 +654,7 @@ class Crud extends BaseObject
 
     /**
      * @param string $action
-     * @param string $model
+     * @param ActiveRecord $model
      * @param string $key
      * @param array $urlParams
      * @return string
@@ -795,8 +795,8 @@ class Crud extends BaseObject
                     $formField = $form->field($model, $field, ['template' => "{label}\n{file}\n{input}\n{hint}\n{error}"])->fileInput();
                     $formField->parts['{file}'] = $value;
                     if ($value) {
-                        $formField->parts['{file}'] = Html::tag('p', Html::a('<i class="fa fa-file"></i> ' . $value, $behavior->getUploadUrl($field), ['class' => 'btn btn-link', 'target' => '_blank']) .
-                            ' &nbsp; ' . Html::a('<i class="fa fa-remove"></i> ' . Yii::t('crud', 'Delete file'), $this->columnUrlCreator('delete-upload-file', $model, $model->id, ['field' => $field, 'returnUrl' => Url::current()]),
+                        $formField->parts['{file}'] = Html::tag('p', Html::a('<span class="glyphicon glyphicon-file"></span> ' . $value, $behavior->getUploadUrl($field), ['class' => 'btn btn-link', 'target' => '_blank']) .
+                            ' &nbsp; ' . Html::a('<span class="glyphicon glyphicon-remove"></span> ' . Yii::t('crud', 'Delete file'), $this->columnUrlCreator('delete-upload-file', $model, $model->id, ['field' => $field, 'returnUrl' => Url::current()]),
                                 ['class' => 'btn js-delete-file', 'data-message' => Yii::t('crud', 'Are you sure you want to delete this file?')]), ['class' => 'help-block']);
                     }
                     break;
@@ -816,8 +816,14 @@ class Crud extends BaseObject
                     $thumb = isset($schema['thumb']) ? $schema['thumb'] : 'thumb';
                     $url = $model->getImageUrl($field, $thumb);
                     $file = Html::tag('p', Html::img($url, ['class' => 'img-responsive crud-field-img img-result', 'data-src' => $model->getUploadUrl($field)]), ['class' => 'help-block']);
-                    $file .= $model->$field ? Html::tag('p', Html::a('<i class="fa fa-remove"></i> ' . Yii::t('crud', 'Delete image'), $this->columnUrlCreator('delete-upload-image', $model, $model->id, ['field' => $field, 'returnUrl' => Url::current()]),
-                        ['class' => 'btn btn-default btn-xs js-delete-file', 'data-message' => Yii::t('crud', 'Are you sure you want to delete this image?')]), ['class' => 'help-block']) : '';
+                    if ($model->$field) {
+                        $file .= '<div class="help-block">' .
+                            Html::a('<span class="glyphicon glyphicon-download-alt"></span> ' . Yii::t('crud', 'Download'), $model->getUploadUrl($field), ['class' => 'btn btn-default btn-xs', 'download' => true]) .
+                            ' &nbsp; ' .
+                            Html::a('<span class="glyphicon glyphicon-remove"></span> ' . Yii::t('crud', 'Delete image'), $this->columnUrlCreator('delete-upload-image', $model, $model->id, ['field' => $field, 'returnUrl' => Url::current()]),
+                                ['class' => 'btn btn-default btn-xs js-delete-file', 'data-message' => Yii::t('crud', 'Are you sure you want to delete this image?')]) .
+                            '</div>';
+                    }
                     $formField = $form->field($model, $field, ['template' => "{label}\n{file}\n{input}\n{hint}\n{error}"])->fileInput(['accept' => 'image/*']);
                     $formField->parts['{file}'] = $file;
                     $widgetOptions = isset($schema['widgetOptions']) ? $schema['widgetOptions'] : [];
