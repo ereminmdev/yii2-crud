@@ -38,6 +38,8 @@ $controller = $this->context;
         '<li role="presentation" class="divider"></li>',
         ['label' => Yii::t('crud', 'Reset filter'), 'url' => $controller->urlCreate([], false, false)],
         '<li role="presentation" class="divider"></li>',
+        ['label' => Yii::t('crud', 'Set values'), 'url' => $controller->urlCreate(['setvals', 'id' => 'all'])],
+        '<li role="presentation" class="divider"></li>',
         [
             'label' => Yii::t('crud', 'Delete all'),
             'url' => $controller->urlCreate(['delete', 'id' => 'all']),
