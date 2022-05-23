@@ -310,15 +310,18 @@ class DefaultController extends Controller
 
             $beforeDuplicate = $this->getCrud()->getConfig('onBeforeDuplicate');
             if ($beforeDuplicate instanceof Closure) {
-                call_user_func($beforeDuplicate, $cloneModel);
+                call_user_func($beforeDuplicate, $cloneModel, $model);
             }
 
             if ($cloneModel->save() === false) {
                 $errors = array_values($cloneModel->getFirstErrors());
                 Yii::$app->session->setFlash('cms-crud', $errors[0]);
             } else {
-                if ($cloneModel->getBehavior('ImageBehavior') !== null) {
-                    $cloneModel->recreateImagesFromModel($model);
+                $columnsSchema = $this->getCrud()->columnsSchema();
+                foreach ($columnsSchema as $attribute => $scheme) {
+                    if (($scheme['type'] == 'cropper-image-upload') && ($filename = $model->getAttribute($attribute))) {
+                        $cloneModel->createFromUrl($model->getUploadPath($attribute));
+                    }
                 }
 
                 if ($cloneModel->hasAttribute('position')) {
@@ -327,7 +330,7 @@ class DefaultController extends Controller
 
                 $afterDuplicate = $this->getCrud()->getConfig('onAfterDuplicate');
                 if ($afterDuplicate instanceof Closure) {
-                    call_user_func($afterDuplicate, $cloneModel);
+                    call_user_func($afterDuplicate, $cloneModel, $model);
                 }
 
                 $cloneModel->save();
