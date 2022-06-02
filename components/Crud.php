@@ -571,7 +571,7 @@ class Crud extends BaseObject
                         if ($schema['rtype'] == 'hasOne') {
                             $model = $this->getModel('getfields');
                             $relatedClass = $model->{'get' . $relation}()->modelClass;
-                            $list = isset($schema['getList']) ? call_user_func($schema['getList']) : static::getList($relatedClass, $schema['titleField']);
+                            $list = isset($schema['getList']) ? call_user_func($schema['getList']) : (isset($schema['listAsTree']) && $schema['listAsTree'] ? static::getTreeList($relatedClass, $schema['titleField']) : static::getList($relatedClass, $schema['titleField']));
                             $columns[$key] = [
                                 'attribute' => $field,
                                 'filter' => $filter ?? $list,
