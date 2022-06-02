@@ -848,7 +848,7 @@ class Crud extends BaseObject
 
                     if ($schema['rtype'] == 'hasOne') {
                         $relatedClass = $model->{'get' . $relation}()->modelClass;
-                        $list = isset($schema['getList']) ? call_user_func($schema['getList']) : static::getList($relatedClass, $schema['titleField']);
+                        $list = isset($schema['getList']) ? call_user_func($schema['getList']) : (isset($schema['listAsTree']) && $schema['listAsTree'] ? static::getTreeList($relatedClass, $schema['titleField']) : static::getList($relatedClass, $schema['titleField']));
                         $options = [];
                         if (array_key_exists('allowNull', $schema) && $schema['allowNull']) {
                             $options = ['prompt' => ''];
@@ -872,7 +872,7 @@ class Crud extends BaseObject
                             $linkKey = array_keys($link)[0];
 
                             if (array_key_exists('select2', $schema)) {
-                                $list = isset($schema['getList']) ? call_user_func($schema['getList']) : static::getList($relatedClass, $schema['titleField']);
+                                $list = isset($schema['getList']) ? call_user_func($schema['getList']) : (isset($schema['listAsTree']) && $schema['listAsTree'] ? static::getTreeList($relatedClass, $schema['titleField']) : static::getList($relatedClass, $schema['titleField']));
                                 $schema['select2'] = is_array($schema['select2']) ? $schema['select2'] : [];
                                 $schema['select2']['multiple'] = true;
                                 $formField = $form->field($model, $field)->widget(
@@ -890,7 +890,7 @@ class Crud extends BaseObject
                         }
                     } elseif ($schema['rtype'] == 'manyMany') {
                         $relatedClass = $model->{'get' . $relation}()->modelClass;
-                        $list = isset($schema['getList']) ? call_user_func($schema['getList']) : static::getList($relatedClass, $schema['titleField']);
+                        $list = isset($schema['getList']) ? call_user_func($schema['getList']) : (isset($schema['listAsTree']) && $schema['listAsTree'] ? static::getTreeList($relatedClass, $schema['titleField']) : static::getList($relatedClass, $schema['titleField']));
 
                         if (array_key_exists('select2', $schema)) {
                             $schema['select2'] = is_array($schema['select2']) ? $schema['select2'] : [];
@@ -1449,5 +1449,39 @@ $(".js-checked-action").on("click", function () {
         }
 
         return $query->column();
+    }
+
+    /**
+     * Возвращает массив из $title, индексированный по $index
+     * Рекомендация: если в базе установить ключ на $title, выборка идет по этому индексу
+     * @param ActiveRecord|string $class класс модели для выборки
+     * @param string $title поле для значений массива (sql-запрос)
+     * @param string $index поля для индекса массива
+     * @param callable (ActiveQuery $query) $queryFunc функция для настройки ActiveQuery
+     * @param mixed $parentId id родителя
+     * @return array
+     */
+    public static function getTreeList($class, $title = 'title', $index = 'id', $queryFunc = null, $parentId = 0, $prefix = '')
+    {
+        $query = $class::find()
+            ->select(['crud_title_field' => $title, 'crud_id_field' => $index])
+            ->andWhere(['parent_id' => $parentId])
+            ->asArray();
+
+        if ($query->orderBy === null) {
+            $query->orderBy(['crud_title_field' => SORT_ASC]);
+        }
+
+        if ($queryFunc instanceof Closure) {
+            call_user_func($queryFunc, $query);
+        }
+
+        $list = [];
+        foreach ($query->each() as $row) {
+            $list[$row['crud_id_field']] = $prefix . $row['crud_title_field'];
+            $list = ArrayHelper::merge($list, self::getTreeList($class, $title, $index, $queryFunc, $row['crud_id_field'], $prefix . '   '));
+        }
+
+        return $list;
     }
 }
