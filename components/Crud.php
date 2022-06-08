@@ -1461,25 +1461,29 @@ $(".js-checked-action").on("click", function () {
      * @param mixed $parentId id родителя
      * @return array
      */
-    public static function getTreeList($class, $title = 'title', $index = 'id', $queryFunc = null, $parentId = 0, $prefix = '')
+    public static function getTreeList($class, $title = 'title', $index = 'id', $queryFunc = null, $parentId = 0, $prefix = '', $items = null)
     {
-        $query = $class::find()
-            ->select(['crud_title_field' => $title, 'crud_id_field' => $index])
-            ->andWhere(['parent_id' => $parentId])
-            ->asArray();
+        if ($items === null) {
+            $query = $class::find()
+                ->select(['crud_title_field' => $title, 'crud_id_field' => $index, 'parent_id'])
+                ->asArray();
 
-        if ($query->orderBy === null) {
-            $query->orderBy(['crud_title_field' => SORT_ASC]);
-        }
+            if ($query->orderBy === null) {
+                $query->orderBy(['crud_title_field' => SORT_ASC]);
+            }
 
-        if ($queryFunc instanceof Closure) {
-            call_user_func($queryFunc, $query);
+            if ($queryFunc instanceof Closure) {
+                call_user_func($queryFunc, $query);
+            }
+
+            $items = $query->all();
         }
 
         $list = [];
-        foreach ($query->each() as $row) {
-            $list[$row['crud_id_field']] = $prefix . $row['crud_title_field'];
-            $list = ArrayHelper::merge($list, self::getTreeList($class, $title, $index, $queryFunc, $row['crud_id_field'], $prefix . '   '));
+        foreach ($items as $item) {
+            if ($item['parent_id'] != $parentId) continue;
+            $list[$item['crud_id_field']] = $prefix . $item['crud_title_field'];
+            $list = ArrayHelper::merge($list, self::getTreeList($class, $title, $index, $queryFunc, $item['crud_id_field'], $prefix . '   ', $items));
         }
 
         return $list;
