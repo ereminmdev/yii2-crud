@@ -758,7 +758,7 @@ class Crud extends BaseObject
                     $formField = $form->field($model, $field)->textInput(['type' => 'number']);
                     break;
                 case Schema::TYPE_TEXT:
-                    $formField = $form->field($model, $field)->textarea(['class' => 'form-control input-auto-height']);
+                    $formField = $form->field($model, $field)->textarea(['class' => 'form-control input-auto-height', 'rows' => 1]);
                     break;
                 case 'html':
                     $widgetOptions = isset($schema['widgetOptions']) ? $schema['widgetOptions'] : [];
