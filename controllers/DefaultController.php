@@ -572,7 +572,7 @@ class DefaultController extends Controller
         $columnsSchema = $crud->columnsSchema();
         $schema = $columnsSchema[$field] ?? [];
         $model = $crud->getModel('getfields');
-        $relatedClass = $model->{'get' . $schema['relation']}()->modelClass;
+        $relatedClass = $model->getRelation($schema['relation'])->modelClass;
         $titleField = $schema['select2TitleField'] ?? ($schema['titleField'] ?? $field);
 
         Yii::$app->response->format = Response::FORMAT_JSON;
