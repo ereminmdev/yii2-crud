@@ -169,7 +169,7 @@ class Crud extends BaseObject
             $formName = $model->formName();
             $tableName = $modelClass::tableName();
             foreach ($filterParams[$formName] as $attribute => $value) {
-                if (($value == '') || (!in_array($attribute, $model->attributes()) && !isset($columnsSchema[$attribute]['relatedAttribute']))) {
+                if (($value == '') || isset($columnsSchema[$attribute]['unsafeOnSearch']) || (!in_array($attribute, $model->attributes()) && !isset($columnsSchema[$attribute]['relatedAttribute']))) {
                     continue;
                 }
                 $attributeFullName = $tableName . '.[[' . $attribute . ']]';
