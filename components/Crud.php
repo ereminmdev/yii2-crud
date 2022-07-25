@@ -513,7 +513,9 @@ class Crud extends BaseObject
                         break;
                     case 'sort':
                         $this->sortableJs = true;
-                        unset($columns[$key]);
+                        if (!isset($paramColumns[$field])) {
+                            unset($columns[$key]);
+                        }
                         break;
                     case 'array':
                         $itemList = $schema['itemList'] instanceof Closure ? call_user_func($schema['itemList']) : $schema['itemList'];
