@@ -296,6 +296,7 @@ class DefaultController extends Controller
      */
     public function actionDuplicate($id)
     {
+        $columnsSchema = $this->getCrud()->columnsSchema();
         $modelClass = $this->getCrud()->modelClass;
         $models = $this->getCrud()->getModels();
 
@@ -317,7 +318,6 @@ class DefaultController extends Controller
                 $errors = array_values($cloneModel->getFirstErrors());
                 Yii::$app->session->setFlash('cms-crud', $errors[0]);
             } else {
-                $columnsSchema = $this->getCrud()->columnsSchema();
                 foreach ($columnsSchema as $attribute => $scheme) {
                     if (($scheme['type'] == 'cropper-image-upload') && ($filename = $model->getAttribute($attribute))) {
                         $cloneModel->createFromUrl($model->getUploadPath($attribute));
@@ -361,10 +361,19 @@ class DefaultController extends Controller
                 $setModel->addError('summary', Yii::t('crud', 'Please choose a field(s)'));
             } else {
                 $setVals = $model->getAttributes($setAttributes);
+                $columnsSchema = $this->getCrud()->columnsSchema();
                 $models = $this->getCrud()->getModels();
-                foreach ($models as $model) {
-                    $model->setAttributes($setVals);
-                    $model->save();
+
+                foreach ($models as $saveModel) {
+                    $saveModel->setAttributes($setVals);
+
+                    foreach ($columnsSchema as $attribute => $scheme) {
+                        if (($scheme['type'] == 'cropper-image-upload') && ($filename = $model->getAttribute($attribute))) {
+                            $saveModel->createFromUrl($model->getUploadPath($attribute));
+                        }
+                    }
+
+                    $saveModel->save();
                 }
 
                 $url = $this->getActionSuccessUrl('setvals', [
