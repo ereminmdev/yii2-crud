@@ -7,12 +7,14 @@ use ereminmdev\yii2\crud\controllers\DefaultController;
 use ereminmdev\yii2\crud\grid\DropDownButtonColumn;
 use ereminmdev\yii2\crud\models\CrudExportForm;
 use ereminmdev\yii2\crud\models\CrudImportForm;
+use ereminmdev\yii2\elfinder\Elfinder;
 use ereminmdev\yii2\tinymce\TinyMce;
 use Error;
 use Exception;
 use Yii;
 use yii\base\BaseObject;
 use yii\base\DynamicModel;
+use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
 use yii\bootstrap\ButtonDropdown;
 use yii\bootstrap\Tabs;
@@ -22,6 +24,7 @@ use yii\db\ActiveRecord;
 use yii\db\Schema;
 use yii\grid\CheckboxColumn;
 use yii\helpers\ArrayHelper;
+use yii\helpers\FileHelper;
 use yii\helpers\Html;
 use yii\helpers\StringHelper;
 use yii\helpers\Url;
@@ -631,6 +634,28 @@ class Crud extends BaseObject
                             }
                         }
                         break;
+                    case 'files':
+                        $columns[$key] = [
+                            'class' => 'yii\grid\Column',
+                            'header' => $model->getAttributeLabel($field),
+                            'content' => function (ActiveRecord $model) use ($field) {
+                                $html = '';
+                                try {
+                                    $basePath = $model->getFilesPath($field);
+                                    $baseUrl = $model->getFilesUrl($field);
+                                    $files = FileHelper::findFiles($basePath);
+                                    foreach ($files as $file) {
+                                        $filename = mb_basename($file);
+                                        $html .= Html::a('<i class="fa fa-file-o"></i> ' . $filename,
+                                            $baseUrl . '/' . $filename,
+                                            ['class' => 'btn btn-link btn-sm text-ellipsis', 'target' => '_blank']);
+                                    }
+                                } catch (InvalidArgumentException $e) {
+                                }
+                                return $html;
+                            },
+                        ];
+                        break;
                     default:
                         $columns[$key] = [
                             'attribute' => $field,
@@ -906,6 +931,19 @@ class Crud extends BaseObject
                             $formField = $form->field($model, $field, ['inline' => true])->checkboxList($list);
                         }
                     }
+                    break;
+                case 'files':
+                    return $content . '<div class="form-group field-' . $field . '-files">' .
+                        '<label class="control-label">' . $model->getAttributeLabel($field) . '</label>' .
+                        Elfinder::widget([
+                            'clientOptions' => [
+                                'height' => 250,
+                                'url' => $this->columnUrlCreator('files-connector', $model, $model->id, ['field' => $field]),
+                                'ui' => ['toolbar'],
+                                'uiOptions' => ['toolbar' => [['upload']]],
+                            ],
+                        ]) .
+                        '</div>';
                     break;
                 default:
                     $formField = $form->field($model, $field)->textInput();

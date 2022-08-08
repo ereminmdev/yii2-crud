@@ -3,9 +3,12 @@
 namespace ereminmdev\yii2\crud\controllers;
 
 use Closure;
+use elFinder;
+use elFinderConnector;
 use ereminmdev\yii2\crud\components\Crud;
 use ereminmdev\yii2\crud\models\CrudExportForm;
 use ereminmdev\yii2\crud\models\CrudImportForm;
+use ereminmdev\yii2\elfinder\ElfinderBaseAsset;
 use Exception;
 use PhpOffice\PhpSpreadsheet\Exception as PhpSpreadsheetException;
 use Throwable;
@@ -603,6 +606,58 @@ class DefaultController extends Controller
         $query->asArray()->limit(50);
 
         return ['results' => $query->all()];
+    }
+
+    /**
+     * @param string $field
+     * @param int $id
+     */
+    public function actionFilesConnector($field, $id)
+    {
+        $crud = $this->getCrud();
+        $modelClass = $crud->modelClass;
+
+        $id = Yii::$app->request->get('id');
+        $model = $id ? $crud->findModel($id) : new $modelClass;
+
+        $modelPath = $model->getFilesPath($field);
+        $modelUrl = $model->getFilesUrl($field);
+
+        $bundle = ElfinderBaseAsset::register(Yii::$app->view);
+        $iconUrl = $bundle->baseUrl . '/img/volume_icon_local.png';
+
+        $dir = Yii::getAlias('@vendor/studio-42/elfinder/php/');
+        include_once $dir . 'elFinderConnector.class.php';
+        include_once $dir . 'elFinder.class.php';
+        include_once $dir . 'elFinderVolumeDriver.class.php';
+        include_once $dir . 'elFinderVolumeLocalFileSystem.class.php';
+
+        $basePath = Yii::getAlias('@frontend/web');
+        $baseUrl = Yii::$app->urlManagerFrontend->getBaseUrl();
+
+        $opts = array(
+            'debug' => YII_ENV_DEV,
+            'roots' => [
+                [
+                    'driver' => 'LocalFileSystem',
+                    'path' => $modelPath,
+                    'URL' => $modelUrl,
+                    'alias' => $model->getAttributeLabel($field),
+                    'icon' => $iconUrl,
+                    'tmbPath' => $basePath . '/files/temp/elfinder/tmb',
+                    'tmbURL' => $baseUrl . '/files/temp/elfinder/tmb',
+                    'tmpPath' => '',
+                    'quarantine' => $basePath . '/files/temp/elfinder/quarantine',
+                    'uploadOverwrite' => false,
+                ],
+            ],
+        );
+
+        @mkdir($modelPath, 0777, true);
+        @mkdir($basePath . '/files/temp/elfinder', 0777, true);
+
+        $connector = new elFinderConnector(new elFinder($opts));
+        $connector->run();
     }
 
     /**
