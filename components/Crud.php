@@ -618,8 +618,9 @@ class Crud extends BaseObject
                                     return $model->getAttributeLabel($field) . ' (' . count($model->$relation) . ')';
                                 },
                             ];
-                            if (isset($schema['relatedAttribute']) && isset($schema['itemList'])) {
-                                $itemList = $schema['itemList'] instanceof Closure ? call_user_func($schema['itemList']) : $schema['itemList'];
+                            if (isset($schema['getList']) || isset($schema['itemList'])) {
+                                $itemList = isset($schema['getList']) ? $schema['getList'] : $schema['itemList'];
+                                $itemList = $itemList instanceof Closure ? call_user_func($itemList) : $itemList;
                                 $columns[$key] = ArrayHelper::merge($columns[$key], [
                                     'filter' => $itemList,
                                     'attribute' => $field,
