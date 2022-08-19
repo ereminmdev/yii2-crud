@@ -403,6 +403,7 @@ class Crud extends BaseObject
                             'attribute' => $field,
                             'format' => 'boolean',
                             'filter' => $itemList,
+                            'filterInputOptions' => ['strict' => true, 'class' => 'form-control', 'id' => null],
                         ];
                         if (ArrayHelper::getValue($schema, 'gridDropButton', true)) {
                             $columns[$key] = ArrayHelper::merge($columns[$key], [
@@ -529,6 +530,7 @@ class Crud extends BaseObject
                                 'class' => DropDownButtonColumn::class,
                                 'attribute' => $field,
                                 'filter' => $itemList,
+                                'filterInputOptions' => ['strict' => true, 'class' => 'form-control', 'id' => null],
                                 'items' => function ($model) use ($field, $dropList) {
                                     $items = [];
                                     foreach ($dropList as $itemKey => $itemValue) {
@@ -550,6 +552,7 @@ class Crud extends BaseObject
                             $columns[$key] = [
                                 'attribute' => $field,
                                 'filter' => $itemList,
+                                'filterInputOptions' => ['strict' => true, 'class' => 'form-control', 'id' => null],
                                 'value' => function ($model, $key, $index, $column) use ($itemList) {
                                     $key = $model->{$column->attribute};
                                     return array_key_exists($key, $itemList) ? $itemList[$key] : '';
@@ -562,6 +565,7 @@ class Crud extends BaseObject
                         $columns[$key] = [
                             'attribute' => $field,
                             'filter' => $list,
+                            'filterInputOptions' => ['strict' => true, 'class' => 'form-control', 'id' => null],
                             'value' => function ($model, $key, $index, $column) use ($list) {
                                 $value = (array)$model->{$column->attribute};
                                 $value = array_intersect_key($list, array_flip($value));
@@ -580,6 +584,7 @@ class Crud extends BaseObject
                             $columns[$key] = [
                                 'attribute' => $field,
                                 'filter' => $filter ?? $list,
+                                'filterInputOptions' => ['strict' => true, 'class' => 'form-control', 'id' => null],
                                 'content' => function (ActiveRecord $model) use ($field, $schema, $relation, $list) {
                                     $relatedClass = $model->getRelation($relation)->modelClass;
                                     $relatedPureClass = StringHelper::basename($relatedClass);
@@ -623,6 +628,7 @@ class Crud extends BaseObject
                                 $itemList = $itemList instanceof Closure ? call_user_func($itemList) : $itemList;
                                 $columns[$key] = ArrayHelper::merge($columns[$key], [
                                     'filter' => $itemList,
+                                    'filterInputOptions' => ['strict' => true, 'class' => 'form-control', 'id' => null],
                                     'attribute' => $field,
                                 ]);
                                 if (!isset($schema['gridContentAsList']) || $schema['gridContentAsList']) {
