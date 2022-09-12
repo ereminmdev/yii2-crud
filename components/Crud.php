@@ -782,6 +782,7 @@ class Crud extends BaseObject
                 return $formField;
             }
         }
+        $inputOptions = $schema['formFieldInputOptions'] ?? [];
         if (isset($schema['type'])) {
             switch ($schema['type']) {
                 case false:
@@ -789,44 +790,44 @@ class Crud extends BaseObject
                 case Schema::TYPE_SMALLINT:
                 case Schema::TYPE_INTEGER:
                 case Schema::TYPE_BIGINT:
-                    $formField = $form->field($model, $field)->textInput(['type' => 'number']);
+                    $formField = $form->field($model, $field)->textInput(array_merge($inputOptions, ['type' => 'number']));
                     break;
                 case Schema::TYPE_TEXT:
-                    $formField = $form->field($model, $field)->textarea(['class' => 'form-control input-auto-height', 'rows' => 1]);
+                    $formField = $form->field($model, $field)->textarea(array_merge($inputOptions, ['class' => 'form-control input-auto-height', 'rows' => 1]));
                     break;
                 case 'html':
                     $widgetOptions = isset($schema['widgetOptions']) ? $schema['widgetOptions'] : [];
                     $formField = $form->field($model, $field)->widget(TinyMce::class, $widgetOptions);
                     break;
                 case Schema::TYPE_BOOLEAN:
-                    $formField = $form->field($model, $field)->checkbox();
+                    $formField = $form->field($model, $field)->checkbox($inputOptions);
                     break;
                 case Schema::TYPE_DATE:
-                    $formField = $form->field($model, $field)->input('date');
+                    $formField = $form->field($model, $field)->input('date', $inputOptions);
                     break;
                 case Schema::TYPE_TIME:
-                    $formField = $form->field($model, $field)->input('time');
+                    $formField = $form->field($model, $field)->input('time', $inputOptions);
                     break;
                 case Schema::TYPE_DATETIME:
                     $value = $model->$field;
                     $value = ($value && !is_numeric($value)) ? strtotime($value) : $value;
                     $value = $value ? date('Y-m-d\TH:i:s', $value) : '';
-                    $formField = $form->field($model, $field)->input('datetime-local', ['value' => $value]);
+                    $formField = $form->field($model, $field)->input('datetime-local', array_merge($inputOptions, ['value' => $value]));
                     break;
                 case 'url':
                     $url = $model->$field;
                     $formField = $form->field($model, $field, ['parts' => ['{input}' => Html::a($url, $url)]]);
                     break;
                 case 'email':
-                    $formField = $form->field($model, $field)->input('email');
+                    $formField = $form->field($model, $field)->input('email', $inputOptions);
                     break;
                 case 'tel':
-                    $formField = $form->field($model, $field)->input('tel');
+                    $formField = $form->field($model, $field)->input('tel', $inputOptions);
                     break;
                 case 'file':
                     $value = $model->$field;
                     $behavior = $model->getBehavior($field) ?? $model;
-                    $formField = $form->field($model, $field, ['template' => "{label}\n{file}\n{input}\n{hint}\n{error}"])->fileInput();
+                    $formField = $form->field($model, $field, ['template' => "{label}\n{file}\n{input}\n{hint}\n{error}"])->fileInput($inputOptions);
                     $formField->parts['{file}'] = $value;
                     if ($value) {
                         $formField->parts['{file}'] = Html::tag('p', Html::a('<span class="glyphicon glyphicon-file"></span> ' . $value, $behavior->getUploadUrl($field), ['class' => 'btn btn-link', 'target' => '_blank']) .
@@ -835,7 +836,7 @@ class Crud extends BaseObject
                     }
                     break;
                 case 'image':
-                    $formField = $form->field($model, $field, ['template' => "{label}\n{image}\n{input}\n{hint}\n{error}"])->fileInput(['accept' => 'image/*']);
+                    $formField = $form->field($model, $field, ['template' => "{label}\n{image}\n{input}\n{hint}\n{error}"])->fileInput(array_merge($inputOptions, ['accept' => 'image/*']));
                     if ($model->$field) {
                         $formField->parts['{image}'] = '<div class="form-group field-' . Html::getInputId($model, $field) . '">' .
                             '<div>' . Html::checkbox($field . '__delete', false, ['label' => Yii::t('crud', 'delete')]) . '</div>' .
@@ -858,7 +859,7 @@ class Crud extends BaseObject
                                 ['class' => 'btn btn-default btn-xs js-delete-file pull-right', 'data-message' => Yii::t('crud', 'Are you sure you want to delete this image?')]) .
                             '</div>';
                     }
-                    $formField = $form->field($model, $field, ['template' => "{label}\n{file}\n{input}\n{hint}\n{error}"])->fileInput(['accept' => 'image/*']);
+                    $formField = $form->field($model, $field, ['template' => "{label}\n{file}\n{input}\n{hint}\n{error}"])->fileInput(array_merge($inputOptions, ['accept' => 'image/*']));
                     $formField->parts['{file}'] = $file;
                     $widgetOptions = isset($schema['widgetOptions']) ? $schema['widgetOptions'] : [];
                     if ($schema['type'] == 'crop-image-upload') {
@@ -871,11 +872,11 @@ class Crud extends BaseObject
                     break;
                 case 'array':
                     $itemList = $schema['itemList'] instanceof Closure ? call_user_func($schema['itemList']) : $schema['itemList'];
-                    $formField = $form->field($model, $field)->dropDownList($itemList);
+                    $formField = $form->field($model, $field)->dropDownList($itemList, $inputOptions);
                     break;
                 case 'list':
                     $items = call_user_func($schema['getList']);
-                    $formField = $form->field($model, $field, ['inline' => true])->checkboxList($items);
+                    $formField = $form->field($model, $field, ['inline' => true])->checkboxList($items, $inputOptions);
                     break;
                 case 'relation':
                     $relation = $schema['relation'];
@@ -895,7 +896,7 @@ class Crud extends BaseObject
                                 ArrayHelper::merge($this->getSelect2Options($model, $field, $title, $items), is_array($schema['select2']) ? $schema['select2'] : [])
                             );
                         } else {
-                            $formField = $form->field($model, $field)->dropDownList($list, $options);
+                            $formField = $form->field($model, $field)->dropDownList($list, array_merge($inputOptions, $options));
                         }
                     } elseif ($schema['rtype'] == 'hasMany') {
                         if ($this->scenario != 'create') {
@@ -935,7 +936,7 @@ class Crud extends BaseObject
                                 ArrayHelper::merge(['items' => $list], $schema['select2'])
                             );
                         } else {
-                            $formField = $form->field($model, $field, ['inline' => true])->checkboxList($list);
+                            $formField = $form->field($model, $field, ['inline' => true])->checkboxList($list, $inputOptions);
                         }
                     }
                     break;
@@ -953,13 +954,16 @@ class Crud extends BaseObject
                         '</div>';
                     break;
                 default:
-                    $formField = $form->field($model, $field)->textInput();
+                    $formField = $form->field($model, $field)->textInput($inputOptions);
             }
         } else {
-            $formField = $form->field($model, $field)->textInput();
+            $formField = $form->field($model, $field)->textInput($inputOptions);
         }
         if (isset($schema['hint']) && ($formField instanceof ActiveField)) {
             $formField->hint($schema['hint']);
+        }
+        if (isset($schema['formFieldCallback']) && (is_callable($schema['formFieldCallback'])) && ($formField instanceof ActiveField)) {
+            call_user_func($schema['formFieldCallback'], $formField);
         }
 
         return $content . $formField;
