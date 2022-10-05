@@ -309,7 +309,10 @@ class DefaultController extends Controller
             $cloneModel->setAttributes($model->getAttributes());
 
             if ($cloneModel->hasAttribute('slug')) {
-                $cloneModel->setAttribute('slug', '');
+                $cloneModel->setAttribute('slug', null);
+            }
+            if ($cloneModel->hasAttribute('position')) {
+                $cloneModel->setAttribute('position', null);
             }
 
             $beforeDuplicate = $this->getCrud()->getConfig('onBeforeDuplicate');
@@ -325,10 +328,6 @@ class DefaultController extends Controller
                     if (($scheme['type'] == 'cropper-image-upload') && ($filename = $model->getAttribute($attribute))) {
                         $cloneModel->createFromUrl($model->getUploadPath($attribute));
                     }
-                }
-
-                if ($cloneModel->hasAttribute('position')) {
-                    $cloneModel->setAttribute('position', $cloneModel->getAttribute('position') + $cloneModel->getAttribute('id'));
                 }
 
                 $afterDuplicate = $this->getCrud()->getConfig('onAfterDuplicate');
