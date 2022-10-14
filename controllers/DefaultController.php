@@ -369,9 +369,9 @@ class DefaultController extends Controller
                 foreach ($models as $saveModel) {
                     $saveModel->setAttributes($setVals);
 
-                    foreach ($columnsSchema as $attribute => $scheme) {
-                        if (($scheme['type'] == 'cropper-image-upload') && ($filename = $model->getAttribute($attribute))) {
-                            $saveModel->createFromUrl($model->getUploadPath($attribute));
+                    foreach ($setAttributes as $setAttribute) {
+                        if (isset($columnsSchema[$setAttribute]['type']) && ($columnsSchema[$setAttribute]['type'] == 'cropper-image-upload')) {
+                            $saveModel->createFromUrl($model->getUploadPath($setAttribute));
                         }
                     }
 
