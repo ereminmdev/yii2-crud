@@ -41,7 +41,7 @@ $this->params['breadcrumbs'][] = Yii::t('crud', 'Set values');
 
         <div class="form-group">
             <?= Html::submitButton('<span class="glyphicon glyphicon-ok"></span> ' . Yii::t('crud', 'Set values'), ['class' => 'btn btn-primary']) ?>
-            &nbsp;
+             
             <?= Html::a(Yii::t('crud', 'Cancel'), $controller->urlCreate(['index']), ['class' => 'btn btn-link', 'onclick' => 'window.history.back(); return false']) ?>
         </div>
 

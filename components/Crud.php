@@ -613,7 +613,7 @@ class Crud extends BaseObject
                                     $linkKey = array_keys($link)[0];
                                     $options = ArrayHelper::getValue($schema, 'gridElOptions', []);
 
-                                    return Html::a($schema['title'] . '&nbsp;<small>(' . count($model->$relation) . ')</small>',
+                                    return Html::a($schema['title'] . ' <small>(' . count($model->$relation) . ')</small>',
                                         ['index', 'model' => $relatedClass, $relatedPureClass . '[' . $linkKey . ']' => $model->getPrimaryKey()], $options);
                                 },
                             ];
@@ -831,7 +831,7 @@ class Crud extends BaseObject
                     $formField->parts['{file}'] = $value;
                     if ($value) {
                         $formField->parts['{file}'] = Html::tag('p', Html::a('<span class="glyphicon glyphicon-file"></span> ' . $value, $behavior->getUploadUrl($field), ['class' => 'btn btn-link', 'target' => '_blank']) .
-                            ' &nbsp; ' . Html::a('<span class="glyphicon glyphicon-remove"></span> ' . Yii::t('crud', 'Delete'), $this->columnUrlCreator('delete-upload-file', $model, $model->id, ['field' => $field, 'returnUrl' => Url::current()]),
+                            '   ' . Html::a('<span class="glyphicon glyphicon-remove"></span> ' . Yii::t('crud', 'Delete'), $this->columnUrlCreator('delete-upload-file', $model, $model->id, ['field' => $field, 'returnUrl' => Url::current()]),
                                 ['class' => 'btn js-delete-file', 'data-message' => Yii::t('crud', 'Are you sure you want to delete this file?')]), ['class' => 'help-block']);
                     }
                     break;
@@ -854,7 +854,7 @@ class Crud extends BaseObject
                     if ($model->$field) {
                         $file .= '<div class="help-block">' .
                             Html::a('<span class="glyphicon glyphicon-download-alt"></span> ' . Yii::t('crud', 'Download'), $model->getUploadUrl($field), ['class' => 'btn btn-default btn-xs', 'download' => true]) .
-                            ' &nbsp; ' .
+                            '   ' .
                             Html::a('<span class="glyphicon glyphicon-remove"></span> ' . Yii::t('crud', 'Delete'), $this->columnUrlCreator('delete-upload-image', $model, $model->id, ['field' => $field, 'returnUrl' => Url::current()]),
                                 ['class' => 'btn btn-default btn-xs js-delete-file pull-right', 'data-message' => Yii::t('crud', 'Are you sure you want to delete this image?')]) .
                             '</div>';
@@ -918,7 +918,7 @@ class Crud extends BaseObject
                                 $formField = $form->field($model, $field, [
                                     'template' => "{input}\n",
                                     'parts' => ['{input}' => Html::a(
-                                        $schema['title'] . '&nbsp;<small>(' . count($model->$relation) . ')</small>',
+                                        $schema['title'] . ' <small>(' . count($model->$relation) . ')</small>',
                                         ['index', 'model' => $relatedClass, $relatedPureClass . '[' . $linkKey . ']' => $model->id])],
                                 ]);
                             }
@@ -1350,7 +1350,7 @@ $(".js-checked-action").on("click", function () {
 
             $hover = $this->getConfig('tree.titleBlock_onHover', '');
             $hover = $hover instanceof Closure ? call_user_func_array($hover, [$model, $controller, $this]) : $hover;
-            $hover = !empty($hover) ? '<span class="tree-item--on-hover"> &nbsp; &nbsp; &nbsp; ' . $hover . '</span>' : '';
+            $hover = !empty($hover) ? '<span class="tree-item--on-hover">       ' . $hover . '</span>' : '';
 
             return Html::a($text, $controller->urlCreate(['update', 'id' => $model->id]), $options) . $hover;
         });

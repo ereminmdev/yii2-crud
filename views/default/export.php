@@ -27,7 +27,7 @@ $this->params['breadcrumbs'][] = Yii::t('crud', 'Export');
 
         <p><?= Yii::t('crud', 'When unloading accounted applied to the filter table') ?>.</p>
 
-        <p>&nbsp;</p>
+        <p> </p>
 
         <?= $form->field($model, 'fileFormat')->dropDownList(CrudExportForm::fileFormats()) ?>
 
@@ -36,7 +36,7 @@ $this->params['breadcrumbs'][] = Yii::t('crud', 'Export');
 
     <div class="form-group">
         <?= Html::submitButton('<span class="glyphicon glyphicon-ok"></span> ' . Yii::t('crud', 'Export'), ['class' => 'btn btn-primary']) ?>
-        &nbsp;
+         
         <?= Html::a(Yii::t('crud', 'Cancel'), $controller->urlCreate(['index']), ['class' => 'btn btn-link', 'onclick' => 'window.history.back(); return false']) ?>
     </div>
 
