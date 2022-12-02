@@ -54,8 +54,8 @@ class FilesBehavior extends Behavior
         $this->_path = null;
         $path = $this->getFilesPath();
         if ($path !== $oldPath) {
-            @mkdir(dirname($path), 0777, true);
-            @rename($oldPath, $path);
+            @FileHelper::copyDirectory($oldPath, $path);
+            @FileHelper::removeDirectory($oldPath);
         }
     }
 
@@ -76,7 +76,7 @@ class FilesBehavior extends Behavior
      */
     public function getFilesPath($attribute = null)
     {
-        $bahavior = $attribute === null ? $this : $this->findBehavior($attribute);
+        $bahavior = ($attribute === null) ? $this : $this->findBehavior($attribute);
 
         if ($bahavior->_path === null) {
             $bahavior->_path = is_callable($bahavior->path) ? call_user_func($bahavior->path, $bahavior->owner, $bahavior) : $bahavior->path;
@@ -96,7 +96,7 @@ class FilesBehavior extends Behavior
      */
     public function getFilesUrl($attribute = null)
     {
-        $bahavior = $attribute === null ? $this : $this->findBehavior($attribute);
+        $bahavior = ($attribute === null) ? $this : $this->findBehavior($attribute);
 
         if ($bahavior->_url === null) {
             $bahavior->_url = is_callable($bahavior->url) ? call_user_func($bahavior->url, $bahavior->owner, $bahavior) : $bahavior->url;
