@@ -51,11 +51,13 @@ class FilesBehavior extends Behavior
     public function afterSave()
     {
         $oldPath = $this->getFilesPath();
-        $this->_path = null;
-        $path = $this->getFilesPath();
-        if ($path !== $oldPath) {
-            @FileHelper::copyDirectory($oldPath, $path);
-            @FileHelper::removeDirectory($oldPath);
+        if (is_dir($oldPath)) {
+            $this->_path = null;
+            $path = $this->getFilesPath();
+            if ($path !== $oldPath) {
+                @FileHelper::copyDirectory($oldPath, $path);
+                @FileHelper::removeDirectory($oldPath);
+            }
         }
     }
 
