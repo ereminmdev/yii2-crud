@@ -1,3 +1,7 @@
+/***********************************************************************************************************************
+    Form
+***********************************************************************************************************************/
+
 .cms-crud-form .tab-content > .tab-pane {
     margin: 1em 0 2em;
 }
@@ -29,6 +33,24 @@
 
 .cms-crud-grid .sortable-chosen {
     outline: 1px dashed rgba(0, 0, 0, .3);
+}
+
+.cms-crud-grid th[scope=row] {
+    position: -webkit-sticky;
+    position: sticky;
+    left: 0;
+    z-index: 1;
+}
+
+.cms-crud-grid th:not([scope=row]) {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
+
+.cms-crud-grid th {
+    background: #fff;
 }
 
 /***********************************************************************************************************************
