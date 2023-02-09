@@ -35,18 +35,17 @@
     outline: 1px dashed rgba(0, 0, 0, .3);
 }
 
-.cms-crud-grid th[scope=row] {
-    position: -webkit-sticky;
+.cms-crud-grid thead {
     position: sticky;
-    left: 0;
-    z-index: 1;
+    inset-block-start: 0;
+    z-index: 2;
+    background-color: #fff;
 }
 
-.cms-crud-grid th:not([scope=row]) {
-    position: -webkit-sticky;
+.cms-crud-grid th[scope=row] {
     position: sticky;
-    top: 0;
-    z-index: 2;
+    inset-inline-start: 0;
+    z-index: 1;
 }
 
 .cms-crud-grid th {
