@@ -140,3 +140,9 @@
         visibility: visible;
     }
 }
+
+@media print {
+    .cms-crud-grid thead, .cms-crud-grid th[scope=row] {
+        position: initial;
+    }
+}
