@@ -569,6 +569,40 @@ class DefaultController extends Controller
     }
 
     /**
+     * Output image in jpeg format
+     *
+     * @param string $path
+     */
+    public function actionDownloadJpg($path)
+    {
+        if (file_exists($path)) {
+            $ext = pathinfo($path, PATHINFO_EXTENSION);
+            $im = null;
+
+            switch ($ext) {
+                case 'webp':
+                    $im = @imagecreatefromwebp($path);
+                    break;
+                case 'png':
+                    $im = @imagecreatefrompng($path);
+                    break;
+                case 'jpg':
+                    $im = @imagecreatefromjpeg($path);
+                    break;
+            }
+
+            if ($im) {
+                header('Content-Type: image/jpeg');
+                header('Content-Disposition: inline; filename="' . pathinfo($path, PATHINFO_FILENAME) . '.jpg"');
+                imagejpeg($im, null, 80);
+                imagedestroy($im);
+            }
+
+            exit(0);
+        }
+    }
+
+    /**
      * Find data for select2 widget
      *
      * @param string $field
