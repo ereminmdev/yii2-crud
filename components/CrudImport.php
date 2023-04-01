@@ -119,7 +119,7 @@ class CrudImport extends BaseObject
                     $model->setAttribute('id', $id);
                 }
             }
-            $model->setAttributes($values);
+            $model->setAttributes($values, false);
 
             try {
                 if ($model->save()) {
