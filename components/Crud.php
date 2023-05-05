@@ -222,7 +222,7 @@ class Crud extends BaseObject
                     $relation = $schema['relation'];
 
                     if ($schema['rtype'] == 'hasOne') {
-                        if (ArrayHelper::getValue($schema, 'queryWith')) {
+                        if ($schema['queryWith'] ?? false) {
                             $query->with($relation);
                         } elseif (in_array($schema['titleField'], $model->attributes())) {
                             $query->with([
@@ -234,7 +234,7 @@ class Crud extends BaseObject
                             $query->with($relation);
                         }
                     } elseif ($schema['rtype'] == 'hasMany') {
-                        if (ArrayHelper::getValue($schema, 'queryWith', true)) {
+                        if ($schema['queryWith'] ?? true) {
                             $query->with([
                                 $relation => function (ActiveQuery $query) use ($schema, $relation, $model) {
                                     $linkAttribute = array_keys($model->getRelation($relation)->link)[0];
@@ -404,7 +404,7 @@ class Crud extends BaseObject
                             'format' => 'boolean',
                             'filter' => $itemList,
                         ];
-                        if (ArrayHelper::getValue($schema, 'gridDropButton', true)) {
+                        if ($schema['gridDropButton'] ?? true) {
                             $columns[$key] = ArrayHelper::merge($columns[$key], [
                                 'class' => DropDownButtonColumn::class,
                                 'items' => function ($model) use ($field, $itemList) {
@@ -522,9 +522,9 @@ class Crud extends BaseObject
                         break;
                     case 'array':
                         $itemList = $schema['itemList'] instanceof Closure ? call_user_func($schema['itemList']) : $schema['itemList'];
-                        if (ArrayHelper::getValue($schema, 'gridDropButton', false)) {
-                            $dropList = ArrayHelper::getValue($schema, 'gridDropButtonList', $itemList);
-                            $dropOptions = ArrayHelper::getValue($schema, 'gridDropButtonOptions', []);
+                        if ($schema['gridDropButton'] ?? false) {
+                            $dropList = $schema['gridDropButtonList'] ?? $itemList;
+                            $dropOptions = $schema['gridDropButtonOptions'] ?? [];
                             $columns[$key] = ArrayHelper::merge([
                                 'class' => DropDownButtonColumn::class,
                                 'attribute' => $field,
@@ -606,7 +606,7 @@ class Crud extends BaseObject
 
                                     $link = $model->getRelation($relation)->link;
                                     $linkKey = array_keys($link)[0];
-                                    $options = ArrayHelper::getValue($schema, 'gridElOptions', []);
+                                    $options = $schema['gridElOptions'] ?? [];
 
                                     return Html::a($schema['title'] . ' <small>(' . count($model->$relation) . ')</small>',
                                         ['index', 'model' => $relatedClass, $relatedPureClass . '[' . $linkKey . ']' => $model->getPrimaryKey()], $options);

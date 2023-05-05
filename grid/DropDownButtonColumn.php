@@ -66,7 +66,7 @@ class DropDownButtonColumn extends DataColumn
             $value = $this->getDataCellValue($model, $key, $index);
 
             return ButtonDropdown::widget(ArrayHelper::merge([
-                'label' => $this->labels ? ArrayHelper::getValue($this->labels, $value, '') : ArrayHelper::getValue($items, $value . '.label', ''),
+                'label' => $this->labels ? ($this->labels[$value] ?? '') : ($items[$value]['label'] ?? ''),
                 'dropdown' => ['items' => $items],
             ], $this->buttonDropdownOptions));
         } else {

@@ -12,7 +12,6 @@ use yii\base\BaseObject;
 use yii\db\ActiveRecord;
 use yii\db\IntegrityException;
 use yii\db\Schema;
-use yii\helpers\ArrayHelper;
 
 /**
  * Class CrudImport
@@ -112,7 +111,7 @@ class CrudImport extends BaseObject
 
             $model = new $modelClass;
 
-            if ($id = ArrayHelper::getValue($values, 'id')) {
+            if ($id = ($values['id'] ?? null)) {
                 $model = $modelClass::findOne($id);
                 if ($model === null) {
                     $model = new $modelClass;
