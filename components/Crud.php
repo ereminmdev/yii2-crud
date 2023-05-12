@@ -1457,14 +1457,14 @@ $(".js-checked-action").on("click", function () {
                 'attribute' => $field,
                 'items' => $items,
                 'placeholder' => ['id' => '', 'text' => ''],
-                'settings' => ['allowClear' => true, 'dropdownAutoWidth' => true],
+                'settings' => ['width' => '100%', 'allowClear' => true, 'dropdownAutoWidth' => true],
             ] :
             [
                 'model' => $model,
                 'attribute' => $field,
                 'ajax' => $this->context->urlCreate(['select2filter', 'field' => $field]),
                 'placeholder' => ['id' => '', 'text' => ''],
-                'settings' => ['allowClear' => true, 'dropdownAutoWidth' => true],
+                'settings' => ['width' => '100%', 'allowClear' => true, 'dropdownAutoWidth' => true],
                 'data' => [
                     ['id' => '', 'text' => '', 'search' => '', 'hidden' => true],
                     ['id' => $model->$field ?? '', 'text' => $title ?? '', 'selected' => 'selected'],
