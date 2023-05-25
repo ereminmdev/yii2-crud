@@ -143,8 +143,11 @@ jQuery(function ($) {
             });
 
             function autoResize() {
-                this.style.height = 'auto';
-                this.style.height = this.scrollHeight + 'px';
+                if (this.scrollHeight > 0) {
+                    this.style.height = 'auto';
+                    const style = getComputedStyle(this);
+                    this.style.height = (parseFloat(this.scrollHeight) + parseFloat(style.borderTopWidth) + parseFloat(style.borderBottomWidth)) + 'px';
+                }
             }
         }
     }
