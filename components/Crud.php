@@ -937,7 +937,7 @@ class Crud extends BaseObject
                     }
                     break;
                 case 'files':
-                    return $content . '<div class="form-group field-' . $field . '-files">' .
+                    return $content . '<div class="form-group field-' . Html::getInputId($model, $field) . '">' .
                         '<label class="control-label">' . $model->getAttributeLabel($field) . '</label>' .
                         Elfinder::widget([
                             'clientOptions' => [
