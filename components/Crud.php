@@ -652,6 +652,7 @@ class Crud extends BaseObject
                                             ['class' => 'btn btn-link btn-sm text-ellipsis', 'target' => '_blank']);
                                     }
                                 } catch (InvalidArgumentException $e) {
+                                    Yii::error($e->getMessage());
                                 }
                                 return $html;
                             },
