@@ -359,7 +359,7 @@ class Crud extends BaseObject
 
             if (isset($paramColumns[$field]) && ($paramColumns[$field] !== true)) {
                 if ($paramColumns[$field] instanceof Closure) {
-                    $columns[$key] = call_user_func($paramColumns[$field]);
+                    $columns[$key] = call_user_func($paramColumns[$field], $this, $model, $field);
                 } elseif ($paramColumns[$field] === false) {
                     unset($columns[$key]);
                 } else {
