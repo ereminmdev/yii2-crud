@@ -10,7 +10,7 @@ jQuery(function ($) {
         });
 
         $(document).on('click', '.js-crud-post-refresh', function (event) {
-            let $that = $(this);
+            const $that = $(this);
             $.ajax({
                 url: $that.data('url') ? $that.data('url') : $that.attr('href'),
                 data: $that.data('params') ? $that.data('params') : {},
@@ -101,7 +101,7 @@ jQuery(function ($) {
 
     // views/_form
     if ($('.cms-crud-form').length) {
-        let $crudForm = $('#crudFormData'), isDataChanged = false;
+        const $crudForm = $('#crudFormData'), isDataChanged = false;
 
         $crudForm.on('change', function () {
             isDataChanged = true;
@@ -114,14 +114,14 @@ jQuery(function ($) {
 
         $(window).on('beforeunload', function (e) {
             if (isDataChanged) {
-                let message = 'Изменения не сохранены. Вы можете потерять данные!';
+                const message = 'Изменения не сохранены. Вы можете потерять данные!';
                 e.returnValue = message;
                 return message;
             }
         });
 
         $(document).on('click', '.js-delete-file', function () {
-            let that = this, message = $(this).data('message');
+            const that = this, message = $(this).data('message');
 
             if (window.confirm(message)) {
                 $.get($(this).attr('href'), function () {
@@ -139,6 +139,7 @@ jQuery(function ($) {
                 el.style.overflow = 'hidden';
                 el.style.resize = 'none';
                 el.addEventListener('input', autoResize, false);
+                el.addEventListener('focus', autoResize, false);
                 autoResize.bind(el)();
             });
 
@@ -155,7 +156,7 @@ jQuery(function ($) {
     // views/setvals
     if ($('.cms-crud-setvals').length) {
         $('.js-toggle-block').on('change', function () {
-            let destination = $(this).data('destination');
+            const destination = $(this).data('destination');
 
             if ($(this).prop('checked')) {
                 $('.' + destination).show();
