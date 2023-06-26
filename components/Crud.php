@@ -853,7 +853,7 @@ class Crud extends BaseObject
                             Html::a('<span class="glyphicon glyphicon-download-alt"></span> ' . Yii::t('crud', 'Download') . ' JPEG', $this->columnUrlCreator('download-jpg', $model, $model->id, ['path' => $model->getUploadPath($field), 'returnUrl' => Url::current()]), ['class' => 'btn btn-default btn-xs', 'download' => true]) .
                             '   ' .
                             Html::a('<span class="glyphicon glyphicon-remove"></span> ' . Yii::t('crud', 'Delete'), $this->columnUrlCreator('delete-upload-image', $model, $model->id, ['field' => $field, 'returnUrl' => Url::current()]),
-                                ['class' => 'btn btn-default btn-xs js-delete-file pull-right', 'data-message' => Yii::t('crud', 'Are you sure you want to delete this image?')]) .
+                                ['class' => 'btn btn-danger btn-xs js-delete-file pull-right', 'data-message' => Yii::t('crud', 'Are you sure you want to delete this image?')]) .
                             '</div>';
                     }
                     $formField = $form->field($model, $field, ['template' => "{label}\n{file}\n{input}\n{hint}\n{error}"])->fileInput(array_merge($inputOptions, ['accept' => 'image/*']));
