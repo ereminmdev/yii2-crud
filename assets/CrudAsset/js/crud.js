@@ -101,7 +101,8 @@ jQuery(function ($) {
 
     // views/_form
     if ($('.cms-crud-form').length) {
-        const $crudForm = $('#crudFormData'), isDataChanged = false;
+        const $crudForm = $('#crudFormData');
+        let isDataChanged = false;
 
         $crudForm.on('change', function () {
             isDataChanged = true;
@@ -121,7 +122,8 @@ jQuery(function ($) {
         });
 
         $(document).on('click', '.js-delete-file', function () {
-            const that = this, message = $(this).data('message');
+            const that = this;
+            const message = $(this).data('message');
 
             if (window.confirm(message)) {
                 $.get($(this).attr('href'), function () {
