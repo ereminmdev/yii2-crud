@@ -55,8 +55,12 @@ class FilesBehavior extends Behavior
             $this->_path = null;
             $path = $this->getFilesPath();
             if ($path !== $oldPath) {
-                @FileHelper::copyDirectory($oldPath, $path);
-                @FileHelper::removeDirectory($oldPath);
+                try {
+                    FileHelper::copyDirectory($oldPath, $path);
+                    FileHelper::removeDirectory($oldPath);
+                } catch (\Exception $e) {
+                    Yii::error($e);
+                }
             }
         }
     }
@@ -64,7 +68,11 @@ class FilesBehavior extends Behavior
     public function afterDelete()
     {
         $path = $this->getFilesPath();
-        @FileHelper::removeDirectory($path);
+        try {
+            FileHelper::removeDirectory($path);
+        } catch (\Exception $e) {
+            Yii::error($e);
+        }
     }
 
     /**
