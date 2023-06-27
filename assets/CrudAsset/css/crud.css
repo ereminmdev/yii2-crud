@@ -18,6 +18,11 @@
     Grid
 ***********************************************************************************************************************/
 
+.cms-crud-grid th, .cms-crud-grid td {
+    white-space: normal;
+    word-wrap: break-word;
+}
+
 .cms-crud-grid .col-width-sm {
     width: 30px;
 }
