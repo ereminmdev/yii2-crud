@@ -14,7 +14,7 @@ use yii\helpers\Html;
 $controller = $this->context;
 
 ?>
-<div class="btn-toolbar" role="toolbar">
+<div class="btn-toolbar" role="toolbar" style="margin-bottom: 1em">
     <?php
 
     if ($crud->isViewAsTree()) {
