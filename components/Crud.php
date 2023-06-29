@@ -267,61 +267,65 @@ class Crud extends BaseObject
     {
         $columns = $this->guessColumns();
 
-        // actions column
-        array_unshift($columns, [
-            'class' => DropDownButtonColumn::class,
-            'buttonDropdownOptions' => [
-                'label' => '<i class="glyphicon glyphicon-option-vertical"></i>',
-                'encodeLabel' => false,
-                'options' => [
-                    'class' => $this->sortableJs ? ['crud-grid__sort-handle'] : [],
+        if ($this->getConfig('gridActionColumn', true)) {
+            // actions column
+            array_unshift($columns, [
+                'class' => DropDownButtonColumn::class,
+                'buttonDropdownOptions' => [
+                    'label' => '<i class="glyphicon glyphicon-option-vertical"></i>',
+                    'encodeLabel' => false,
+                    'options' => [
+                        'class' => $this->sortableJs ? ['crud-grid__sort-handle'] : [],
+                    ],
                 ],
-            ],
-            'showCaret' => false,
-            'options' => ['class' => 'col-width-sm'],
-            'items' => function ($model, $key) {
-                $template = $this->getConfig('gridActionsTemplate', "{custom}\n{update}\n{--}\n{delete}");
+                'showCaret' => false,
+                'options' => ['class' => 'col-width-sm'],
+                'items' => function ($model, $key) {
+                    $template = $this->getConfig('gridActionsTemplate', "{custom}\n{update}\n{--}\n{delete}");
 
-                $actions = [
-                    '{custom}' => '',
-                    '{--}' => '<li role="presentation" class="divider"></li>',
-                    '{update}' => [
-                        'label' => Yii::t('crud', 'Edit'),
-                        'url' => $this->columnUrlCreator('update', $model, $key),
-                        'linkOptions' => ['class' => 'js-store-page-scroll'],
-                    ],
-                    '{delete}' => [
-                        'label' => Yii::t('crud', 'Delete'),
-                        'url' => $this->columnUrlCreator('delete', $model, $key),
-                        'linkOptions' => [
-                            'class' => 'js-store-page-scroll',
-                            'data-confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),
+                    $actions = [
+                        '{custom}' => '',
+                        '{--}' => '<li role="presentation" class="divider"></li>',
+                        '{update}' => [
+                            'label' => Yii::t('crud', 'Edit'),
+                            'url' => $this->columnUrlCreator('update', $model, $key),
+                            'linkOptions' => ['class' => 'js-store-page-scroll'],
                         ],
-                        'visible' => $this->getConfig('access.delete', true),
-                    ],
-                ];
+                        '{delete}' => [
+                            'label' => Yii::t('crud', 'Delete'),
+                            'url' => $this->columnUrlCreator('delete', $model, $key),
+                            'linkOptions' => [
+                                'class' => 'js-store-page-scroll',
+                                'data-confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),
+                            ],
+                            'visible' => $this->getConfig('access.delete', true),
+                        ],
+                    ];
 
-                $customActions = $this->getConfig('gridActions', []);
-                foreach ($customActions as $key => $customAction) {
-                    $actions[$key] = $customAction instanceof Closure ? call_user_func_array($customAction, [$model, $key, $this]) : $customAction;
-                }
-
-                $items = explode("\n", $template);
-                foreach ($actions as $key => $action) {
-                    foreach (array_keys($items, $key) as $pos) {
-                        $items[$pos] = $action;
+                    $customActions = $this->getConfig('gridActions', []);
+                    foreach ($customActions as $key => $customAction) {
+                        $actions[$key] = $customAction instanceof Closure ? call_user_func_array($customAction, [$model, $key, $this]) : $customAction;
                     }
+
+                    $items = explode("\n", $template);
+                    foreach ($actions as $key => $action) {
+                        foreach (array_keys($items, $key) as $pos) {
+                            $items[$pos] = $action;
+                        }
+                    }
+
+                    return $items;
                 }
+            ]);
+        }
 
-                return $items;
-            }
-        ]);
-
-        array_unshift($columns, [
-            'class' => CheckboxColumn::class,
-            'options' => ['class' => 'col-width-sm'],
-            'checkboxOptions' => ['class' => 'js-check-action'],
-        ]);
+        if ($this->getConfig('gridCheckboxColumn', true)) {
+            array_unshift($columns, [
+                'class' => CheckboxColumn::class,
+                'options' => ['class' => 'col-width-sm'],
+                'checkboxOptions' => ['class' => 'js-check-action'],
+            ]);
+        }
 
         return $columns;
     }
