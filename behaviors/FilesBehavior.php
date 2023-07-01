@@ -59,7 +59,7 @@ class FilesBehavior extends Behavior
                     FileHelper::copyDirectory($oldPath, $path);
                     FileHelper::removeDirectory($oldPath);
                 } catch (\Exception $e) {
-                    Yii::error($e);
+                    Yii::error($e, __METHOD__);
                 }
             }
         }
@@ -71,7 +71,7 @@ class FilesBehavior extends Behavior
         try {
             FileHelper::removeDirectory($path);
         } catch (\Exception $e) {
-            Yii::error($e);
+            Yii::error($e, __METHOD__);
         }
     }
 
