@@ -141,7 +141,7 @@ class CrudImport extends BaseObject
     public function prepareData(&$values)
     {
         foreach ($values as $field => &$value) {
-            if (isset($this->columnsSchema[$field])) {
+            if (isset($this->columnsSchema[$field]['type'])) {
                 switch ($this->columnsSchema[$field]['type']) {
                     case Schema::TYPE_INTEGER:
                         $value = (integer)$value;
