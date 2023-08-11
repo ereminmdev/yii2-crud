@@ -3,7 +3,6 @@
 namespace ereminmdev\yii2\crud\components;
 
 use PhpOffice\PhpSpreadsheet\Exception as PhpSpreadsheetException;
-use PhpOffice\PhpSpreadsheet\Reader\Csv;
 use PhpOffice\PhpSpreadsheet\Reader\Ods;
 use PhpOffice\PhpSpreadsheet\Reader\Xls;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
@@ -66,6 +65,10 @@ class CrudImport extends BaseObject
      */
     public function import()
     {
+        if ($this->format == 'csv') {
+            return $this->importCsv();
+        }
+
         switch ($this->format) {
             case 'xlsx':
                 $reader = new Xlsx();
@@ -75,9 +78,6 @@ class CrudImport extends BaseObject
                 break;
             case 'ods':
                 $reader = new Ods();
-                break;
-            case 'csv':
-                $reader = new Csv();
                 break;
             default:
                 $this->_errors[] = Yii::t('crud', 'Not support file format "{format}".', ['format' => $this->format]);
@@ -96,43 +96,85 @@ class CrudImport extends BaseObject
         }
 
         $fields = array_shift($rows);
-        array_shift($rows); // extract 2nd row
+        array_shift($rows); // remove unused 2nd row
+
+        foreach ($rows as $idx => $row) {
+            $this->importRow($fields, $row, $idx + 3);
+        }
+
+        return empty($this->_errors);
+    }
+
+    /**
+     * @return bool
+     * @throws PhpSpreadsheetException
+     */
+    public function importCsv()
+    {
+        $handle = fopen($this->fileName, 'r');
+
+        if ($handle === false) {
+            $this->_errors[] = Yii::t('yii', 'File upload failed.');
+            return false;
+        }
+
+        $fields = fgetcsv($handle);
+        $fields2 = fgetcsv($handle);  // remove unused 2nd row
+        if (($fields === false) || ($fields2 === false)) {
+            $this->_errors[] = Yii::t('crud', 'No data to import. Need more then 2 strings in file.');
+            return false;
+        }
+        unset($fields2);
+
+        $rowIdx = 3;
+        while (($row = fgetcsv($handle)) !== FALSE) {
+            $this->importRow($fields, $row, $rowIdx);
+            $rowIdx++;
+        }
+
+        fclose($handle);
+
+        return empty($this->_errors);
+    }
+
+    /**
+     * @param array $fields
+     * @param array $row
+     * @param int $rowIdx
+     */
+    public function importRow($fields, $row, $rowIdx)
+    {
+        $values = array_combine($fields, $row);
+        foreach ($values as $key => $value) {
+            if ($value === null) unset($values[$key]);
+        }
+
+        $this->prepareData($values);
 
         /* @var $modelClass ActiveRecord */
         $modelClass = $this->modelClass;
 
-        foreach ($rows as $idx => $row) {
-            $values = array_combine($fields, $row);
-            foreach ($values as $key => $value) {
-                if ($value === null) unset($values[$key]);
-            }
+        $model = new $modelClass;
 
-            $this->prepareData($values);
-
-            $model = new $modelClass;
-
-            if ($id = ($values['id'] ?? null)) {
-                $model = $modelClass::findOne($id);
-                if ($model === null) {
-                    $model = new $modelClass;
-                    $model->setAttribute('id', $id);
-                }
-            }
-            $model->setAttributes($values, false);
-
-            try {
-                if ($model->save()) {
-                    $this->insertCount++;
-                } else {
-                    $errors = array_values($model->getFirstErrors());
-                    $this->_errors[] = Yii::t('crud', 'String') . ' ' . ($idx + 3) . ': ' . $errors[0];
-                }
-            } catch (IntegrityException $e) {
-                $this->_errors[] = Yii::t('crud', 'String') . ' ' . ($idx + 3) . ': ' . $e->getMessage();
+        if ($id = ($values['id'] ?? null)) {
+            $model = $modelClass::findOne($id);
+            if ($model === null) {
+                $model = new $modelClass;
+                $model->setAttribute('id', $id);
             }
         }
+        $model->setAttributes($values, false);
 
-        return empty($this->_errors);
+        try {
+            if ($model->save()) {
+                $this->insertCount++;
+            } else {
+                $errors = array_values($model->getFirstErrors());
+                $this->_errors[] = Yii::t('crud', 'String') . ' ' . $rowIdx . ': ' . $errors[0];
+            }
+        } catch (IntegrityException $e) {
+            $this->_errors[] = Yii::t('crud', 'String') . ' ' . $rowIdx . ': ' . $e->getMessage();
+        }
     }
 
     /**
