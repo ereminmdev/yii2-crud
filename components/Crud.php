@@ -1344,6 +1344,7 @@ $(".js-checked-action").on("click", function () {
     {
         $block = $this->getConfig('tree.titleBlock', function ($model, $controller, $crud) {
             $text = $this->getConfig('tree.titleBlock_text', $model->title);
+            $text = $text instanceof Closure ? call_user_func_array($text, [$model, $controller, $this]) : $text;
 
             $options = $this->getConfig('tree.titleBlock_options', []);
             $options = $options instanceof Closure ? call_user_func_array($options, [$model, $controller, $this]) : $options;
