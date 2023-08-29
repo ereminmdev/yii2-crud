@@ -74,7 +74,7 @@
 
 .tree-item-row {
     display: flex;
-    align-items: baseline;
+    align-items: center;
     gap: 15px;
     margin: 0;
     padding: 7px;
@@ -84,6 +84,10 @@
 
 .tree-item-row:hover {
     background: rgba(0, 0, 0, .01);
+}
+
+.tree-item-row .tree-item--checkbox {
+    margin: 0;
 }
 
 .tree-item--checkbox, .tree-item--opener, .tree-item--menu, .tree-item--right {
