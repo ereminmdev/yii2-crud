@@ -112,7 +112,7 @@
     display: initial;
 }
 
-.tree-item--menu, .tree-item--checkbox:not(:checked), .tree-item--on-hover {
+.tree-item--menu:not(:has(.open)), .tree-item--checkbox:not(:checked), .tree-item--on-hover {
     visibility: hidden;
 }
 
