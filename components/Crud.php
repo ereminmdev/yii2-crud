@@ -182,7 +182,6 @@ class Crud extends BaseObject
                         case Schema::TYPE_BOOLEAN:
                         case Schema::TYPE_TIME:
                         case 'array':
-                        case 'url':
                             $query->andWhere([$attributeFullName => $value]);
                             break;
                         case Schema::TYPE_DATE:
@@ -468,8 +467,16 @@ class Crud extends BaseObject
                         ];
                         break;
                     case 'url':
-                    case 'file':
                         //$columns[$key] = $field . ':url';
+                        $columns[$key] = [
+                            'attribute' => $field,
+                            'content' => function (ActiveRecord $model) use ($field) {
+                                $url = $model->$field;
+                                return Html::a($url, $url, ['target' => '_blank']);
+                            },
+                        ];
+                        break;
+                    case 'file':
                         $columns[$key] = [
                             'attribute' => $field,
                             'format' => 'html',
@@ -813,10 +820,6 @@ class Crud extends BaseObject
                     $value = ($value && !is_numeric($value)) ? strtotime($value) : $value;
                     $value = $value ? date('Y-m-d\TH:i:s', $value) : '';
                     $formField = $form->field($model, $field)->input('datetime-local', array_merge($inputOptions, ['value' => $value]));
-                    break;
-                case 'url':
-                    $url = $model->$field;
-                    $formField = $form->field($model, $field, ['parts' => ['{input}' => Html::a($url, $url)]]);
                     break;
                 case 'email':
                     $formField = $form->field($model, $field)->input('email', $inputOptions);
