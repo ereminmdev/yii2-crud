@@ -407,7 +407,7 @@ class DefaultController extends Controller
                 $model = $crud->findModel($id, 'update');
                 $model->setAttribute($column, $value);
 
-                if ($model->save()) {
+                if ($model->save(true, [$column])) {
                     Yii::$app->response->statusCode = 200;
                     return $value;
                 } elseif ($model->hasErrors($column)) {
