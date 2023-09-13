@@ -484,7 +484,7 @@ class Crud extends BaseObject
                             'content' => function (ActiveRecord $model) use ($field) {
                                 $behavior = $model->getBehavior($field) ?? $model;
                                 $url = $behavior->getUploadUrl($field);
-                                return Html::a($url, $url, ['target' => '_blank']);
+                                return Html::a(basename($url), $url, ['target' => '_blank']);
                             },
                         ];
                         break;
