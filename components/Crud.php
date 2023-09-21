@@ -153,11 +153,10 @@ class Crud extends BaseObject
 
         $configDataProvider = $this->getConfig('dataProvider');
         if ($configDataProvider instanceof Closure) {
-            call_user_func($configDataProvider, $dataProvider);
+            call_user_func($configDataProvider, $dataProvider, $this);
         }
 
-        $filterParams = $filterParams === true ? Yii::$app->request->queryParams :
-            ($filterParams !== false ? $filterParams : []);
+        $filterParams = ($filterParams === true) ? Yii::$app->request->queryParams : ($filterParams !== false ? $filterParams : []);
 
         if ($limitById) {
             $filterId = Yii::$app->request->get('id', 'all');
