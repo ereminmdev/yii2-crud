@@ -201,7 +201,8 @@ class Crud extends BaseObject
                         case 'list':
                             if (!empty($value)) {
                                 $attributeFullName = isset($columnsSchema[$attribute]['relatedAttribute']) ? $tableName . '.[[' . $columnsSchema[$attribute]['relatedAttribute'] . ']]' : $attributeFullName;
-                                $query->andWhere('FIND_IN_SET(:value,' . $attributeFullName . ')', [':value' => $value]);
+                                $paramName = ':' . $attribute . '_param';
+                                $query->andWhere('FIND_IN_SET(' . $paramName . ',' . $attributeFullName . ')', [$paramName => $value]);
                             }
                             break;
                         default:
