@@ -618,10 +618,11 @@ class Crud extends BaseObject
 
                                     $link = $model->getRelation($relation)->link;
                                     $linkKey = array_keys($link)[0];
+                                    $relatedKey = $link[$linkKey];
                                     $options = $schema['gridElOptions'] ?? [];
 
                                     return Html::a($schema['title'] . ' <small>(' . count($model->$relation) . ')</small>',
-                                        ['index', 'model' => $relatedClass, $relatedPureClass . '[' . $linkKey . ']' => $model->getPrimaryKey()], $options);
+                                        ['index', 'model' => $relatedClass, $relatedPureClass . '[' . $linkKey . ']' => $model->$relatedKey], $options);
                                 },
                             ];
                         } elseif ($schema['rtype'] == 'manyMany') {
