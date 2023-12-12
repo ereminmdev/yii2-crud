@@ -675,6 +675,11 @@ class Crud extends BaseObject
                         $columns[$key] = [
                             'attribute' => $field,
                         ];
+                        if (($field == 'title') && $this->getConfig('gridTitleFieldEditLink', true)) {
+                            $columns[$key]['content'] = function (ActiveRecord $model) use ($field) {
+                                return Html::a($model->$field, $this->context->urlCreate(['update', 'id' => $model->id]), ['class' => 'js-store-page-scroll']);
+                            };
+                        }
                 }
 
                 if (isset($columns[$key]) && is_array($columns[$key])) {
