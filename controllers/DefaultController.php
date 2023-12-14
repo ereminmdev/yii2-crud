@@ -618,6 +618,7 @@ class DefaultController extends Controller
         $schema = $columnsSchema[$field] ?? [];
         $model = $crud->getModel('getfields');
         $relatedClass = $model->getRelation($schema['relation'])->modelClass;
+        $relatedField = array_key_first($model->getRelation($schema['relation'])->link);
         $titleField = $schema['select2TitleField'] ?? ($schema['titleField'] ?? $field);
 
         Yii::$app->response->format = Response::FORMAT_JSON;
@@ -631,7 +632,7 @@ class DefaultController extends Controller
         if (isset($schema['select2Query']) && is_callable($schema['select2Query'])) {
             call_user_func_array($schema['select2Query'], [$query, $q, $crud]);
         } else {
-            $query->select(['id', 'text' => $titleField])
+            $query->select(['id' => $relatedField, 'text' => $titleField])
                 ->andWhere(['like', $titleField, $q])
                 ->orderBy(['text' => SORT_ASC]);
         }

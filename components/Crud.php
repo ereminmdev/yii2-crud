@@ -588,15 +588,16 @@ class Crud extends BaseObject
                         if ($schema['rtype'] == 'hasOne') {
                             $model = $this->getModel('getfields');
                             $relatedClass = $model->getRelation($relation)->modelClass;
-                            $list = isset($schema['getList']) ? call_user_func($schema['getList']) : (isset($schema['listAsTree']) && $schema['listAsTree'] ? static::getTreeList($relatedClass, $schema['titleField']) : static::getList($relatedClass, $schema['titleField']));
+                            $relatedField = array_key_first($model->getRelation($relation)->link);
+                            $list = isset($schema['getList']) ? call_user_func($schema['getList']) : (isset($schema['listAsTree']) && $schema['listAsTree'] ? static::getTreeList($relatedClass, $schema['titleField']) : static::getList($relatedClass, $schema['titleField'], $relatedField));
                             $columns[$key] = [
                                 'attribute' => $field,
                                 'filter' => $filter ?? $list,
-                                'content' => function (ActiveRecord $model) use ($field, $schema, $relation, $list) {
+                                'content' => function (ActiveRecord $model) use ($field, $schema, $relation, $relatedField, $list) {
                                     $relatedClass = $model->getRelation($relation)->modelClass;
                                     $relatedPureClass = StringHelper::basename($relatedClass);
                                     $text = $list[$model->$field] ?? '';
-                                    return $model->$relation ? Html::a($text, ['index', 'model' => $relatedClass, $relatedPureClass . '[id]' => $model->$field]) : '';
+                                    return $model->$relation ? Html::a($text, ['index', 'model' => $relatedClass, $relatedPureClass . '[' . $relatedField . ']' => $model->$field]) : '';
                                 },
                             ];
                             if (array_key_exists('select2', $schema)) {
@@ -894,7 +895,8 @@ class Crud extends BaseObject
 
                     if ($schema['rtype'] == 'hasOne') {
                         $relatedClass = $model->getRelation($relation)->modelClass;
-                        $list = isset($schema['getList']) ? call_user_func($schema['getList']) : (isset($schema['listAsTree']) && $schema['listAsTree'] ? static::getTreeList($relatedClass, $schema['titleField']) : static::getList($relatedClass, $schema['titleField']));
+                        $relatedField = array_key_first($model->getRelation($relation)->link);
+                        $list = isset($schema['getList']) ? call_user_func($schema['getList']) : (isset($schema['listAsTree']) && $schema['listAsTree'] ? static::getTreeList($relatedClass, $schema['titleField']) : static::getList($relatedClass, $schema['titleField'], $relatedField));
                         $options = [];
                         if (array_key_exists('allowNull', $schema) && $schema['allowNull']) {
                             $options = ['prompt' => ''];
