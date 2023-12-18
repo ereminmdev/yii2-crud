@@ -65,6 +65,9 @@ class DropDownButtonColumn extends DataColumn
             $items = $this->getItems($model, $key, $index);;
             $value = $this->getDataCellValue($model, $key, $index);
 
+            if (\Yii::$app->controller->route == 'crud/default/export') {
+                return $this->labels ? ($this->labels[$value] ?? '') : ($items[$value]['label'] ?? '');
+            }
             return ButtonDropdown::widget(ArrayHelper::merge([
                 'label' => $this->labels ? ($this->labels[$value] ?? '') : ($items[$value]['label'] ?? ''),
                 'dropdown' => ['items' => $items],
