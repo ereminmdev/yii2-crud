@@ -28,6 +28,7 @@ use yii\helpers\FileHelper;
 use yii\helpers\Html;
 use yii\helpers\StringHelper;
 use yii\helpers\Url;
+use yii\web\Cookie;
 use yii\web\NotFoundHttpException;
 use yii\web\RangeNotSatisfiableHttpException;
 use yii\web\UploadedFile;
@@ -331,6 +332,41 @@ class Crud extends BaseObject
     }
 
     /**
+     * @return string
+     */
+    public function getGridColumnsOnlyStoreKey()
+    {
+        return 'crud-columnsOnly-' . $this->modelClass;
+    }
+
+    /**
+     * @return array
+     */
+    public function getGridColumnsOnly()
+    {
+        return Yii::$app->request->cookies->getValue($this->getGridColumnsOnlyStoreKey(), []) ?: $this->getConfig('gridColumnsOnly') ?? [];
+    }
+
+    /**
+     * @param array $columns
+     */
+    public function setGridColumnsOnly($columns)
+    {
+        if (empty($columns)) {
+            Yii::$app->response->cookies->remove(new Cookie([
+                'name' => $this->getGridColumnsOnlyStoreKey(),
+                'value' => '',
+            ]));
+        } else {
+            Yii::$app->response->cookies->add(new Cookie([
+                'name' => $this->getGridColumnsOnlyStoreKey(),
+                'value' => $columns,
+                'expire' => strtotime('+30 days'),
+            ]));
+        }
+    }
+
+    /**
      * @param array $fields
      * @return mixed
      * @throws InvalidConfigException
@@ -339,8 +375,7 @@ class Crud extends BaseObject
     {
         $model = $this->getModel('getfields');
 
-        $columns = $fields ?: (($onlyColumns = $this->getConfig('gridColumnsOnly')) != null ?
-            $onlyColumns : array_keys($model->attributeLabels()));
+        $columns = $fields ?: $this->getGridColumnsOnly() ?: array_keys($model->attributeLabels());
 
         $paramColumns = $this->getConfig('gridColumns', []);
         $columnsSchema = $this->columnsSchema();

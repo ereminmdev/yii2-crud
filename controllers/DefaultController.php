@@ -391,6 +391,36 @@ class DefaultController extends Controller
         ]);
     }
 
+    /**
+     * @return string|Response
+     * @throws InvalidConfigException
+     */
+    public function actionSetColumns()
+    {
+        $crud = $this->getCrud();
+        $model = $crud->getModel();
+
+        $columns = array_column(array_filter($crud->guessColumns(array_keys($model->attributeLabels())), fn($value) => $value['attribute'] ?? false), 'attribute');
+        $onlyColumns = $crud->getGridColumnsOnly() ?: $columns;
+
+        if (Yii::$app->request->isPost) {
+            $newColumns = Yii::$app->request->post('columns');
+
+            if ($newColumns !== null) {
+                $crud->setGridColumnsOnly($newColumns);
+            }
+
+            $url = $this->getActionSuccessUrl('set-columns');
+            return $this->redirect($url);
+        }
+
+        return $this->render($this->getCrud()->getConfig('views.set-columns.view', 'set-columns'), [
+            'model' => $model,
+            'columns' => $columns,
+            'onlyColumns' => $onlyColumns,
+        ]);
+    }
+
     public function actionJsEditPrompt()
     {
         $this->response->format = Response::FORMAT_RAW;

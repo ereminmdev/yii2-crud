@@ -14,6 +14,9 @@ return [
     'Create nearby' => 'Создать рядом',
     'Create as sublevel' => 'Создать как подуровень',
 
+    'Set columns' => 'Настроить колонки',
+    'Reset settings' => 'Сбросить настройки',
+
     'Reset filter' => 'Сбросить фильтр',
 
     'Grid view' => 'Вид таблица',
