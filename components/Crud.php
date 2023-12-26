@@ -344,7 +344,9 @@ class Crud extends BaseObject
      */
     public function getGridColumnsOnly()
     {
-        return Yii::$app->request->cookies->getValue($this->getGridColumnsOnlyStoreKey(), []) ?: $this->getConfig('gridColumnsOnly') ?? [];
+        $order = Yii::$app->request->cookies->getValue($this->getGridColumnsOnlyStoreKey() . '-order', []);
+        $columns = Yii::$app->request->cookies->getValue($this->getGridColumnsOnlyStoreKey(), []) ?: $this->getConfig('gridColumnsOnly') ?? [];
+        return $order ? array_intersect($order, $columns) : $columns;
     }
 
     /**
@@ -355,6 +357,10 @@ class Crud extends BaseObject
         if (empty($columns)) {
             Yii::$app->response->cookies->remove(new Cookie([
                 'name' => $this->getGridColumnsOnlyStoreKey(),
+                'value' => '',
+            ]));
+            Yii::$app->response->cookies->remove(new Cookie([
+                'name' => $this->getGridColumnsOnlyStoreKey() . '-order',
                 'value' => '',
             ]));
         } else {

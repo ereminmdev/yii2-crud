@@ -23,6 +23,7 @@ use yii\helpers\StringHelper;
 use yii\helpers\Url;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
+use yii\web\Cookie;
 use yii\web\NotFoundHttpException;
 use yii\web\RangeNotSatisfiableHttpException;
 use yii\web\Response;
@@ -51,7 +52,7 @@ class DefaultController extends Controller
      */
     public function beforeAction($action)
     {
-        if (in_array($action->id, ['sortable', 'tree-sortable'])) {
+        if (in_array($action->id, ['sortable', 'tree-sortable', 'columns-sortable'])) {
             $this->enableCsrfValidation = false;
         }
         return parent::beforeAction($action);
@@ -403,6 +404,9 @@ class DefaultController extends Controller
         $columns = array_column(array_filter($crud->guessColumns(array_keys($model->attributeLabels())), fn($value) => $value['attribute'] ?? false), 'attribute');
         $onlyColumns = $crud->getGridColumnsOnly() ?: $columns;
 
+        $order = Yii::$app->request->cookies->getValue($crud->getGridColumnsOnlyStoreKey() . '-order', []);
+        $columns = $order ? array_intersect($order, $columns) : $columns;
+
         if (Yii::$app->request->isPost) {
             $newColumns = Yii::$app->request->post('columns');
 
@@ -419,6 +423,25 @@ class DefaultController extends Controller
             'columns' => $columns,
             'onlyColumns' => $onlyColumns,
         ]);
+    }
+
+    /**
+     * @throws InvalidConfigException
+     */
+    public function actionColumnsSortable()
+    {
+        $order = (array)Yii::$app->request->post('order');
+        $oldOrder = (array)Yii::$app->request->post('oldOrder');
+
+        if ((count($order) < 2) || (count($order) !== count($oldOrder))) {
+            return;
+        }
+
+        Yii::$app->response->cookies->add(new Cookie([
+            'name' => $this->crud->getGridColumnsOnlyStoreKey() . '-order',
+            'value' => $order,
+            'expire' => strtotime('+30 days'),
+        ]));
     }
 
     public function actionJsEditPrompt()

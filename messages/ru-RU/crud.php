@@ -14,7 +14,8 @@ return [
     'Create nearby' => 'Создать рядом',
     'Create as sublevel' => 'Создать как подуровень',
 
-    'Set columns' => 'Настроить колонки',
+    'Customize columns' => 'Настроить колонки',
+    'Customize the order and visibility of columns' => 'Настройте порядок и видимость колонок',
     'Reset settings' => 'Сбросить настройки',
 
     'Reset filter' => 'Сбросить фильтр',

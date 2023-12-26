@@ -33,7 +33,7 @@ $controller = $this->context;
     $actions['{filter}'] = '';
 
     $items = [
-        ['label' => Yii::t('crud', 'Set columns'), 'url' => $controller->urlCreate(['set-columns'])],
+        ['label' => Yii::t('crud', 'Customize columns'), 'url' => $controller->urlCreate(['set-columns'])],
         '<li role="presentation" class="divider"></li>',
         ['label' => Yii::t('crud', 'Export'), 'url' => $controller->urlCreate(['export'])],
         ['label' => Yii::t('crud', 'Import'), 'url' => $controller->urlCreate(['import'])],
