@@ -6,10 +6,6 @@
     margin: 1em 0 2em;
 }
 
-.crud-field-img {
-    max-width: 50%;
-}
-
 .crud-hide-caret .caret {
     display: none;
 }
@@ -156,10 +152,6 @@
 }
 
 @media (max-width: 767px) {
-    .crud-field-img {
-        max-width: 100%;
-    }
-
     .tree-item--menu, .tree-item--checkbox:not(:checked), .tree-item--on-hover {
         visibility: visible;
     }
