@@ -904,7 +904,7 @@ class Crud extends BaseObject
                     $file = Html::tag('p', Html::img($url, ['class' => 'img-responsive crud-field-img img-result', 'data-src' => $model->getUploadUrl($field)]), ['class' => 'help-block']);
                     if ($model->$field) {
                         $file .= '<div class="help-block">' .
-                            Html::a('<span class="glyphicon glyphicon-download-alt"></span> ' . Yii::t('crud', 'Download'), $model->getUploadUrl($field), ['class' => 'btn btn-default btn-xs', 'download' => true]) .
+                            Html::a('<span class="glyphicon glyphicon-download-alt"></span> ' . Yii::t('crud', 'Download'), $model->getUploadUrl($field), ['class' => 'btn btn-default btn-xs', 'target' => '_blank']) .
                             ' ' .
                             Html::a('<span class="glyphicon glyphicon-download-alt"></span> ' . Yii::t('crud', 'Download') . ' JPEG', $this->columnUrlCreator('download-jpg', $model, $model->id, ['path' => $model->getUploadPath($field), 'returnUrl' => Url::current()]), ['class' => 'btn btn-default btn-xs', 'download' => true]) .
                             '   ' .

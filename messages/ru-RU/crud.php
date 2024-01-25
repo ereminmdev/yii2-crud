@@ -18,7 +18,7 @@ return [
     'Customize the order and visibility of columns' => 'Настройте порядок и видимость колонок',
     'Reset settings' => 'Сбросить настройки',
 
-    'Reset filter' => 'Сбросить фильтр',
+    'Reset filters' => 'Сбросить фильтры',
 
     'Grid view' => 'Вид таблица',
     'Tree view' => 'Вид дерево',
@@ -47,7 +47,7 @@ return [
     'Set values' => 'Проставить значения',
     'Select the required fields' => 'Выберите нужные поля',
     'Checked data actions' => 'Действия над выбранными',
-    'Common actions' => 'Общие действия',
+    'All data actions' => 'Действия над всеми',
     'Please choose a field(s)' => 'Пожалуйста, выберите хотя бы одно поле',
 
     'Duplicate' => 'Дублировать',

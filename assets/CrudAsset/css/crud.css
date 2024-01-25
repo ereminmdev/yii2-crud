@@ -132,7 +132,7 @@
     Set columns
 ***********************************************************************************************************************/
 
-.cms-crud-set-columns .checkbox {
+.cms-crud-set-columns .checkbox, .cms-crud-set-columns .checkbox:hover {
     padding: .5em;
     border: 1px solid #ddd;
 }

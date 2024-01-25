@@ -33,14 +33,14 @@ $controller = $this->context;
     $actions['{filter}'] = '';
 
     $items = [
-        ['label' => Yii::t('crud', 'Customize columns'), 'url' => $controller->urlCreate(['set-columns'])],
+        ['label' => Yii::t('crud', 'Set values'), 'url' => $controller->urlCreate(['setvals', 'id' => 'all'])],
         '<li role="presentation" class="divider"></li>',
         ['label' => Yii::t('crud', 'Export'), 'url' => $controller->urlCreate(['export'])],
         ['label' => Yii::t('crud', 'Import'), 'url' => $controller->urlCreate(['import'])],
         '<li role="presentation" class="divider"></li>',
-        ['label' => Yii::t('crud', 'Reset filter'), 'url' => $controller->urlCreate([], false, false)],
+        ['label' => Yii::t('crud', 'Customize columns'), 'url' => $controller->urlCreate(['set-columns'])],
         '<li role="presentation" class="divider"></li>',
-        ['label' => Yii::t('crud', 'Set values'), 'url' => $controller->urlCreate(['setvals', 'id' => 'all'])],
+        ['label' => Yii::t('crud', 'Reset filters'), 'url' => $controller->urlCreate([], false, false)],
         '<li role="presentation" class="divider"></li>',
         [
             'label' => Yii::t('crud', 'Delete all'),
@@ -64,7 +64,7 @@ $controller = $this->context;
         'encodeLabel' => false,
         'dropdown' => ['items' => $items],
         'options' => [
-            'title' => Yii::t('crud', 'Common actions'),
+            'title' => Yii::t('crud', 'All data actions'),
             'class' => 'btn btn-default',
         ],
         'containerOptions' => ['class' => 'pull-right'],
