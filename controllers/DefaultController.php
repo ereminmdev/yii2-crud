@@ -686,8 +686,7 @@ class DefaultController extends Controller
             call_user_func_array($schema['select2Query'], [$query, $q, $crud]);
         } else {
             $query->select(['id' => $relatedField, 'text' => $titleField])
-                ->andWhere(['like', $titleField, $q])
-                ->orderBy(['text' => SORT_ASC]);
+                ->andWhere(['like', $titleField, $q]);
         }
 
         $query->asArray()->limit(50);
