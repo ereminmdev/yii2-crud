@@ -1,3 +1,25 @@
+'use strict';
+
+(function () {
+    const key = 'pageScrollPos.' + location.href;
+    const data = sessionStorage.getItem(key);
+
+    if (data !== null) {
+        const pos = JSON.parse(data);
+        window.scrollTo(pos.x, pos.y);
+        sessionStorage.removeItem(key);
+    }
+
+    document.querySelectorAll('.js-store-page-scroll').forEach(element => {
+        element.addEventListener('click', () => setItem());
+        element.addEventListener('submit', () => setItem());
+    });
+
+    function setItem() {
+        sessionStorage.setItem(key, JSON.stringify({x: window.scrollX, y: window.scrollY}));
+    }
+})();
+
 jQuery(function ($) {
 
     // views/index
@@ -81,22 +103,6 @@ jQuery(function ($) {
             return false;
         });
 
-        function savePageScrollPosition() {
-            const key = 'pageScrollPos.' + location.href;
-            const data = sessionStorage.getItem(key);
-
-            if (data !== null) {
-                const pos = JSON.parse(data);
-                window.scrollTo(pos.x, pos.y);
-                sessionStorage.removeItem(key);
-            }
-
-            $('.js-store-page-scroll').on('click', () => {
-                sessionStorage.setItem(key, JSON.stringify({x: window.scrollX, y: window.scrollY}));
-            });
-        }
-
-        savePageScrollPosition();
     }
 
     // views/_form
