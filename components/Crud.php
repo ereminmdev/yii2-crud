@@ -225,12 +225,14 @@ class Crud extends BaseObject
                         if ($schema['queryWith'] ?? false) {
                             $query->with($relation);
                         } elseif (in_array($schema['titleField'], $model->attributes())) {
-                            $linkAttribute = array_keys($model->getRelation($relation)->link)[0];
+                            $query->with($relation);
+                            // select only $linkAttribute and titleField
+                            /*$linkAttribute = array_keys($model->getRelation($relation)->link)[0];
                             $query->with([
                                 $relation => function (ActiveQuery $query) use ($schema, $linkAttribute) {
                                     $query->select([$linkAttribute, $schema['titleField']]);
                                 },
-                            ]);
+                            ]);*/
                         } else {
                             $query->with($relation);
                         }
