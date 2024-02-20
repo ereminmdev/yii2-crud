@@ -22,7 +22,7 @@ class Pager extends LinkPager
     /**
      * @var array[int] page sizes to show
      */
-    public $pageSizes = [1, 5, 10, 20, 30, 50, 100];
+    public $pageSizes = [1, 5, 10, 20, 30, 50, 100, 500, 1000];
 
     /**
      * {@inheritdoc}

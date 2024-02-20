@@ -17,7 +17,7 @@ class Pagination extends \yii\data\Pagination
     /**
      * @var array|false the page size limits
      */
-    public $pageSizeLimit = [0, 100];
+    public $pageSizeLimit = [0, 1000];
     /**
      * @var string key to store page size
      */
