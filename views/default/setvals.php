@@ -7,6 +7,7 @@ use yii\db\ActiveRecord;
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
+/* @var $id string */
 /* @var $model ActiveRecord */
 /* @var $setModel DynamicModel */
 /* @var $form ActiveForm */
@@ -26,6 +27,7 @@ $this->params['breadcrumbs'][] = Yii::t('crud', 'Set values');
     <div class="cms-crud-form">
 
         <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
+        <?= Html::hiddenInput('id', $id) ?>
 
         <div class="panel panel-default">
             <div class="panel-heading"><?= Yii::t('crud', 'Select the required fields') ?></div>

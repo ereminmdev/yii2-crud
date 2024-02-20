@@ -187,13 +187,12 @@ class DefaultController extends Controller
     }
 
     /**
-     * @param int $id
      * @return Response
      * @throws InvalidConfigException
      * @throws StaleObjectException
      * @throws Exception|Throwable
      */
-    public function actionDelete($id)
+    public function actionDelete()
     {
         $crud = $this->getCrud();
 
@@ -294,11 +293,10 @@ class DefaultController extends Controller
     }
 
     /**
-     * @param int $id
      * @return Response
      * @throws InvalidConfigException
      */
-    public function actionDuplicate($id)
+    public function actionDuplicate()
     {
         $columnsSchema = $this->getCrud()->columnsSchema();
         $modelClass = $this->getCrud()->modelClass;
@@ -347,11 +345,10 @@ class DefaultController extends Controller
     }
 
     /**
-     * @param int $id
      * @return string|Response
      * @throws InvalidConfigException
      */
-    public function actionSetvals($id)
+    public function actionSetvals()
     {
         $model = $this->getCrud()->getFirstModel();
         $setModel = $this->getCrud()->getSetvalsModel();
@@ -387,6 +384,7 @@ class DefaultController extends Controller
         }
 
         return $this->render($this->getCrud()->getConfig('views.setvals.view', 'setvals'), [
+            'id' => $this->getCrud()->getRequestModelIds(),
             'model' => $model,
             'setModel' => $setModel,
         ]);
@@ -521,11 +519,12 @@ class DefaultController extends Controller
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             return $this->getCrud()->export($model);
-        } else {
-            return $this->render($this->getCrud()->getConfig('views.export.view', 'export'), [
-                'model' => $model,
-            ]);
         }
+
+        return $this->render($this->getCrud()->getConfig('views.export.view', 'export'), [
+            'id' => $this->getCrud()->getRequestModelIds(),
+            'model' => $model,
+        ]);
     }
 
     /**
@@ -789,7 +788,6 @@ class DefaultController extends Controller
         if ($this->action !== null) {
             $this->_crud->setScenario($this->action->id);
         }
-
         return $this->_crud;
     }
 

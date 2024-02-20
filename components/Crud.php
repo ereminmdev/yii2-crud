@@ -121,6 +121,14 @@ class Crud extends BaseObject
     }
 
     /**
+     * @return string
+     */
+    public function getRequestModelIds()
+    {
+        return Yii::$app->request->get('id', Yii::$app->request->post('id', 'all'));
+    }
+
+    /**
      * @param bool $filterParams
      * @param bool $pagination
      * @param bool $relations
@@ -160,7 +168,7 @@ class Crud extends BaseObject
         $filterParams = ($filterParams === true) ? Yii::$app->request->queryParams : ($filterParams !== false ? $filterParams : []);
 
         if ($limitById) {
-            $filterId = Yii::$app->request->get('id', 'all');
+            $filterId = $this->getRequestModelIds();
             if ($filterId != 'all') {
                 $filterId = explode(',', $filterId);
                 $query->andWhere([$model->tableName() . '.[[id]]' => $filterId]);
@@ -1270,24 +1278,29 @@ class Crud extends BaseObject
             }
         }
 
-        $this->context->view->registerJs('
-$(".js-checked-action").on("click", function () {
+        $alertText = Yii::t('crud', 'Please select a one entry at least.');
+
+        $this->context->view->registerJs(<<<JS
+$('.js-checked-action').on('click', function () {
     let keys = [];
-    $(".js-check-action").each(function() {
+    $('.js-check-action').each(function() {
         if (this.checked) {
             keys.push(parseInt($(this).val()));
         }
     });
     if (keys.length === 0) {
-        alert("' . Yii::t('crud', 'Please select a one entry at least.') . '");
-        return false;
+        alert('$alertText');
     } else {
-        let url = $(this).attr("href");
-        url += url.indexOf("?") === -1 ? "?" : "&";
-        $(this).attr("href", url + "id=" + keys.toString());
+        if ($(this).data('confirm') && !confirm($(this).data('confirm'))) {
+            return false;
+        }
+        $('#crud_checked_form input[name="id"]').val(keys.toString()); 
+        $('#crud_checked_form').attr('action', $(this).attr('href')).submit();
     }
+    return false;
 });
-        ');
+JS
+        );
 
         return ButtonDropdown::widget([
             'label' => '<span class="glyphicon glyphicon-check"></span>',

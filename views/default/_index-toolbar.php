@@ -90,3 +90,6 @@ $controller = $this->context;
 
     ?>
 </div>
+<?= Html::beginForm('', 'post', ['id' => 'crud_checked_form', 'style' => 'display: none']) ?>
+<?= Html::hiddenInput('id', '') ?>
+<?= Html::endForm() ?>

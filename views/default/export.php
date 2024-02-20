@@ -6,6 +6,7 @@ use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
+/* @var $id string */
 /* @var $model CrudExportForm */
 
 /** @var DefaultController $controller */
@@ -21,6 +22,7 @@ $this->params['breadcrumbs'][] = Yii::t('crud', 'Export');
     <h1><?= Html::encode($this->title) ?></h1>
 
     <?php $form = ActiveForm::begin(); ?>
+    <?= Html::hiddenInput('id', $id) ?>
 
     <div class="well">
         <p><?= Yii::t('crud', 'Export items to file') ?>.</p>
