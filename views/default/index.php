@@ -39,7 +39,7 @@ if ($crud->jsEditPrompt) {
 $gridViewWidget = new GridView(ArrayHelper::merge([
     'dataProvider' => $dataProvider,
     'columns' => $columns,
-    'layout' => "{items}\n{pager}\n{summary}",
+    'layout' => "{items}\n<div class=\"cms-crud-pager\">{pager}{summary}</div>",
     'filterModel' => $searchModel,
     'filterPosition' => GridView::FILTER_POS_BODY,
     'tableOptions' => ['class' => 'table table-hover'],

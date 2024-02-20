@@ -39,10 +39,8 @@ class Pager extends LinkPager
      */
     public function run()
     {
-        echo Html::beginTag('div', ['class' => 'clearfix']);
         parent::run();
         $this->renderPageSize();
-        echo Html::endTag('div');
     }
 
     public function renderPageSize()
@@ -67,7 +65,7 @@ class Pager extends LinkPager
             ],
         ]);
 
-        echo '<ul class="pagination pull-right">' .
+        echo '<ul class="pagination per-page-variants">' .
             ButtonDropdown::widget([
                 'label' => $this->pageSize != 0 ? Yii::t('crud', '{variant, number} {variant, plural, one{item} other{items}} per page', ['variant' => $this->pageSize]) : Yii::t('crud', 'All items'),
                 'tagName' => 'a',
