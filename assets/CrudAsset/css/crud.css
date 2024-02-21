@@ -56,8 +56,8 @@
 }
 
 .cms-crud-pager {
-    display: grid;
-    grid-template-columns: auto auto 1fr;
+    display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: 1.5em;
 }
@@ -161,6 +161,10 @@
 @media (max-width: 767px) {
     .tree-item--menu, .tree-item--checkbox:not(:checked), .tree-item--on-hover {
         visibility: visible;
+    }
+
+    .cms-crud-pager {
+        gap: .5em;
     }
 }
 
