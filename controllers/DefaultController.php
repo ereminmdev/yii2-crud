@@ -48,13 +48,21 @@ class DefaultController extends Controller
 
     /**
      * {@inheritdoc}
-     * @throws BadRequestHttpException
      */
     public function beforeAction($action)
     {
         if (in_array($action->id, ['sortable', 'tree-sortable', 'columns-sortable'])) {
             $this->enableCsrfValidation = false;
         }
+
+        $crud = $this->getCrud();
+        if (in_array($action->id, ['create', 'update', 'duplicate', 'setvals', 'js-edit-prompt', 'import']) && !$crud->getConfig('access.save', true)) {
+            return false;
+        }
+        if (in_array($action->id, ['delete', 'delete-upload-file', 'delete-upload-image']) && !$crud->getConfig('access.delete', true)) {
+            return false;
+        }
+
         return parent::beforeAction($action);
     }
 
