@@ -28,10 +28,12 @@ $controller = $this->context;
     <?= $controller->crud->renderFormFields($form, $model) ?>
 
     <div class="form-group form-buttons">
-        <?= Html::submitButton('<span class="glyphicon glyphicon-ok"></span> ' . ($model->isNewRecord ? Yii::t('crud', 'Create') : Yii::t('crud', 'Save')), ['class' => 'btn btn-primary']) ?>
-         
-        <?= Html::submitButton(Yii::t('crud', 'Apply'), ['class' => 'btn btn-default', 'name' => 'submit-apply', 'value' => 1]) ?>
-         
+        <?php if ($crud->getConfig('access.save', true)): ?>
+            <?= Html::submitButton('<span class="glyphicon glyphicon-ok"></span> ' . ($model->isNewRecord ? Yii::t('crud', 'Create') : Yii::t('crud', 'Save')), ['class' => 'btn btn-primary']) ?>
+             
+            <?= Html::submitButton(Yii::t('crud', 'Apply'), ['class' => 'btn btn-default', 'name' => 'submit-apply', 'value' => 1]) ?>
+             
+        <?php endif; ?>
         <?= Html::a(Yii::t('crud', 'Cancel'), $controller->getReturnUrl(), ['class' => 'btn btn-link']) ?>
 
         <?php if (!$model->isNewRecord && $crud->getConfig('access.delete', true)): ?>

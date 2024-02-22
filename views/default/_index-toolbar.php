@@ -33,10 +33,18 @@ $controller = $this->context;
     $actions['{filter}'] = '';
 
     $items = [
-        ['label' => Yii::t('crud', 'Set values'), 'url' => $controller->urlCreate(['setvals', 'id' => 'all'])],
+        [
+            'label' => Yii::t('crud', 'Set values'),
+            'url' => $controller->urlCreate(['setvals', 'id' => 'all']),
+            'visible' => $crud->getConfig('access.save', true),
+        ],
         '<li role="presentation" class="divider"></li>',
         ['label' => Yii::t('crud', 'Export'), 'url' => $controller->urlCreate(['export'])],
-        ['label' => Yii::t('crud', 'Import'), 'url' => $controller->urlCreate(['import'])],
+        [
+            'label' => Yii::t('crud', 'Import'),
+            'url' => $controller->urlCreate(['import']),
+            'visible' => $crud->getConfig('access.save', true) && $crud->getConfig('access.delete', true),
+        ],
         '<li role="presentation" class="divider"></li>',
         ['label' => Yii::t('crud', 'Customize columns'), 'url' => $controller->urlCreate(['set-columns'])],
         '<li role="presentation" class="divider"></li>',
@@ -48,6 +56,7 @@ $controller = $this->context;
             'linkOptions' => [
                 'data-confirm' => Yii::t('crud', 'Are you sure you want to delete all items?'),
             ],
+            'visible' => $crud->getConfig('access.delete', true),
         ],
     ];
 
@@ -69,10 +78,6 @@ $controller = $this->context;
         ],
         'containerOptions' => ['class' => 'pull-right'],
     ]);
-
-    if (!$crud->getConfig('access.delete', true)) {
-        $actions['{checks}'] = $actions['{full}'] = '';
-    }
 
     if ($crud->isViewAsTree()) {
         $customActions = $crud->getConfig('treeToolbarActions', []);

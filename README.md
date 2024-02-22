@@ -118,7 +118,8 @@ public static function crudConfig()
                 ],
             ],
         ],
-        'access.delete' => false, // hide Delete menu items and buttons
+        'access.save' => false, // hide Create, Save and Update buttons
+        'access.delete' => false, // hide Delete button
     ];
 }
 ```

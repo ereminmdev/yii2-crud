@@ -40,8 +40,10 @@ $this->params['breadcrumbs'][] = Yii::t('crud', 'Import');
     </div>
 
     <div class="form-group">
-        <?= Html::submitButton('<span class="glyphicon glyphicon-ok"></span> ' . Yii::t('crud', 'Import'), ['class' => 'btn btn-primary']) ?>
-         
+        <?php if ($controller->crud->getConfig('access.save', true) && $controller->crud->getConfig('access.delete', true)): ?>
+            <?= Html::submitButton('<span class="glyphicon glyphicon-ok"></span> ' . Yii::t('crud', 'Import'), ['class' => 'btn btn-primary']) ?>
+             
+        <?php endif; ?>
         <?= Html::a(Yii::t('crud', 'Cancel'), $controller->urlCreate(['index']), ['class' => 'btn btn-link', 'onclick' => 'window.history.back(); return false']) ?>
     </div>
 

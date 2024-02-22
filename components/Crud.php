@@ -1232,10 +1232,12 @@ class Crud extends BaseObject
             '{setvals}' => [
                 'label' => Yii::t('crud', 'Set values'),
                 'url' => $this->context->urlCreate(['setvals'], true),
+                'visible' => $this->getConfig('access.save', true),
             ],
             '{duplicate}' => [
                 'label' => Yii::t('crud', 'Duplicate'),
                 'url' => $this->context->urlCreate(['duplicate'], true),
+                'visible' => $this->getConfig('access.save', true),
             ],
             '{export}' => [
                 'label' => Yii::t('crud', 'Export'),
@@ -1247,6 +1249,7 @@ class Crud extends BaseObject
                 'linkOptions' => [
                     'data-confirm' => Yii::t('crud', 'Are you sure you want to delete this items?'),
                 ],
+                'visible' => $this->getConfig('access.delete', true),
             ],
         ];
 
