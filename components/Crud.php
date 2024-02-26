@@ -706,18 +706,14 @@ class Crud extends BaseObject
                             'header' => $model->getAttributeLabel($field),
                             'content' => function (ActiveRecord $model) use ($field) {
                                 $html = '';
-                                try {
-                                    $basePath = $model->getFilesPath($field);
+                                $basePath = $model->getFilesPath($field);
+                                if (is_dir($basePath)) {
                                     $baseUrl = $model->getFilesUrl($field);
-                                    $files = FileHelper::findFiles($basePath);
+                                    $files = glob($basePath . '/*.*');
                                     foreach ($files as $file) {
                                         $filename = mb_basename($file);
-                                        $html .= Html::a('<i class="fa fa-file-o"></i> ' . $filename,
-                                            $baseUrl . '/' . $filename,
-                                            ['class' => 'btn btn-link btn-sm text-ellipsis', 'target' => '_blank']);
+                                        $html .= Html::a('<i class="fa fa-file-o"></i> ' . $filename, $baseUrl . '/' . $filename, ['class' => 'btn btn-link btn-sm text-ellipsis', 'target' => '_blank']);
                                     }
-                                } catch (InvalidArgumentException $e) {
-                                    Yii::error($e, __METHOD__);
                                 }
                                 return $html;
                             },
