@@ -350,13 +350,14 @@ class Crud extends BaseObject
     }
 
     /**
+     * @param string[] $columns
      * @return array
      */
-    public function getGridColumnsOnly()
+    public function getGridColumnsOnly($columns = [])
     {
         $order = Yii::$app->request->cookies->getValue($this->getGridColumnsOnlyStoreKey() . '-order', []);
-        $columns = Yii::$app->request->cookies->getValue($this->getGridColumnsOnlyStoreKey(), []) ?: $this->getConfig('gridColumnsOnly') ?? [];
-        return $order ? array_intersect($order, $columns) : $columns;
+        $only = Yii::$app->request->cookies->getValue($this->getGridColumnsOnlyStoreKey(), []) ?: array_diff($this->getConfig('gridShowColumns', $columns), $this->getConfig('gridHideColumns') ?? []);
+        return $order ? array_intersect($order, $only) : ($only ?: $columns);
     }
 
     /**
@@ -390,8 +391,7 @@ class Crud extends BaseObject
     public function guessColumns($fields = null)
     {
         $model = $this->getModel('getfields');
-
-        $columns = $fields ?: $this->getGridColumnsOnly() ?: array_keys($model->attributeLabels());
+        $columns = $fields ?: $this->getGridColumnsOnly(array_keys($model->attributeLabels()));
 
         $paramColumns = $this->getConfig('gridColumns', []);
         $columnsSchema = $this->columnsSchema();
