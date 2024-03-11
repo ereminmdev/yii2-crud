@@ -362,6 +362,11 @@ class DefaultController extends Controller
         $model = $this->getCrud()->getFirstModel();
         $setModel = $this->getCrud()->getSetvalsModel();
 
+        if (!$model || !$setModel) {
+            Yii::$app->session->addFlash('info', Yii::t('yii', 'No results found.'));
+            return $this->redirect($this->getReturnUrl());
+        }
+
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             $setAttributes = array_keys(array_filter($setModel->attributes, function ($val) {
                 return (bool)$val;
