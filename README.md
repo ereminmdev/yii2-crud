@@ -43,6 +43,7 @@ public static function crudConfig()
                 ],
             ];
         },
+        'gridEditLinkField' => 'id',
         'gridColumns' => [
             'title' => [
                 'attribute' => 'title',

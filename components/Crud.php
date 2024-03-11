@@ -723,7 +723,8 @@ class Crud extends BaseObject
                         $columns[$key] = [
                             'attribute' => $field,
                         ];
-                        if (($field == 'title') && ($schema['gridEditLink'] ?? true)) {
+                        $gridEditLinkField = $this->getConfig('gridEditLinkField', 'title');
+                        if ($gridEditLinkField == $field) {
                             $columns[$key]['content'] = function (ActiveRecord $model) use ($field) {
                                 return Html::a($model->$field, $this->context->urlCreate(['update', 'id' => $model->id]), ['class' => 'js-store-page-scroll']);
                             };
