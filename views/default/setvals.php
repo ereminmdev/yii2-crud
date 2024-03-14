@@ -33,7 +33,9 @@ $this->params['breadcrumbs'][] = Yii::t('crud', 'Set values');
             <div class="panel-heading"><?= Yii::t('crud', 'Select the required fields') ?></div>
             <div class="panel-body">
                 <?= $form->errorSummary($setModel) ?>
-                <?= $controller->crud->renderFormSetvals($form, $model, $setModel) ?>
+                <div class="setvals-columns">
+                    <?= $controller->crud->renderFormSetvals($form, $model, $setModel) ?>
+                </div>
             </div>
         </div>
 
