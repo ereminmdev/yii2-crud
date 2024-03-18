@@ -413,8 +413,8 @@ class DefaultController extends Controller
         $crud = $this->getCrud();
         $model = $crud->getModel();
 
-        $columns = array_column(array_filter($crud->guessColumns(array_keys($model->attributeLabels())), fn($value) => $value['attribute'] ?? false), 'attribute');
-        $onlyColumns = $crud->getGridColumnsOnly() ?: $columns;
+        $columns = array_keys($model->attributeLabels());
+        $onlyColumns = $crud->getGridColumnsOnly($columns);
 
         $order = Yii::$app->request->cookies->getValue($crud->getGridColumnsOnlyStoreKey() . '-order', []);
         $columns = $order ? array_intersect($order, $columns) : $columns;
