@@ -211,7 +211,9 @@ class DefaultController extends Controller
             if ($crud->isViewAsTree()) {
                 $this->deleteTreeChildModels($model);
             }
-            $model->delete();
+            if (($model->delete() === false) && $model->hasErrors()) {
+                Yii::$app->session->addFlash('error', implode('<br>', $model->getErrorSummary(false)));
+            }
         }
 
         $url = $this->getActionSuccessUrl('delete', [
