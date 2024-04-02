@@ -69,7 +69,7 @@ $controller = $this->context;
     }
 
     $actions['{full}'] = ButtonDropdown::widget([
-        'label' => '<span class="glyphicon glyphicon-asterisk"></span>',
+        'label' => '<span class="glyphicon glyphicon-cog"></span>',
         'encodeLabel' => false,
         'dropdown' => ['items' => $items],
         'options' => [
