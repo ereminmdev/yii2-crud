@@ -171,7 +171,7 @@ class Crud extends BaseObject
         }
 
         $filterParams = ($filterParams === true) ? Yii::$app->request->queryParams : ($filterParams !== false ? $filterParams : []);
-        $filterParams[$formName] = array_filter($filterParams[$formName] ?? [], 'strlen');
+        $filterParams[$formName] = array_filter($filterParams[$formName] ?? [], fn($value) => $value != '');
 
         if ($limitById) {
             $filterId = $this->getRequestModelIds();
