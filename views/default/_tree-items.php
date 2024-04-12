@@ -57,8 +57,8 @@ if ($crud->treeSortField) {
                 </div>
                 <div class="tree-item--opener">
                     <?php if (count($model->{$crud->treeChildrenRelation})): ?>
-                        <?= Html::a('<i class="glyphicon glyphicon-chevron-right"></i>', $controller->urlCreate(['tree-open', 'id' => $model->id]), ['class' => 'js-tree-open']) ?>
-                        <?= Html::a('<i class="glyphicon glyphicon-chevron-down"></i>', $controller->urlCreate(['tree-close', 'ids' => $model->id]), ['class' => 'js-tree-close']) ?>
+                        <?= Html::a('<i class="glyphicon glyphicon-menu-right"></i>', $controller->urlCreate(['tree-open', 'id' => $model->id]), ['class' => 'js-tree-open']) ?>
+                        <?= Html::a('<i class="glyphicon glyphicon-menu-down"></i>', $controller->urlCreate(['tree-close', 'ids' => $model->id]), ['class' => 'js-tree-close']) ?>
                     <?php endif; ?>
                 </div>
                 <div class="tree-item--title">
