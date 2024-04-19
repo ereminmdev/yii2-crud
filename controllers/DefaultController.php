@@ -335,7 +335,7 @@ class DefaultController extends Controller
                 Yii::$app->session->setFlash('cms-crud', $errors[0]);
             } else {
                 foreach ($columnsSchema as $attribute => $scheme) {
-                    if (($scheme['type'] == 'cropper-image-upload') && ($filename = $model->getAttribute($attribute))) {
+                    if (isset($scheme) && ($scheme['type'] == 'cropper-image-upload') && ($filename = $model->getAttribute($attribute))) {
                         $cloneModel->createFromUrl($model->getUploadPath($attribute));
                     }
                 }
