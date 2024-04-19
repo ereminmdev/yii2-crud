@@ -171,5 +171,5 @@ public static function crudConfig()
 3) Insert link into view:
 
 ```
-<?= Url::toRoute(['/crud', 'model' => Product::class]); ?>
+<?= Url::toRoute(['/crud/default/index', 'model' => Product::class]); ?>
 ```
