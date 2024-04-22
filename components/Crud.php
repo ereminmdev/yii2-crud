@@ -1174,7 +1174,7 @@ class Crud extends BaseObject
     public function getConfig($key, $default = null)
     {
         try {
-            return ArrayHelper::getValue($this->config, $key, $default);
+            return ArrayHelper::getValue($this->config, $key) ?? $default;
         } catch (Error $e) {
             return $default;
         }
