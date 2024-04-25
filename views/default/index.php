@@ -32,8 +32,8 @@ if ($crud->sortableJs) {
         ],
     ]);
 }
-if ($crud->hideGridFilters) {
-    $this->registerCss('.grid-view tr.filters { display: none }');
+if ($crud->jsEditPrompt) {
+    $this->registerJs('window.jsEditPromptUrl = "' . $controller->urlCreate(['js-edit-prompt']) . '";');
 }
 
 $gridViewWidget = new GridView(ArrayHelper::merge([

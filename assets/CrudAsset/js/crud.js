@@ -102,11 +102,6 @@ jQuery(function ($) {
 
             return false;
         });
-
-        $('.js-crud-toggle-filters').on('click', function () {
-            $('.grid-view tr.filters').toggle();
-            return false;
-        });
     }
 
     // views/_form

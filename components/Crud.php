@@ -77,10 +77,6 @@ class Crud extends BaseObject
      * @var bool
      */
     public $jsEditPrompt = false;
-    /**
-     * @var bool
-     */
-    public $hideGridFilters = true;
 
     /**
      * @param string $scenario
@@ -144,13 +140,12 @@ class Crud extends BaseObject
     {
         $modelClass = $this->modelClass;
         $model = $this->getModel('search');
-        $formName = $model->formName();
 
         $dataProvider = new ActiveDataProvider([
             'query' => $modelClass::find(),
             'pagination' => [
                 'class' => 'ereminmdev\yii2\crud\components\Pagination',
-                'storeKey' => $formName . '-per-page',
+                'storeKey' => $model->formName() . '-per-page',
             ],
         ]);
 
@@ -171,7 +166,6 @@ class Crud extends BaseObject
         }
 
         $filterParams = ($filterParams === true) ? Yii::$app->request->queryParams : ($filterParams !== false ? $filterParams : []);
-        $filterParams[$formName] = array_filter($filterParams[$formName] ?? [], fn($value) => $value != '');
 
         if ($limitById) {
             $filterId = $this->getRequestModelIds();
@@ -181,10 +175,9 @@ class Crud extends BaseObject
             }
         }
 
-        if (!empty($filterParams[$formName]) && $model->load($filterParams)) {
-            $this->hideGridFilters = false;
-
+        if ($model->load($filterParams)) {
             $columnsSchema = $this->columnsSchema();
+            $formName = $model->formName();
             $tableName = $modelClass::tableName();
             foreach ($filterParams[$formName] as $attribute => $value) {
                 if (($value == '') || isset($columnsSchema[$attribute]['unsafeOnSearch']) || (!in_array($attribute, $model->attributes()) && !isset($columnsSchema[$attribute]['relatedAttribute']))) {
@@ -288,8 +281,6 @@ class Crud extends BaseObject
         if ($this->getConfig('gridActionColumn', true)) {
             array_unshift($columns, [
                 'class' => DropDownButtonColumn::class,
-                'header' => '<a href="#" class="js-crud-toggle-filters"><span class="glyphicon glyphicon-filter"></span></a>',
-                'headerOptions' => ['style' => 'text-align: center'],
                 'buttonDropdownOptions' => [
                     'label' => '<i class="glyphicon glyphicon-option-vertical"></i>',
                     'encodeLabel' => false,
