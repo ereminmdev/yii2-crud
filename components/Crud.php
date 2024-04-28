@@ -50,8 +50,8 @@ use yii\widgets\ActiveForm;
  */
 class Crud extends BaseObject
 {
-    const VIEW_AS_GRID = 'grid';
-    const VIEW_AS_TREE = 'tree';
+    public const VIEW_AS_GRID = 'grid';
+    public const VIEW_AS_TREE = 'tree';
 
     /**
      * @var ActiveRecord|string model class name
@@ -117,7 +117,7 @@ class Crud extends BaseObject
         $dataProvider = $this->getDataProvider($filterParams);
         $dataProvider->query->limit(1);
         $models = $dataProvider->getModels();
-        return isset($models[0]) ? $models[0] : null;
+        return $models[0] ?? null;
     }
 
     /**
@@ -545,18 +545,14 @@ class Crud extends BaseObject
                         $columns[$key] = [
                             'attribute' => $field,
                             'format' => 'html',
-                            'value' => function (ActiveRecord $model) use ($field) {
-                                return Html::a($model->$field, 'tel:' . preg_replace('/[^+0-9]/', '', $model->$field));
-                            },
+                            'value' => fn(ActiveRecord $model) => Html::a($model->$field, 'tel:' . preg_replace('/[^+0-9]/', '', $model->$field)),
                         ];
                         break;
                     case 'image':
                         $columns[$key] = [
                             'attribute' => $field,
                             'format' => 'html',
-                            'value' => function (ActiveRecord $model) use ($field) {
-                                return Html::img($model->$field, ['class' => 'img-responsive crud-field-img']);
-                            },
+                            'value' => fn(ActiveRecord $model) => Html::img($model->$field, ['class' => 'img-responsive crud-field-img']),
                         ];
                         break;
                     case 'upload-image':
@@ -568,8 +564,8 @@ class Crud extends BaseObject
                             'format' => 'html',
                             'filter' => false,
                             'content' => function (ActiveRecord $model) use ($field, $schema) {
-                                $thumb = isset($schema['thumb']) ? $schema['thumb'] : 'thumb';
-                                $thumb2 = isset($schema['thumb2']) ? $schema['thumb2'] : null;
+                                $thumb = $schema['thumb'] ?? 'thumb';
+                                $thumb2 = $schema['thumb2'] ?? null;
                                 $url = $model->getImageUrl($field, $thumb);
                                 $url2 = $thumb2 ? $model->getImageUrl($field, $thumb2) : $model->getUploadUrl($field);
                                 return Html::a(Html::img($url, ['class' => 'img-responsive crud-field-img']), $url2, ['target' => '_blank']);
@@ -678,12 +674,10 @@ class Crud extends BaseObject
                             ];
                         } elseif ($schema['rtype'] == 'manyMany') {
                             $columns[$key] = [
-                                'content' => function (ActiveRecord $model) use ($field, $schema, $relation) {
-                                    return $model->getAttributeLabel($field) . ' (' . count($model->$relation) . ')';
-                                },
+                                'content' => fn(ActiveRecord $model) => $model->getAttributeLabel($field) . ' (' . count($model->$relation) . ')',
                             ];
                             if (isset($schema['getList']) || isset($schema['itemList'])) {
-                                $itemList = isset($schema['getList']) ? $schema['getList'] : $schema['itemList'];
+                                $itemList = $schema['getList'] ?? $schema['itemList'];
                                 $itemList = $itemList instanceof Closure ? call_user_func($itemList) : $itemList;
                                 $columns[$key] = ArrayHelper::merge($columns[$key], [
                                     'filter' => $itemList,
@@ -724,9 +718,7 @@ class Crud extends BaseObject
                         ];
                         $gridEditLinkField = $this->getConfig('gridEditLinkField', 'title');
                         if ($gridEditLinkField == $field) {
-                            $columns[$key]['content'] = function (ActiveRecord $model) use ($field) {
-                                return Html::a($model->$field, $this->context->urlCreate(['update', 'id' => $model->id]), ['class' => 'js-store-page-scroll']);
-                            };
+                            $columns[$key]['content'] = fn(ActiveRecord $model) => Html::a($model->$field, $this->context->urlCreate(['update', 'id' => $model->id]), ['class' => 'js-store-page-scroll']);
                         }
                 }
 
@@ -788,14 +780,14 @@ class Crud extends BaseObject
                         foreach ($formTabs as $fields) $oFields = array_merge($oFields, $fields);
                         $oFields = array_diff($formFields, $oFields);
                         foreach ($oFields as $oField) {
-                            $param = isset($paramFields[$oField]) ? $paramFields[$oField] : null;
-                            $schema = isset($columnsSchema[$oField]) ? $columnsSchema[$oField] : null;
+                            $param = $paramFields[$oField] ?? null;
+                            $schema = $columnsSchema[$oField] ?? null;
                             $tabContent .= $this->renderFormField($form, $model, $oField, $param, $schema);
                             $oldFields[] = $oField;
                         }
                     } else {
-                        $param = isset($paramFields[$field]) ? $paramFields[$field] : null;
-                        $schema = isset($columnsSchema[$field]) ? $columnsSchema[$field] : null;
+                        $param = $paramFields[$field] ?? null;
+                        $schema = $columnsSchema[$field] ?? null;
                         $tabContent .= $this->renderFormField($form, $model, $field, $param, $schema);
                         $oldFields[] = $field;
                     }
@@ -810,8 +802,8 @@ class Crud extends BaseObject
             $content = Tabs::widget(['items' => $tabItems]);
         } else {
             foreach ($formFields as $field) {
-                $param = isset($paramFields[$field]) ? $paramFields[$field] : null;
-                $schema = isset($columnsSchema[$field]) ? $columnsSchema[$field] : null;
+                $param = $paramFields[$field] ?? null;
+                $schema = $columnsSchema[$field] ?? null;
                 $content .= $this->renderFormField($form, $model, $field, $param, $schema);
             }
         }
@@ -857,7 +849,7 @@ class Crud extends BaseObject
                     $formField = $form->field($model, $field)->textarea(array_merge($inputOptions, ['class' => 'form-control input-auto-height', 'rows' => 1]));
                     break;
                 case 'html':
-                    $widgetOptions = isset($schema['widgetOptions']) ? $schema['widgetOptions'] : [];
+                    $widgetOptions = $schema['widgetOptions'] ?? [];
                     $formField = $form->field($model, $field)->widget(TinyMce::class, $widgetOptions);
                     break;
                 case Schema::TYPE_BOOLEAN:
@@ -905,7 +897,7 @@ class Crud extends BaseObject
                 case 'crop-image-upload':
                 case 'croppie-image-upload':
                 case 'cropper-image-upload':
-                    $thumb = isset($schema['thumb']) ? $schema['thumb'] : 'thumb';
+                    $thumb = $schema['thumb'] ?? 'thumb';
                     $url = $model->getImageUrl($field, $thumb);
                     $file = Html::tag('p', Html::img($url, ['class' => 'img-responsive crud-field-img img-result', 'data-src' => $model->getUploadUrl($field)]), ['class' => 'help-block']);
                     if ($model->$field) {
@@ -920,7 +912,7 @@ class Crud extends BaseObject
                     }
                     $formField = $form->field($model, $field, ['template' => "{label}\n{file}\n{input}\n{hint}\n{error}"])->fileInput(array_merge($inputOptions, ['accept' => 'image/*']));
                     $formField->parts['{file}'] = $file;
-                    $widgetOptions = isset($schema['widgetOptions']) ? $schema['widgetOptions'] : [];
+                    $widgetOptions = $schema['widgetOptions'] ?? [];
                     if ($schema['type'] == 'crop-image-upload') {
                         $formField->widget(\ereminmdev\yii2\cropimageupload\CropImageUploadWidget::class, $widgetOptions);
                     } elseif ($schema['type'] == 'croppie-image-upload') {

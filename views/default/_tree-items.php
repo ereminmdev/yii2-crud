@@ -15,9 +15,7 @@ use yii\db\ActiveRecord;
 /** @var DefaultController $controller */
 $controller = $this->context;
 
-$items = array_filter($models, function ($model) use ($parentId, $crud) {
-    return $model->{$crud->treeParentField} == $parentId;
-});
+$items = array_filter($models, fn($model) => $model->{$crud->treeParentField} == $parentId);
 
 if (count($items) == 0) {
     return;
@@ -40,9 +38,7 @@ if ($crud->treeSortField) {
 <div class="tree-items" data-parent-id="<?= $parentId ?>">
     <?php foreach ($items as $model): ?>
         <?php
-        $children = array_filter($models, function ($child) use ($model, $crud) {
-            return $child->{$crud->treeParentField} == $model->id;
-        });
+        $children = array_filter($models, fn($child) => $child->{$crud->treeParentField} == $model->id);
         ?>
         <div class="tree-item<?= count($children) ? ' open' : '' ?>" data-id="<?= $model->id ?>">
             <div class="tree-item-row">

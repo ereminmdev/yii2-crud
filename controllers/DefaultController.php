@@ -370,9 +370,7 @@ class DefaultController extends Controller
         }
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-            $setAttributes = array_keys(array_filter($setModel->attributes, function ($val) {
-                return (bool)$val;
-            }));
+            $setAttributes = array_keys(array_filter($setModel->attributes, fn($val) => (bool)$val));
             if (empty($setAttributes)) {
                 $setModel->addError('summary', Yii::t('crud', 'Please choose a field(s)'));
             } else {
@@ -736,23 +734,20 @@ class DefaultController extends Controller
         $basePath = Yii::getAlias('@frontend/web');
         $baseUrl = Yii::$app->urlManagerFrontend->getBaseUrl();
 
-        $opts = array(
-            'debug' => YII_ENV_DEV,
-            'roots' => [
-                [
-                    'driver' => 'LocalFileSystem',
-                    'path' => $modelPath,
-                    'URL' => $modelUrl,
-                    'alias' => $model->getAttributeLabel($field),
-                    'icon' => $iconUrl,
-                    'tmbPath' => $basePath . '/files/temp/elfinder/tmb',
-                    'tmbURL' => $baseUrl . '/files/temp/elfinder/tmb',
-                    'tmpPath' => '',
-                    'quarantine' => $basePath . '/files/temp/elfinder/quarantine',
-                    'uploadOverwrite' => false,
-                ],
+        $opts = ['debug' => YII_ENV_DEV, 'roots' => [
+            [
+                'driver' => 'LocalFileSystem',
+                'path' => $modelPath,
+                'URL' => $modelUrl,
+                'alias' => $model->getAttributeLabel($field),
+                'icon' => $iconUrl,
+                'tmbPath' => $basePath . '/files/temp/elfinder/tmb',
+                'tmbURL' => $baseUrl . '/files/temp/elfinder/tmb',
+                'tmpPath' => '',
+                'quarantine' => $basePath . '/files/temp/elfinder/quarantine',
+                'uploadOverwrite' => false,
             ],
-        );
+        ]];
 
         @mkdir($modelPath, 0777, true);
         @mkdir($basePath . '/files/temp/elfinder', 0777, true);

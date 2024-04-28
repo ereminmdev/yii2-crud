@@ -13,7 +13,7 @@
     }
   ],
   "require": {
-    "php": ">=7.0",
+    "php": ">=7.4",
     "ext-gd": "*",
     "ext-mbstring": "*",
     "yiisoft/yii2": "~2.0.14",
