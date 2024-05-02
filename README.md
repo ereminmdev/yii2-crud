@@ -50,16 +50,12 @@ public static function crudConfig()
             'title' => [
                 'attribute' => 'title',
                 'label' => 'Title',
-                'value' => function (self $model) {
-                    return $model->getBrandTitle() . ' ' . $model->title;
-                },
+                'value' => fn(self $model) => $model->getBrandTitle() . ' ' . $model->title,
             ],
             'colors1' => false,
-        ],       
+        ],
         'formFields' => [
-            'colors' => function (ActiveForm $form, self $model) {
-                return $form->field($model, 'sizes')->checkboxList(static::colors());
-            },
+            'colors' => fn(ActiveForm $form, self $model) => $form->field($model, 'sizes')->checkboxList(static::colors()),
             'colors2' => false,
         ],
         'columnsSchema' => [
@@ -70,13 +66,11 @@ public static function crudConfig()
                 'type' => 'relation',
                 'rtype' => 'hasOne',
                 'relation' => 'brand',
-                'getList' => function () {
-                    return Brand::find()
-                        ->select(['title', 'id'])
-                        ->orderBy(['title' => SORT_ASC])
-                        ->indexBy('id')
-                        ->column();
-                },
+                'getList' => fn() => Brand::find()
+                    ->select(['title', 'id'])
+                    ->orderBy(['title' => SORT_ASC])
+                    ->indexBy('id')
+                    ->column(),
             ],
             'sizes' => [
                 'type' => 'relation',
@@ -85,9 +79,7 @@ public static function crudConfig()
             ],
             'status' => [
                 'type' => 'array',
-                'itemList' => function () {
-                    return static::statuses();
-                },
+                'itemList' => fn() => static::statuses(),
                 'gridDropButton' => true,
             ],
             'comment' => ['jsEditPrompt' => true],
@@ -97,12 +89,10 @@ public static function crudConfig()
             '{custom}' => Html::a('Моя кнопка', '#', ['class' => 'btn btn-default']),
         ],
         'gridActions' => [
-            '{custom}' => function(self $model, mixed $key, Crud $crud) {
-                return [
-                   'label' => 'Мое действие',
-                   'url' => '#',
-                ];
-            },
+            '{custom}' => fn(self $model, mixed $key, Crud $crud) => [
+                'label' => 'Мое действие',
+                'url' => '#',
+            ],
         ],
         'controller.behaviors' => [
             'access' => [
@@ -133,7 +123,7 @@ Set tree view:
 public static function crudConfig()
 {
     return [
-    ...
+        // ...
         'viewAs' => 'tree', // enable tree as default index view
         'tree' => [
             'parentField' => 'parent_id',
@@ -141,28 +131,16 @@ public static function crudConfig()
             'sortField' => 'position', // false - disable sorting
             'itemActionsTemplate' => "{custom}\n{--}\n{create1}\n{create2}\n{--}",
             'itemActions' => [
-                '{custom}' => function (self $model, DefaultController $controller, Crud $crud) {
-                    return [
-                        'label' => 'Custom label',
-                        'url' => ['#'],
-                    ];
-                },
+                '{custom}' => fn(self $model, DefaultController $controller, Crud $crud) => [
+                    'label' => 'Custom label',
+                    'url' => ['#'],
+                ],
             ],
-            'titleBlock' => function (self $model, DefaultController $controller, Crud $crud) {
-                return Html::encode($model->title);
-            },
-            'titleBlock_text' => function (self $model, DefaultController $controller, Crud $crud) {
-                return Html::encode($model->name);
-            },
-            'titleBlock_options' => function (self $model, DefaultController $controller, Crud $crud) {
-                return ['class' => 'red'];
-            },
-            'titleBlock_onHover' => function (self $model, DefaultController $controller, Crud $crud) {
-                return Html::encode($model->statusText);
-            },
-            'rightBlock' => function (self $model, DefaultController $controller, Crud $crud) {
-                return $model->status;
-            },
+            'titleBlock' => fn(self $model, DefaultController $controller, Crud $crud) => Html::encode($model->title),
+            'titleBlock_text' => fn(self $model, DefaultController $controller, Crud $crud) => Html::encode($model->name),
+            'titleBlock_options' => fn(self $model, DefaultController $controller, Crud $crud) => ['class' => 'red'],
+            'titleBlock_onHover' => fn(self $model, DefaultController $controller, Crud $crud) => Html::encode($model->statusText),
+            'rightBlock' => fn(self $model, DefaultController $controller, Crud $crud) => $model->status,
         ],
     ];
 }
