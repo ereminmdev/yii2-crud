@@ -141,29 +141,8 @@ class Crud extends BaseObject
         $modelClass = $this->modelClass;
         $model = $this->getModel('search');
 
-        $dataProvider = new ActiveDataProvider([
-            'query' => $modelClass::find(),
-            'pagination' => [
-                'class' => 'ereminmdev\yii2\crud\components\Pagination',
-                'storeKey' => $model->formName() . '-per-page',
-            ],
-        ]);
-
-        if (!empty($dataProvider->sort->getAttributeOrders())) {
-            $dataProvider->query->orderBy([]);
-        }
-
         /** @var ActiveQuery $query */
-        $query = $dataProvider->query;
-
-        if ($pagination !== true) {
-            $dataProvider->setPagination($pagination);
-        }
-
-        $configDataProvider = $this->getConfig('dataProvider');
-        if ($configDataProvider instanceof Closure) {
-            call_user_func($configDataProvider, $dataProvider, $this);
-        }
+        $query = $modelClass::find();
 
         $filterParams = ($filterParams === true) ? Yii::$app->request->queryParams : ($filterParams !== false ? $filterParams : []);
 
@@ -265,6 +244,23 @@ class Crud extends BaseObject
                     }
                 }
             }
+        }
+
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+            'pagination' => $pagination !== true ? $pagination : [
+                'class' => 'ereminmdev\yii2\crud\components\Pagination',
+                'storeKey' => $model->formName() . '-per-page',
+            ],
+        ]);
+
+        if (!empty($dataProvider->sort->getAttributeOrders())) {
+            $dataProvider->query->orderBy([]);
+        }
+
+        $configDataProvider = $this->getConfig('dataProvider');
+        if ($configDataProvider instanceof Closure) {
+            call_user_func($configDataProvider, $dataProvider, $this);
         }
 
         return $dataProvider;
