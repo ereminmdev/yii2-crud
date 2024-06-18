@@ -227,8 +227,11 @@ class Crud extends BaseObject
                         if ($schema['queryWith'] ?? true) {
                             $query->with([
                                 $relation => function (ActiveQuery $query) use ($schema, $relation, $model) {
-                                    $linkAttribute = array_keys($model->getRelation($relation)->link)[0];
-                                    $query->select($linkAttribute);
+                                    $modelRelation = $model->getRelation($relation);
+                                    $query->select(array_keys($modelRelation->link)[0]);
+                                    if (!empty($modelRelation->indexBy) && is_string($modelRelation->indexBy)) {
+                                        $query->addSelect($modelRelation->indexBy);
+                                    }
                                 },
                             ]);
                         }
