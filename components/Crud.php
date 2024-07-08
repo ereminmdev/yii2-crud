@@ -521,7 +521,7 @@ class Crud extends BaseObject
                             'attribute' => $field,
                             'content' => function (ActiveRecord $model) use ($field) {
                                 $url = $model->$field;
-                                return Html::a($url, $url, ['target' => '_blank']);
+                                return $url ? Html::a($url, $url, ['target' => '_blank']) : '';
                             },
                         ];
                         break;
@@ -533,7 +533,7 @@ class Crud extends BaseObject
                             'content' => function (ActiveRecord $model) use ($field) {
                                 $behavior = $model->getBehavior($field) ?? $model;
                                 $url = $behavior->getUploadUrl($field);
-                                return Html::a(basename($url), $url, ['target' => '_blank']);
+                                return $url ? Html::a(basename($url), $url, ['target' => '_blank']) : '';
                             },
                         ];
                         break;
@@ -544,14 +544,14 @@ class Crud extends BaseObject
                         $columns[$key] = [
                             'attribute' => $field,
                             'format' => 'html',
-                            'value' => fn(ActiveRecord $model) => Html::a($model->$field, 'tel:' . preg_replace('/[^+0-9]/', '', $model->$field)),
+                            'value' => fn(ActiveRecord $model) => ($value = $model->$field) ? Html::a($value, 'tel:' . preg_replace('/[^+0-9]/', '', $value)) : '',
                         ];
                         break;
                     case 'image':
                         $columns[$key] = [
                             'attribute' => $field,
                             'format' => 'html',
-                            'value' => fn(ActiveRecord $model) => Html::img($model->$field, ['class' => 'img-responsive crud-field-img']),
+                            'value' => fn(ActiveRecord $model) => ($value = $model->$field) ? Html::img($value, ['class' => 'img-responsive crud-field-img']) : '',
                         ];
                         break;
                     case 'upload-image':
