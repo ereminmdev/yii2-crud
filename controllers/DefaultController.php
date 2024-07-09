@@ -413,7 +413,9 @@ class DefaultController extends Controller
         $crud = $this->getCrud();
         $model = $crud->getModel();
 
-        $columns = array_keys($model->attributeLabels());
+        $columns = array_diff(array_keys($model->attributeLabels()), array_keys(array_filter($crud->getConfig('gridColumns', []), function ($value) {
+            return $value === false;
+        })));
         $onlyColumns = $crud->getGridColumnsOnly($columns);
 
         $order = Yii::$app->request->cookies->getValue($crud->getGridColumnsOnlyStoreKey() . '-order', []);
