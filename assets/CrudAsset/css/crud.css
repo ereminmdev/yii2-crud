@@ -192,4 +192,8 @@
     .cms-crud-grid thead, .cms-crud-grid th[scope=row] {
         position: initial;
     }
+
+    .cms-crud-grid .caret, .cms-crud-grid tr.filters, .cms-crud-grid tr > :nth-child(1), .cms-crud-grid tr > :nth-child(2) {
+        display: none;
+    }
 }
