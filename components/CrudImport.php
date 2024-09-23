@@ -9,7 +9,6 @@ use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use Yii;
 use yii\base\BaseObject;
 use yii\db\ActiveRecord;
-use yii\db\IntegrityException;
 use yii\db\Schema;
 
 /**
@@ -145,11 +144,12 @@ class CrudImport extends BaseObject
     public function importRow($fields, $row, $rowIdx)
     {
         $values = array_combine($fields, $row);
+
+        $this->prepareData($values);
+
         foreach ($values as $key => $value) {
             if ($value === null) unset($values[$key]);
         }
-
-        $this->prepareData($values);
 
         /* @var $modelClass ActiveRecord */
         $modelClass = $this->modelClass;
@@ -172,7 +172,7 @@ class CrudImport extends BaseObject
                 $errors = array_values($model->getFirstErrors());
                 $this->_errors[] = Yii::t('crud', 'String') . ' ' . $rowIdx . ': ' . $errors[0];
             }
-        } catch (IntegrityException $e) {
+        } catch (\Exception $e) {
             $this->_errors[] = Yii::t('crud', 'String') . ' ' . $rowIdx . ': ' . $e->getMessage();
         }
     }
@@ -191,6 +191,20 @@ class CrudImport extends BaseObject
                     case Schema::TYPE_BOOLEAN:
                         $value = in_array(mb_strtolower($value), ['', 'нет', 'ложь', false]) ? false : (boolean)$value;
                         break;
+                    case Schema::TYPE_DATE:
+                        $value = date('Y-m-d', strtotime($value));
+                        break;
+                    case Schema::TYPE_DATETIME:
+                        $value = date('Y-m-d H:i:s', strtotime($value));
+                        break;
+                    case Schema::TYPE_TIME:
+                        $value = date('H:i:s', strtotime($value));
+                        break;
+                    case 'upload-image':
+                    case 'crop-image-upload':
+                    case 'croppie-image-upload':
+                    case 'cropper-image-upload':
+                        $value = null;
                     default:
                         $value = (string)$value;
                 }
