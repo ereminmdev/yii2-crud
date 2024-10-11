@@ -17,6 +17,7 @@ use yii\base\DynamicModel;
 use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
 use yii\bootstrap\ButtonDropdown;
+use yii\bootstrap\Html;
 use yii\bootstrap\Tabs;
 use yii\data\ActiveDataProvider;
 use yii\db\ActiveQuery;
@@ -25,7 +26,6 @@ use yii\db\Schema;
 use yii\grid\CheckboxColumn;
 use yii\helpers\ArrayHelper;
 use yii\helpers\FileHelper;
-use yii\helpers\Html;
 use yii\helpers\StringHelper;
 use yii\helpers\Url;
 use yii\web\Cookie;
@@ -1002,6 +1002,8 @@ class Crud extends BaseObject
                                 'uiOptions' => ['toolbar' => [['upload']]],
                             ],
                         ]) .
+                        Html::activeHint($model, $field, ['hint' => $schema['hint'] ?? null, 'tag' => 'p', 'class' => 'help-block']) .
+                        Html::error($model, $field) .
                         '</div>';
                     break;
                 default:
