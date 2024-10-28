@@ -336,7 +336,7 @@ class DefaultController extends Controller
             } else {
                 foreach ($columnsSchema as $attribute => $scheme) {
                     if (isset($scheme['type']) && ($scheme['type'] == 'cropper-image-upload') && ($filename = $model->getAttribute($attribute))) {
-                        $cloneModel->createFromUrl($model->getUploadPath($attribute));
+                        $cloneModel->$attribute = Url::to($model->getUploadUrl($attribute), true);
                     }
                 }
 
