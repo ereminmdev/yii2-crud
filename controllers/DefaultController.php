@@ -113,7 +113,7 @@ class DefaultController extends Controller
             'columns' => $crud->gridColumns(),
         ];
 
-        if (Yii::$app->request->isAjax) {
+        if ($this->request->isAjax) {
             return $this->renderAjax($view, $params);
         } else {
             return $this->render($view, $params);
@@ -147,11 +147,11 @@ class DefaultController extends Controller
         $crud = $this->getCrud();
 
         $model = $crud->getModel('insert');
-        $model->load(Yii::$app->request->get());
+        $model->load($this->request->get());
         $model->loadDefaultValues(true);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            if (Yii::$app->request->post('submit-apply') && !Yii::$app->request->isAjax) {
+        if ($model->load($this->request->post()) && $model->save()) {
+            if ($this->request->post('submit-apply') && !$this->request->isAjax) {
                 return $this->redirect($this->urlCreate(['update', 'id' => $model->id]));
             }
             $url = $this->getActionSuccessUrl('create', [
@@ -177,10 +177,10 @@ class DefaultController extends Controller
 
         $model = $crud->findModel($id, 'update');
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            if (Yii::$app->request->post('submit-apply') && !Yii::$app->request->isAjax) {
+        if ($model->load($this->request->post()) && $model->save()) {
+            if ($this->request->post('submit-apply') && !$this->request->isAjax) {
                 return $this->refresh();
-            } elseif (Yii::$app->request->isAjax) {
+            } elseif ($this->request->isAjax) {
                 return Json::encode($model->getAttributes());
             }
             $url = $this->getActionSuccessUrl('update', [
@@ -232,7 +232,7 @@ class DefaultController extends Controller
         $ids[] = $id;
         $this->setTreeOpenIds($ids);
 
-        if (Yii::$app->request->isAjax) {
+        if ($this->request->isAjax) {
             $models = $this->findTreeModelsByParentId($id);
 
             return $this->renderAjax('_tree-items', [
@@ -254,7 +254,7 @@ class DefaultController extends Controller
         $ids = explode(',', $ids);
         $this->removeTreeOpenIds($ids);
 
-        if (Yii::$app->request->isAjax) {
+        if ($this->request->isAjax) {
             return '';
         } else {
             return $this->redirect($this->urlCreate(['index']));
@@ -266,8 +266,8 @@ class DefaultController extends Controller
      */
     public function actionTreeSortable()
     {
-        $order = Yii::$app->request->post('order', []);
-        $oldOrder = Yii::$app->request->post('oldOrder', []);
+        $order = $this->request->post('order', []);
+        $oldOrder = $this->request->post('oldOrder', []);
         $newOrder = array_diff($order, $oldOrder);
         if ((count($order) < 2) || (count($order) < count($oldOrder))) {
             return;
@@ -369,7 +369,7 @@ class DefaultController extends Controller
             return $this->redirect($this->getReturnUrl());
         }
 
-        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+        if ($model->load($this->request->post()) && $model->validate()) {
             $setAttributes = array_keys(array_filter($setModel->attributes, fn($val) => (bool)$val));
             if (empty($setAttributes)) {
                 $setModel->addError('summary', Yii::t('crud', 'Please choose a field(s)'));
@@ -418,11 +418,11 @@ class DefaultController extends Controller
         })));
         $onlyColumns = $crud->getGridColumnsOnly($columns);
 
-        $order = Yii::$app->request->cookies->getValue($crud->getGridColumnsOnlyStoreKey() . '-order', []);
+        $order = $this->request->cookies->getValue($crud->getGridColumnsOnlyStoreKey() . '-order', []);
         $columns = $order ? array_intersect($order, $columns) : $columns;
 
-        if (Yii::$app->request->isPost) {
-            $newColumns = Yii::$app->request->post('columns');
+        if ($this->request->isPost) {
+            $newColumns = $this->request->post('columns');
 
             if ($newColumns !== null) {
                 $crud->setGridColumnsOnly($newColumns);
@@ -444,14 +444,14 @@ class DefaultController extends Controller
      */
     public function actionColumnsSortable()
     {
-        $order = (array)Yii::$app->request->post('order');
-        $oldOrder = (array)Yii::$app->request->post('oldOrder');
+        $order = (array)$this->request->post('order');
+        $oldOrder = (array)$this->request->post('oldOrder');
 
         if ((count($order) < 2) || (count($order) !== count($oldOrder))) {
             return;
         }
 
-        Yii::$app->response->cookies->add(new Cookie([
+        $this->response->cookies->add(new Cookie([
             'name' => $this->crud->getGridColumnsOnlyStoreKey() . '-order',
             'value' => $order,
             'expire' => strtotime('+30 days'),
@@ -461,13 +461,13 @@ class DefaultController extends Controller
     public function actionJsEditPrompt()
     {
         $this->response->format = Response::FORMAT_RAW;
-        Yii::$app->response->statusCode = 400;
+        $this->response->statusCode = 400;
 
-        if (Yii::$app->request->isPost) {
+        if ($this->request->isPost) {
             try {
-                $id = (int)Yii::$app->request->post('id', 0);
-                $column = Yii::$app->request->post('column', '');
-                $value = Yii::$app->request->post('value', '');
+                $id = (int)$this->request->post('id', 0);
+                $column = $this->request->post('column', '');
+                $value = $this->request->post('value', '');
 
                 $crud = $this->getCrud();
 
@@ -475,7 +475,7 @@ class DefaultController extends Controller
                 $model->setAttribute($column, $value);
 
                 if ($model->save(true, [$column])) {
-                    Yii::$app->response->statusCode = 200;
+                    $this->response->statusCode = 200;
                     return $value;
                 } elseif ($model->hasErrors($column)) {
                     return $model->getFirstError($column);
@@ -494,8 +494,8 @@ class DefaultController extends Controller
      */
     public function actionSortable()
     {
-        $order = (array)Yii::$app->request->post('order');
-        $oldOrder = (array)Yii::$app->request->post('oldOrder');
+        $order = (array)$this->request->post('order');
+        $oldOrder = (array)$this->request->post('oldOrder');
 
         if ((count($order) < 2) || (count($order) !== count($oldOrder))) {
             return;
@@ -531,9 +531,9 @@ class DefaultController extends Controller
     public function actionExport()
     {
         $model = new CrudExportForm;
-        $model->load(Yii::$app->request->get());
+        $model->load($this->request->get());
 
-        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+        if ($model->load($this->request->post()) && $model->validate()) {
             return $this->getCrud()->export($model);
         }
 
@@ -551,9 +551,9 @@ class DefaultController extends Controller
     public function actionImport()
     {
         $model = new CrudImportForm;
-        $model->load(Yii::$app->request->get());
+        $model->load($this->request->get());
 
-        if ($model->load(Yii::$app->request->post())) {
+        if ($model->load($this->request->post())) {
             $model->file = UploadedFile::getInstance($model, 'file');
 
             if ($model->validate()) {
@@ -595,9 +595,9 @@ class DefaultController extends Controller
 
         $model->updateAttributes([$field => '']);
 
-        if (Yii::$app->request->isAjax) {
-            Yii::$app->response->content = true;
-            return Yii::$app->response;
+        if ($this->request->isAjax) {
+            $this->response->content = true;
+            return $this->response;
         } else {
             $url = $this->getActionSuccessUrl('delete-upload-file', [
                 'model' => $model,
@@ -625,9 +625,9 @@ class DefaultController extends Controller
 
         $model->updateAttributes([$field => '']);
 
-        if (Yii::$app->request->isAjax) {
-            Yii::$app->response->content = true;
-            return Yii::$app->response;
+        if ($this->request->isAjax) {
+            $this->response->content = true;
+            return $this->response;
         } else {
             $url = $this->getActionSuccessUrl('delete-upload-image', [
                 'model' => $model,
@@ -679,7 +679,7 @@ class DefaultController extends Controller
      */
     public function actionSelect2filter($field)
     {
-        $q = Yii::$app->request->get('q', '');
+        $q = $this->request->get('q', '');
 
         $crud = $this->getCrud();
         $columnsSchema = $crud->columnsSchema();
@@ -689,8 +689,8 @@ class DefaultController extends Controller
         $relatedField = array_key_first($model->getRelation($schema['relation'])->link);
         $titleField = $schema['select2TitleField'] ?? ($schema['titleField'] ?? $field);
 
-        Yii::$app->response->format = Response::FORMAT_JSON;
-        Yii::$app->response->formatters[Response::FORMAT_JSON] = [
+        $this->response->format = Response::FORMAT_JSON;
+        $this->response->formatters[Response::FORMAT_JSON] = [
             'class' => 'yii\web\JsonResponseFormatter',
             'encodeOptions' => JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE,
         ];
@@ -718,7 +718,7 @@ class DefaultController extends Controller
         $crud = $this->getCrud();
         $modelClass = $crud->modelClass;
 
-        $id = Yii::$app->request->get('id');
+        $id = $this->request->get('id');
         $model = $id ? $crud->findModel($id) : new $modelClass;
 
         $modelPath = $model->getFilesPath($field);
@@ -777,7 +777,7 @@ class DefaultController extends Controller
         $params[$this->modelUrlParam] = $this->getCrud()->modelClass;
 
         if ($includeGet) {
-            $queryParams = Yii::$app->request->queryParams;
+            $queryParams = $this->request->queryParams;
             unset($queryParams['id']);
             unset($queryParams['useReturnUrl']);
             $params = ArrayHelper::merge($queryParams, $params);
@@ -813,7 +813,7 @@ class DefaultController extends Controller
     public function setCrud($modelClass = null)
     {
         if ($modelClass === null) {
-            if (($modelClass = Yii::$app->request->get($this->modelUrlParam)) === null) {
+            if (($modelClass = $this->request->get($this->modelUrlParam)) === null) {
                 throw new InvalidArgumentException('There\'s no parameter "' . $this->modelUrlParam . '" in request query.');
             }
         }
@@ -839,7 +839,7 @@ class DefaultController extends Controller
      */
     public function getReturnUrl($defRoute = ['index'])
     {
-        return (Yii::$app->request->get('useReturnUrl', 1) && ($url = Yii::$app->request->get('returnUrl'))) ? $url : $this->urlCreate($defRoute);
+        return ($this->request->get('useReturnUrl', 1) && ($url = $this->request->get('returnUrl'))) ? $url : $this->urlCreate($defRoute);
     }
 
     /**
