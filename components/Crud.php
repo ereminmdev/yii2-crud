@@ -1086,7 +1086,7 @@ class Crud extends BaseObject
             $this->setModelScenario($model, $scenario);
             return $model;
         } else {
-            throw new NotFoundHttpException('The requested model does not exist.');
+            throw new NotFoundHttpException(Yii::t('crud', 'The requested model does not exist.'));
         }
     }
 
