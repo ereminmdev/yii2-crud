@@ -589,11 +589,13 @@ class DefaultController extends Controller
         $behavior = $model->getBehavior($field) ?? $model;
 
         $path = $behavior->hasMethod('getUploadPath') ? $behavior->getUploadPath($field) : $behavior->getAttribute($field);
-        if (is_file($path)) {
+        if (is_string($path) && is_file($path)) {
             @unlink($path);
         }
 
-        $model->updateAttributes([$field => '']);
+        $model->detachBehavior($field);
+        $model->setAttribute($field, '');
+        $model->save(false, [$field]);
 
         if ($this->request->isAjax) {
             $this->response->content = true;
@@ -619,11 +621,13 @@ class DefaultController extends Controller
         $crud = $this->getCrud();
         $model = $crud->findModel($id, 'update');
 
-        if (in_array($field, array_keys($model->getBehaviors()), true) && ($behavior = $model->getBehavior($field)) && $behavior->hasMethod('removeImage')) {
+        if (($behavior = $model->getBehavior($field)) && $behavior->hasMethod('removeImage')) {
             $behavior->removeImage($field);
         }
 
-        $model->updateAttributes([$field => '']);
+        $model->detachBehavior($field);
+        $model->setAttribute($field, '');
+        $model->save(false, [$field]);
 
         if ($this->request->isAjax) {
             $this->response->content = true;
