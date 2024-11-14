@@ -93,7 +93,7 @@ class CrudExport extends BaseObject
         $model = $this->model;
         foreach ($columns as $column) {
             $sheet->setCellValue([$colI, $rowI], $column->attribute);
-            $headerValue = $this->needRenderData ? $this->renderCell($column->renderHeaderCell()) : (string)$model->getAttributeLabel($column->attribute);
+            $headerValue = $this->needRenderData ? $this->renderCell($column->renderHeaderCell()) : $this->valueToString($model->getAttributeLabel($column->attribute));
             $sheet->setCellValue([$colI, $rowI + 1], $headerValue);
             $colI++;
         }
@@ -107,7 +107,7 @@ class CrudExport extends BaseObject
             $rowI++;
             $key = $keys[$index];
             foreach ($columns as $column) {
-                $value = $this->needRenderData ? $this->renderCell($column->renderDataCell($model, $key, $index)) : (string)$model->getAttribute($column->attribute);
+                $value = $this->needRenderData ? $this->renderCell($column->renderDataCell($model, $key, $index)) : $this->valueToString($model->getAttribute($column->attribute));
                 $sheet->setCellValue([$colI, $rowI], $value);
                 $colI++;
             }
@@ -166,7 +166,7 @@ class CrudExport extends BaseObject
         $values2 = [];
         foreach ($columns as $column) {
             $values[] = $column->attribute;
-            $values2[] = $this->needRenderData ? $this->renderCell($column->renderHeaderCell()) : (string)$model->getAttributeLabel($column->attribute);
+            $values2[] = $this->needRenderData ? $this->renderCell($column->renderHeaderCell()) : $this->valueToString($model->getAttributeLabel($column->attribute));
         }
         fputcsv($stream, $values);
         fputcsv($stream, $values2);
@@ -178,7 +178,7 @@ class CrudExport extends BaseObject
             $key = $keys[$index];
             $values = [];
             foreach ($columns as $column) {
-                $value = $this->needRenderData ? $this->renderCell($column->renderDataCell($model, $key, $index)) : (string)$model->getAttribute($column->attribute);
+                $value = $this->needRenderData ? $this->renderCell($column->renderDataCell($model, $key, $index)) : $this->valueToString($model->getAttribute($column->attribute));
                 $values[] = $value;
             }
             fputcsv($stream, $values);
@@ -216,7 +216,7 @@ class CrudExport extends BaseObject
         $model = $this->model;
         echo '<tr>';
         foreach ($columns as $column) {
-            $value = $this->needRenderData ? $this->renderCell($column->renderHeaderCell()) : (string)$model->getAttributeLabel($column->attribute);
+            $value = $this->needRenderData ? $this->renderCell($column->renderHeaderCell()) : $this->valueToString($model->getAttributeLabel($column->attribute));
             echo '<th align="left" valign="top">' . $value . '</th>';
         }
         echo '</tr>';
@@ -229,7 +229,7 @@ class CrudExport extends BaseObject
             $values = [];
             echo '<tr>';
             foreach ($columns as $column) {
-                $value = $this->needRenderData ? $this->renderCell($column->renderDataCell($model, $key, $index)) : (string)$model->getAttribute($column->attribute);
+                $value = $this->needRenderData ? $this->renderCell($column->renderDataCell($model, $key, $index)) : $this->valueToString($model->getAttribute($column->attribute));
                 echo '<td align="left" valign="top">' . $value . '</td>';
             }
             echo '</tr>';
@@ -253,5 +253,17 @@ class CrudExport extends BaseObject
     protected function renderCell($value)
     {
         return trim(strip_tags($value));
+    }
+
+    /**
+     * @param mixed $value
+     * @return string
+     */
+    protected function valueToString($value)
+    {
+        if (is_array($value)) {
+            return implode(',', $value);
+        }
+        return (string)$value;
     }
 }
