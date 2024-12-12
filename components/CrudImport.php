@@ -143,6 +143,15 @@ class CrudImport extends BaseObject
      */
     public function importRow($fields, $row, $rowIdx)
     {
+        $fieldsCount = count($fields);
+        $rowCount = count($row);
+
+        if ($fieldsCount > $rowCount) {
+            return;
+        } elseif ($fieldsCount < $rowCount) {
+            $row = array_slice($row, 0, $fieldsCount);
+        }
+
         $values = array_combine($fields, $row);
 
         $this->prepareData($values);
