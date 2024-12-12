@@ -117,13 +117,13 @@ class CrudImport extends BaseObject
             return false;
         }
 
+        $labels = fgetcsv($handle);  // remove unused row
         $fields = fgetcsv($handle);
-        $fields2 = fgetcsv($handle);  // remove unused 2nd row
-        if (($fields === false) || ($fields2 === false)) {
+        if (($fields === false) || ($labels === false)) {
             $this->_errors[] = Yii::t('crud', 'No data to import. Need more then 2 strings in file.');
             return false;
         }
-        unset($fields2);
+        unset($labels);
 
         $rowIdx = 3;
         while (($row = fgetcsv($handle)) !== FALSE) {

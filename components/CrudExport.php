@@ -92,9 +92,9 @@ class CrudExport extends BaseObject
         $colI = 1;
         $model = $this->model;
         foreach ($columns as $column) {
-            $sheet->setCellValue([$colI, $rowI], $column->attribute);
             $headerValue = $this->needRenderData ? $this->renderCell($column->renderHeaderCell()) : $this->valueToString($model->getAttributeLabel($column->attribute));
-            $sheet->setCellValue([$colI, $rowI + 1], $headerValue);
+            $sheet->setCellValue([$colI, $rowI], $headerValue);
+            $sheet->setCellValue([$colI, $rowI + 1], $column->attribute);
             $colI++;
         }
         $rowI = 2;
@@ -165,8 +165,8 @@ class CrudExport extends BaseObject
         $values = [];
         $values2 = [];
         foreach ($columns as $column) {
-            $values[] = $column->attribute;
-            $values2[] = $this->needRenderData ? $this->renderCell($column->renderHeaderCell()) : $this->valueToString($model->getAttributeLabel($column->attribute));
+            $values[] = $this->needRenderData ? $this->renderCell($column->renderHeaderCell()) : $this->valueToString($model->getAttributeLabel($column->attribute));
+            $values2[] = $column->attribute;
         }
         fputcsv($stream, $values);
         fputcsv($stream, $values2);
