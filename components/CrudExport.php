@@ -68,6 +68,8 @@ class CrudExport extends BaseObject
      */
     public function export()
     {
+        set_time_limit(0);
+
         if ($this->format == 'csv') {
             return $this->exportCsv();
         } elseif ($this->format == 'html') {

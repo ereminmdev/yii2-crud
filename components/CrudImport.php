@@ -65,6 +65,8 @@ class CrudImport extends BaseObject
      */
     public function import()
     {
+        set_time_limit(0);
+
         if ($this->format == 'csv') {
             return $this->importCsv();
         }
