@@ -4,6 +4,7 @@ use ereminmdev\yii2\crud\controllers\DefaultController;
 use ereminmdev\yii2\crud\models\CrudExportForm;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
+use yii\web\JsExpression;
 
 /* @var $this yii\web\View */
 /* @var $id string */
@@ -21,7 +22,12 @@ $this->params['breadcrumbs'][] = Yii::t('crud', 'Export');
 
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin([
+        'id' => 'crud_export_form',
+        'options' => [
+            'onSubmit' => new JsExpression('$(this).find("[type=submit]").button("loading")'),
+        ],
+    ]); ?>
     <?= Html::hiddenInput('id', $id) ?>
 
     <div class="well">
@@ -37,7 +43,7 @@ $this->params['breadcrumbs'][] = Yii::t('crud', 'Export');
     </div>
 
     <div class="form-group">
-        <?= Html::submitButton('<span class="glyphicon glyphicon-ok"></span> ' . Yii::t('crud', 'Export'), ['class' => 'btn btn-primary']) ?>
+        <?= Html::submitButton('<span class="glyphicon glyphicon-ok"></span> ' . Yii::t('crud', 'Export'), ['class' => 'btn btn-primary', 'data-loading-text' => Yii::t('crud', 'Export') . '…']) ?>
          
         <?= Html::a(Yii::t('crud', 'Cancel'), $controller->urlCreate(['index']), ['class' => 'btn btn-link', 'onclick' => 'window.history.back(); return false']) ?>
     </div>

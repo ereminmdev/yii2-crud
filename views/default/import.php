@@ -4,6 +4,7 @@ use ereminmdev\yii2\crud\controllers\DefaultController;
 use ereminmdev\yii2\crud\models\CrudImportForm;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
+use yii\web\JsExpression;
 
 /* @var $this yii\web\View */
 /* @var $model CrudImportForm */
@@ -20,7 +21,12 @@ $this->params['breadcrumbs'][] = Yii::t('crud', 'Import');
 
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
+    <?php $form = ActiveForm::begin([
+        'id' => 'crud_import_form',
+        'options' => [
+            'onSubmit' => new JsExpression('$(this).find("[type=submit]").button("loading")'),
+        ],
+    ]); ?>
 
     <?= $form->errorSummary($model) ?>
 
@@ -41,7 +47,7 @@ $this->params['breadcrumbs'][] = Yii::t('crud', 'Import');
 
     <div class="form-group">
         <?php if ($controller->crud->getConfig('access.save', true) && $controller->crud->getConfig('access.delete', true)): ?>
-            <?= Html::submitButton('<span class="glyphicon glyphicon-ok"></span> ' . Yii::t('crud', 'Import'), ['class' => 'btn btn-primary']) ?>
+            <?= Html::submitButton('<span class="glyphicon glyphicon-ok"></span> ' . Yii::t('crud', 'Import'), ['class' => 'btn btn-primary', 'data-loading-text' => Yii::t('crud', 'Import') . '…']) ?>
              
         <?php endif; ?>
         <?= Html::a(Yii::t('crud', 'Cancel'), $controller->urlCreate(['index']), ['class' => 'btn btn-link', 'onclick' => 'window.history.back(); return false']) ?>
