@@ -6,6 +6,7 @@ use PhpOffice\PhpSpreadsheet\Exception as PhpSpreadsheetException;
 use PhpOffice\PhpSpreadsheet\Reader\Ods;
 use PhpOffice\PhpSpreadsheet\Reader\Xls;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
+use PhpOffice\PhpSpreadsheet\Shared\Date as PhpSpreadsheetDate;
 use Yii;
 use yii\base\BaseObject;
 use yii\db\ActiveRecord;
@@ -200,13 +201,13 @@ class CrudImport extends BaseObject
                         $value = in_array(mb_strtolower($value), ['', 'нет', 'ложь', false]) ? false : (boolean)$value;
                         break;
                     case Schema::TYPE_DATE:
-                        $value = date('Y-m-d', strtotime($value));
+                        $value = date('Y-m-d', PhpSpreadsheetDate::excelToTimestamp($value));
                         break;
                     case Schema::TYPE_DATETIME:
-                        $value = date('Y-m-d H:i:s', strtotime($value));
+                        $value = date('Y-m-d H:i:s', PhpSpreadsheetDate::excelToTimestamp($value));
                         break;
                     case Schema::TYPE_TIME:
-                        $value = date('H:i:s', strtotime($value));
+                        $value = date('H:i:s', PhpSpreadsheetDate::excelToTimestamp($value));
                         break;
                     case 'upload-image':
                     case 'crop-image-upload':
