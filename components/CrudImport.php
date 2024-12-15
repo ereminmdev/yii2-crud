@@ -100,8 +100,10 @@ class CrudImport extends BaseObject
         array_shift($rows);
         $fields = array_shift($rows);
 
-        foreach ($rows as $idx => $row) {
-            $this->importRow($fields, $row, $idx + 3);
+        $rowIdx = 3;
+        foreach ($rows as $row) {
+            $this->importRow($fields, $row, $rowIdx);
+            $rowIdx++;
         }
 
         return empty($this->_errors);
@@ -128,7 +130,7 @@ class CrudImport extends BaseObject
         }
 
         $rowIdx = 3;
-        while (($row = fgetcsv($handle)) !== FALSE) {
+        while (($row = fgetcsv($handle)) !== false) {
             $this->importRow($fields, $row, $rowIdx);
             $rowIdx++;
         }
