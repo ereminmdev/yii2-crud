@@ -56,7 +56,13 @@ class DefaultController extends Controller
             $this->enableCsrfValidation = false;
         }
 
+        if (!parent::beforeAction($action)) {
+            return false;
+        }
+
+        $this->setCrud();
         $crud = $this->getCrud();
+
         if (in_array($action->id, ['create', 'update', 'duplicate', 'setvals', 'js-edit-prompt', 'import']) && !$crud->getConfig('access.save', true)) {
             throw new ForbiddenHttpException(Yii::t('yii', 'You are not allowed to perform this action.'));
         }
@@ -64,22 +70,11 @@ class DefaultController extends Controller
             throw new ForbiddenHttpException(Yii::t('yii', 'You are not allowed to perform this action.'));
         }
 
-        return parent::beforeAction($action);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function init()
-    {
-        parent::init();
-
-        $this->setCrud();
-
-        $crud = $this->getCrud();
         $this->pageTitle = $crud->getConfig('title') ?: Yii::t('app', StringHelper::basename($crud->modelClass));
         $this->view->params['breadcrumbs'] = $crud->getConfig('breadcrumbs', []);
         $this->attachBehaviors($crud->getConfig('controller.behaviors', []));
+
+        return true;
     }
 
     /**
