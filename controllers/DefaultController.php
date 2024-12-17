@@ -198,6 +198,8 @@ class DefaultController extends Controller
      */
     public function actionDelete()
     {
+        set_time_limit(0);
+
         $crud = $this->getCrud();
 
         $models = $this->getCrud()->getModels();

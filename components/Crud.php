@@ -433,6 +433,22 @@ class Crud extends BaseObject
                     case false:
                         unset($columns[$key]);
                         break;
+                    case Schema::TYPE_SMALLINT:
+                    case Schema::TYPE_INTEGER:
+                    case Schema::TYPE_BIGINT:
+                        $columns[$key] = [
+                            'attribute' => $field,
+                            'format' => 'integer',
+                        ];
+                        break;
+                    case Schema::TYPE_FLOAT:
+                    case Schema::TYPE_DOUBLE:
+                    case Schema::TYPE_DECIMAL:
+                        $columns[$key] = [
+                            'attribute' => $field,
+                            'format' => 'decimal',
+                        ];
+                        break;
                     case Schema::TYPE_TEXT:
                         $columns[$key] = [
                             'attribute' => $field,
