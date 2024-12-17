@@ -110,10 +110,11 @@ class CrudImport extends BaseObject
     }
 
     /**
+     * @param string $separator
      * @return bool
      * @throws PhpSpreadsheetException
      */
-    public function importCsv()
+    public function importCsv($separator = ';')
     {
         $handle = fopen($this->fileName, 'r');
 
@@ -122,15 +123,15 @@ class CrudImport extends BaseObject
             return false;
         }
 
-        fgetcsv($handle);
-        $fields = fgetcsv($handle);
+        fgetcsv($handle, null, $separator);
+        $fields = fgetcsv($handle, null, $separator);
         if ($fields === false) {
             $this->_errors[] = Yii::t('crud', 'No data to import. Need more then 2 strings in file.');
             return false;
         }
 
         $rowIdx = 3;
-        while (($row = fgetcsv($handle)) !== false) {
+        while (($row = fgetcsv($handle, null, $separator)) !== false) {
             $this->importRow($fields, $row, $rowIdx);
             $rowIdx++;
         }
@@ -201,17 +202,25 @@ class CrudImport extends BaseObject
                     case Schema::TYPE_INTEGER:
                         $value = (integer)$value;
                         break;
+                    case Schema::TYPE_FLOAT:
+                    case Schema::TYPE_DOUBLE:
+                    case Schema::TYPE_DECIMAL:
+                        $value = str_replace(',', '.', $value);
+                        break;
                     case Schema::TYPE_BOOLEAN:
                         $value = in_array(mb_strtolower($value), ['', 'нет', 'ложь', false]) ? false : (boolean)$value;
                         break;
                     case Schema::TYPE_DATE:
-                        $value = date('Y-m-d', PhpSpreadsheetDate::excelToTimestamp($value));
+                        $time = $this->format == 'csv' ? strtotime($value) : PhpSpreadsheetDate::excelToTimestamp($value);
+                        $value = date('Y-m-d', $time);
                         break;
                     case Schema::TYPE_DATETIME:
-                        $value = date('Y-m-d H:i:s', PhpSpreadsheetDate::excelToTimestamp($value));
+                        $time = $this->format == 'csv' ? strtotime($value) : PhpSpreadsheetDate::excelToTimestamp($value);
+                        $value = date('Y-m-d H:i:s', $time);
                         break;
                     case Schema::TYPE_TIME:
-                        $value = date('H:i:s', PhpSpreadsheetDate::excelToTimestamp($value));
+                        $time = $this->format == 'csv' ? strtotime($value) : PhpSpreadsheetDate::excelToTimestamp($value);
+                        $value = date('H:i:s', $time);
                         break;
                     case 'upload-image':
                     case 'crop-image-upload':
@@ -219,7 +228,7 @@ class CrudImport extends BaseObject
                     case 'cropper-image-upload':
                         $value = null;
                     default:
-                        $value = (string)$value;
+                        $value = iconv('windows-1251', 'utf-8', (string)$value);
                 }
             }
         }

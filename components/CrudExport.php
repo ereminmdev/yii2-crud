@@ -146,9 +146,10 @@ class CrudExport extends BaseObject
     }
 
     /**
+     * @param string $separator
      * @return Response
      */
-    public function exportCsv()
+    public function exportCsv($separator = ';')
     {
         $gridView = new GridView([
             'dataProvider' => $this->dataProvider,
@@ -170,8 +171,8 @@ class CrudExport extends BaseObject
             $values[] = $this->needRenderData ? $this->renderCell($column->renderHeaderCell()) : $this->valueToString($model->getAttributeLabel($column->attribute));
             $values2[] = $column->attribute;
         }
-        fputcsv($stream, $values);
-        fputcsv($stream, $values2);
+        fputcsv($stream, $values, $separator);
+        fputcsv($stream, $values2, $separator);
 
         /** @var ActiveRecord[] $models */
         $models = $gridView->dataProvider->getModels();
@@ -183,7 +184,7 @@ class CrudExport extends BaseObject
                 $value = $this->needRenderData ? $this->renderCell($column->renderDataCell($model, $key, $index)) : $this->valueToString($model->getAttribute($column->attribute));
                 $values[] = $value;
             }
-            fputcsv($stream, $values);
+            fputcsv($stream, $values, $separator);
         }
 
         fclose($stream);
