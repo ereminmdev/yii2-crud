@@ -197,7 +197,7 @@ class CrudImport extends BaseObject
     public function prepareData(&$values)
     {
         foreach ($values as $field => &$value) {
-            if (isset($this->columnsSchema[$field]['type'])) {
+            if (!is_null($value) && isset($this->columnsSchema[$field]['type'])) {
                 switch ($this->columnsSchema[$field]['type']) {
                     case Schema::TYPE_INTEGER:
                         $value = (integer)$value;
@@ -205,7 +205,7 @@ class CrudImport extends BaseObject
                     case Schema::TYPE_FLOAT:
                     case Schema::TYPE_DOUBLE:
                     case Schema::TYPE_DECIMAL:
-                        $value = str_replace(',', '.', $value);
+                        $value = str_replace(',', '.', (float)$value);
                         break;
                     case Schema::TYPE_BOOLEAN:
                         $value = in_array(mb_strtolower($value), ['', 'нет', 'ложь', false]) ? false : (boolean)$value;
