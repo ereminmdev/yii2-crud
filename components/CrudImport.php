@@ -211,15 +211,15 @@ class CrudImport extends BaseObject
                         $value = in_array(mb_strtolower($value), ['', 'нет', 'ложь', false]) ? false : (boolean)$value;
                         break;
                     case Schema::TYPE_DATE:
-                        $time = is_string($value) ? strtotime($value) : PhpSpreadsheetDate::excelToTimestamp($value);
+                        $time = ($this->format == 'csv') || !is_numeric($value) ? strtotime($value) : PhpSpreadsheetDate::excelToTimestamp($value);
                         $value = date('Y-m-d', $time);
                         break;
                     case Schema::TYPE_DATETIME:
-                        $time = is_string($value) ? strtotime($value) : PhpSpreadsheetDate::excelToTimestamp($value);
+                        $time = ($this->format == 'csv') || !is_numeric($value) ? strtotime($value) : PhpSpreadsheetDate::excelToTimestamp($value);
                         $value = date('Y-m-d H:i:s', $time);
                         break;
                     case Schema::TYPE_TIME:
-                        $time = is_string($value) ? strtotime($value) : PhpSpreadsheetDate::excelToTimestamp($value);
+                        $time = ($this->format == 'csv') || !is_numeric($value) ? strtotime($value) : PhpSpreadsheetDate::excelToTimestamp($value);
                         $value = date('H:i:s', $time);
                         break;
                     case 'upload-image':
