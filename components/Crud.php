@@ -1139,6 +1139,10 @@ class Crud extends BaseObject
                 }
             }
 
+            if (isset($columnsSchema['id'])) {
+                $columnsSchema['id']['type'] = 'string';
+                $columnsSchema['id']['formFieldInputOptions'] = ['disabled' => true];
+            }
             if (isset($columnsSchema['created_at'])) {
                 $columnsSchema['created_at']['type'] = 'datetime';
             }
