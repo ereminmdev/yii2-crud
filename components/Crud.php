@@ -433,14 +433,6 @@ class Crud extends BaseObject
                     case false:
                         unset($columns[$key]);
                         break;
-                    case Schema::TYPE_SMALLINT:
-                    case Schema::TYPE_INTEGER:
-                    case Schema::TYPE_BIGINT:
-                        $columns[$key] = [
-                            'attribute' => $field,
-                            'format' => 'integer',
-                        ];
-                        break;
                     case Schema::TYPE_FLOAT:
                     case Schema::TYPE_DOUBLE:
                     case Schema::TYPE_DECIMAL:
@@ -1140,7 +1132,6 @@ class Crud extends BaseObject
             }
 
             if (isset($columnsSchema['id'])) {
-                $columnsSchema['id']['type'] = 'string';
                 $columnsSchema['id']['formFieldInputOptions'] = ['disabled' => true];
             }
             if (isset($columnsSchema['created_at'])) {
@@ -1295,19 +1286,15 @@ class Crud extends BaseObject
         $this->context->view->registerJs(<<<JS
 $('.js-checked-action').on('click', function () {
     let keys = [];
-    $('.js-check-action').each(function() {
-        if (this.checked) {
-            keys.push(parseInt($(this).val()));
-        }
-    });
-    if (keys.length === 0) {
-        alert('$alertText');
-    } else {
+    $('.js-check-action:checked').each((idx, el) => keys.push(el.value));
+    if (keys.length > 0) {
         if ($(this).data('confirm') && !confirm($(this).data('confirm'))) {
             return false;
         }
-        $('#crud_checked_form input[name="id"]').val(keys.toString()); 
+        $('#crud_checked_form input[name="id"]').val(keys.join(',')); 
         $('#crud_checked_form').attr('action', $(this).attr('href')).submit();
+    } else {
+        alert(`$alertText`);
     }
     return false;
 });
