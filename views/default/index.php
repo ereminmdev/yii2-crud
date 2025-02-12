@@ -46,10 +46,12 @@ $gridViewWidget = new GridView(ArrayHelper::merge([
     'pager' => ['class' => 'ereminmdev\yii2\crud\components\Pager'],
 ], $crud->getConfig('gridViewOptions', [])));
 
+$h1 = $crud->getConfig('views.index.h1', '<h1>' . Html::encode($this->title) . '</h1>');
+
 ?>
 <div class="cms-crud cms-crud-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <?= $h1 instanceof Closure ? call_user_func($h1, $crud, $this) : $h1 ?>
 
     <?php if (Yii::$app->session->hasFlash('cms-crud')): ?>
         <?= Alert::widget([

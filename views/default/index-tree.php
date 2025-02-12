@@ -20,10 +20,12 @@ window.treeOpenUrl = "' . $controller->urlCreate(['tree-open', 'id' => '_id_']) 
 window.treeCloseUrl = "' . $controller->urlCreate(['tree-close', 'ids' => '_ids_']) . '";
 ');
 
+$h1 = $crud->getConfig('views.index.h1', '<h1>' . Html::encode($this->title) . '</h1>');
+
 ?>
 <div class="cms-crud cms-crud-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <?= $h1 instanceof Closure ? call_user_func($h1, $crud, $this) : $h1 ?>
 
     <?php if (Yii::$app->session->hasFlash('cms-crud')): ?>
         <?= Alert::widget([
