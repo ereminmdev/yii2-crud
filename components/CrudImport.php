@@ -227,8 +227,6 @@ class CrudImport extends BaseObject
                     case 'croppie-image-upload':
                     case 'cropper-image-upload':
                         $value = null;
-                    default:
-                        $value = $this->format == 'csv' ? iconv('windows-1251', 'utf-8', (string)$value) : (string)$value;
                 }
             }
         }
