@@ -650,7 +650,7 @@ class Crud extends BaseObject
                                     $relatedClass = $model->getRelation($relation)->modelClass;
                                     $relatedPureClass = StringHelper::basename($relatedClass);
                                     $text = $list[$model->$field] ?? '';
-                                    return $model->$relation ? Html::a($text, ['index', 'model' => $relatedClass, $relatedPureClass . '[' . $relatedField . ']' => $model->$field]) : '';
+                                    return $model->$relation ? Html::a(Html::encode($text), ['index', 'model' => $relatedClass, $relatedPureClass . '[' . $relatedField . ']' => $model->$field]) : '';
                                 },
                             ];
                             if (array_key_exists('select2', $schema)) {
@@ -675,7 +675,7 @@ class Crud extends BaseObject
                                     $relatedKey = $link[$linkKey];
                                     $options = $schema['gridElOptions'] ?? [];
 
-                                    return Html::a($schema['title'] . ' <small>(' . count($model->$relation) . ')</small>',
+                                    return Html::a(Html::encode($schema['title']) . ' <small>(' . count($model->$relation) . ')</small>',
                                         ['index', 'model' => $relatedClass, $relatedPureClass . '[' . $linkKey . ']' => $model->$relatedKey], $options);
                                 },
                             ];
@@ -694,7 +694,7 @@ class Crud extends BaseObject
                                     $columns[$key]['content'] = function (ActiveRecord $model) use ($field, $schema, $relation, $itemList) {
                                         $ids = array_column($model->$relation, 'id');
                                         $list = array_intersect_key($itemList, array_flip($ids));
-                                        return implode(', ', $list);
+                                        return Html::encode(implode(', ', $list));
                                     };
                                 }
                             }
@@ -725,7 +725,7 @@ class Crud extends BaseObject
                         ];
                         $gridEditLinkField = $this->getConfig('gridEditLinkField', 'title');
                         if ($gridEditLinkField == $field) {
-                            $columns[$key]['content'] = fn(ActiveRecord $model) => Html::a($model->$field, $this->context->urlCreate(['update', 'id' => $model->id]), ['class' => 'js-store-page-scroll']);
+                            $columns[$key]['content'] = fn(ActiveRecord $model) => Html::a(Html::encode($model->$field), $this->context->urlCreate(['update', 'id' => $model->id]), ['class' => 'js-store-page-scroll']);
                         }
                 }
 
