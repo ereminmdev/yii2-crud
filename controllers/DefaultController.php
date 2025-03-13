@@ -410,10 +410,8 @@ class DefaultController extends Controller
         $crud = $this->getCrud();
         $model = $crud->getModel();
 
-        $columns = array_diff(array_keys($model->attributeLabels()), array_keys(array_filter($crud->getConfig('gridColumns', []), function ($value) {
-            return $value === false;
-        })));
-        $onlyColumns = $crud->getGridColumnsOnly($columns);
+        $columns = $crud->getAllColumnNames();
+        $onlyColumns = $crud->getGridColumnsOnly(array_keys($model->attributeLabels()));
 
         $order = $this->request->cookies->getValue($crud->getGridColumnsOnlyStoreKey() . '-order', []);
         $columns = $order ? array_intersect($order, $columns) : $columns;

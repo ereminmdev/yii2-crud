@@ -340,6 +340,16 @@ class Crud extends BaseObject
     }
 
     /**
+     * @return array
+     */
+    public function getAllColumnNames()
+    {
+        $only = array_diff($this->getConfig('gridShowColumns'), $this->getConfig('gridHideColumns') ?? []);
+        $labeled = array_keys($this->getModel()->attributeLabels());
+        return array_unique(array_merge($only, $labeled));
+    }
+
+    /**
      * @return string
      */
     public function getGridColumnsOnlyStoreKey()
