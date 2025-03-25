@@ -344,7 +344,7 @@ class Crud extends BaseObject
      */
     public function getAllColumnNames()
     {
-        $only = array_diff($this->getConfig('gridShowColumns'), $this->getConfig('gridHideColumns') ?? []);
+        $only = array_diff($this->getConfig('gridShowColumns', []), $this->getConfig('gridHideColumns', []));
         $labeled = array_keys($this->getModel()->attributeLabels());
         return array_unique(array_merge($only, $labeled));
     }
@@ -364,7 +364,7 @@ class Crud extends BaseObject
     public function getGridColumnsOnly($columns = [])
     {
         $order = Yii::$app->request->cookies->getValue($this->getGridColumnsOnlyStoreKey() . '-order', []);
-        $only = Yii::$app->request->cookies->getValue($this->getGridColumnsOnlyStoreKey(), []) ?: array_diff($this->getConfig('gridShowColumns', $columns), $this->getConfig('gridHideColumns') ?? []);
+        $only = Yii::$app->request->cookies->getValue($this->getGridColumnsOnlyStoreKey(), []) ?: array_diff($this->getConfig('gridShowColumns', $columns), $this->getConfig('gridHideColumns', []));
         return $order ? array_intersect($order, $only) : ($only ?: $columns);
     }
 
