@@ -366,7 +366,7 @@ class DefaultController extends Controller
             return $this->redirect($this->getReturnUrl());
         }
 
-        if ($model->load($this->request->post()) && $model->validate()) {
+        if ($model->load($this->request->post()) && $model->save()) {
             $setAttributes = array_keys(array_filter($setModel->attributes, fn($val) => (bool)$val));
             if (empty($setAttributes)) {
                 $setModel->addError('summary', Yii::t('crud', 'Please choose a field(s)'));
@@ -376,11 +376,15 @@ class DefaultController extends Controller
                 $models = $this->getCrud()->getModels();
 
                 foreach ($models as $saveModel) {
+                    if ($saveModel->getPrimaryKey() == $model->getPrimaryKey()) {
+                        continue;
+                    }
+
                     $saveModel->setAttributes($setVals);
 
                     foreach ($setAttributes as $setAttribute) {
                         if (isset($columnsSchema[$setAttribute]['type']) && ($columnsSchema[$setAttribute]['type'] == 'cropper-image-upload')) {
-                            $saveModel->createFromUrl($model->getUploadPath($setAttribute));
+                            $saveModel->findCropperBehavior($setAttribute)->createFromUrl($model->getUploadPath($setAttribute));
                         }
                     }
 

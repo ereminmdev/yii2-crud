@@ -42,6 +42,7 @@ public static function crudConfig()
                     'title' => SORT_ASC,
                 ],
             ];
+            $dataProvider->pagination->pageSize = 50;
         },
         'gridShowColumns' => ['title', 'image'],
         'gridHideColumns' => ['content'],
