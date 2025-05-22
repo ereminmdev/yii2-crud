@@ -722,7 +722,7 @@ class Crud extends BaseObject
                                     $files = glob($basePath . '/*.*');
                                     foreach ($files as $file) {
                                         $filename = mb_basename($file);
-                                        $html .= Html::a('<i class="fa fa-file-o"></i> ' . $filename, $baseUrl . '/' . $filename, ['class' => 'btn btn-link btn-sm text-ellipsis', 'target' => '_blank']);
+                                        $html .= Html::a('<span class="glyphicon glyphicon-file"></span> ' . $filename, $baseUrl . '/' . $filename, ['class' => 'btn btn-link btn-sm text-ellipsis', 'target' => '_blank']);
                                     }
                                 }
                                 return $html;
