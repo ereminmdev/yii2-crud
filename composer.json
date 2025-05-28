@@ -17,8 +17,9 @@
     "ext-gd": "*",
     "ext-mbstring": "*",
     "yiisoft/yii2": "~2.0.14",
-    "phpoffice/phpspreadsheet": "^1.1",
-    "ereminmdev/yii2-sortablejs": "^1.0"
+    "ereminmdev/yii2-sortablejs": "^1.0",
+    "avadim/fast-excel-reader": "^2.25",
+    "avadim/fast-excel-writer": "^6.5"
   },
   "autoload": {
     "psr-4": {

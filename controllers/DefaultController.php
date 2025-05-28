@@ -10,23 +10,18 @@ use ereminmdev\yii2\crud\models\CrudExportForm;
 use ereminmdev\yii2\crud\models\CrudImportForm;
 use ereminmdev\yii2\elfinder\ElfinderBaseAsset;
 use Exception;
-use PhpOffice\PhpSpreadsheet\Exception as PhpSpreadsheetException;
 use Throwable;
 use Yii;
 use yii\base\InvalidArgumentException;
-use yii\base\InvalidConfigException;
 use yii\db\ActiveRecord;
-use yii\db\StaleObjectException;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
 use yii\helpers\StringHelper;
 use yii\helpers\Url;
-use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\web\Cookie;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
-use yii\web\RangeNotSatisfiableHttpException;
 use yii\web\Response;
 use yii\web\UploadedFile;
 
@@ -79,7 +74,6 @@ class DefaultController extends Controller
 
     /**
      * @return string
-     * @throws InvalidConfigException
      */
     public function actionIndex()
     {
@@ -92,7 +86,6 @@ class DefaultController extends Controller
 
     /**
      * @return string
-     * @throws InvalidConfigException
      */
     public function actionGrid()
     {
@@ -164,7 +157,7 @@ class DefaultController extends Controller
     /**
      * @param int $id
      * @return string|Response
-     * @throws NotFoundHttpException
+     * @throws NotFoundHttpException|\yii\db\Exception
      */
     public function actionUpdate($id)
     {
@@ -192,8 +185,6 @@ class DefaultController extends Controller
 
     /**
      * @return Response
-     * @throws InvalidConfigException
-     * @throws StaleObjectException
      * @throws Exception|Throwable
      */
     public function actionDelete()
@@ -259,7 +250,7 @@ class DefaultController extends Controller
     }
 
     /**
-     * @throws InvalidConfigException
+     * @throws \yii\db\Exception
      */
     public function actionTreeSortable()
     {
@@ -302,7 +293,7 @@ class DefaultController extends Controller
 
     /**
      * @return Response
-     * @throws InvalidConfigException
+     * @throws \yii\db\Exception
      */
     public function actionDuplicate()
     {
@@ -354,7 +345,7 @@ class DefaultController extends Controller
 
     /**
      * @return string|Response
-     * @throws InvalidConfigException
+     * @throws \yii\db\Exception
      */
     public function actionSetvals()
     {
@@ -407,7 +398,6 @@ class DefaultController extends Controller
 
     /**
      * @return string|Response
-     * @throws InvalidConfigException
      */
     public function actionSetColumns()
     {
@@ -438,9 +428,6 @@ class DefaultController extends Controller
         ]);
     }
 
-    /**
-     * @throws InvalidConfigException
-     */
     public function actionColumnsSortable()
     {
         $order = (array)$this->request->post('order');
@@ -489,7 +476,7 @@ class DefaultController extends Controller
     }
 
     /**
-     * @throws InvalidConfigException
+     * @throws \yii\db\Exception
      */
     public function actionSortable()
     {
@@ -522,10 +509,7 @@ class DefaultController extends Controller
     }
 
     /**
-     * @return mixed|string
-     * @throws PhpSpreadsheetException
-     * @throws InvalidConfigException
-     * @throws RangeNotSatisfiableHttpException
+     * @return string|Response
      */
     public function actionExport()
     {
@@ -544,8 +528,6 @@ class DefaultController extends Controller
 
     /**
      * @return string|Response
-     * @throws PhpSpreadsheetException
-     * @throws InvalidConfigException
      */
     public function actionImport()
     {
@@ -577,8 +559,8 @@ class DefaultController extends Controller
      *
      * @param integer $id
      * @param string $field attribute name
-     * @return \yii\console\Response|Response
-     * @throws NotFoundHttpException
+     * @return Response
+     * @throws NotFoundHttpException|\yii\db\Exception
      */
     public function actionDeleteUploadFile($id, $field)
     {
@@ -612,8 +594,8 @@ class DefaultController extends Controller
      *
      * @param integer $id
      * @param string $field attribute name
-     * @return \yii\console\Response|Response
-     * @throws NotFoundHttpException
+     * @return Response
+     * @throws NotFoundHttpException|\yii\db\Exception
      */
     public function actionDeleteUploadImage($id, $field)
     {
@@ -678,7 +660,6 @@ class DefaultController extends Controller
      *
      * @param string $field
      * @return array
-     * @throws InvalidConfigException
      */
     public function actionSelect2filter($field)
     {

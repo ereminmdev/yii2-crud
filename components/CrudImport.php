@@ -2,11 +2,7 @@
 
 namespace ereminmdev\yii2\crud\components;
 
-use PhpOffice\PhpSpreadsheet\Exception as PhpSpreadsheetException;
-use PhpOffice\PhpSpreadsheet\Reader\Ods;
-use PhpOffice\PhpSpreadsheet\Reader\Xls;
-use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
-use PhpOffice\PhpSpreadsheet\Shared\Date as PhpSpreadsheetDate;
+use avadim\FastExcelReader\Excel;
 use Yii;
 use yii\base\BaseObject;
 use yii\db\ActiveRecord;
@@ -53,57 +49,44 @@ class CrudImport extends BaseObject
     {
         return [
             'xlsx' => Yii::t('crud', 'Excel') . ' (*.xlsx)',
-            'xls' => Yii::t('crud', 'Microsoft Excel 5.0/95') . ' (*.xls)',
-            'ods' => Yii::t('crud', 'Open Document Format') . ' (*.ods)',
             'csv' => Yii::t('crud', 'CSV (delimiter - comma)') . ' (*.csv)',
         ];
     }
 
     /**
      * @return bool
-     * @throws PhpSpreadsheetException
      */
     public function import()
     {
         set_time_limit(0);
 
-        if ($this->format == 'csv') {
+        if ($this->format == 'xlsx') {
+            return $this->importXlsx();
+        } elseif ($this->format == 'csv') {
             return $this->importCsv();
         }
 
-        switch ($this->format) {
-            case 'xlsx':
-                $reader = new Xlsx();
-                break;
-            case 'xls':
-                $reader = new Xls();
-                break;
-            case 'ods':
-                $reader = new Ods();
-                break;
-            default:
-                $this->_errors[] = Yii::t('crud', 'Not support file format "{format}".', ['format' => $this->format]);
-                return false;
-        }
+        $this->_errors[] = Yii::t('crud', 'Not support file format "{format}".', ['format' => $this->format]);
+        return false;
+    }
 
-        $reader->setReadDataOnly(true);
-        $spreadsheet = $reader->load($this->fileName);
-        $rows = $spreadsheet->getActiveSheet()->toArray();
-        $spreadsheet->disconnectWorksheets();
-        unset($spreadsheet);
+    /**
+     * @return bool
+     */
+    public function importXlsx()
+    {
+        $sheet = Excel::open($this->fileName)->getSheet();
+        $fields = [];
 
-        if (count($rows) < 3) {
-            $this->_errors[] = Yii::t('crud', 'No data to import. Need more then 2 strings in file.');
-            return false;
-        }
-
-        array_shift($rows);
-        $fields = array_shift($rows);
-
-        $rowIdx = 3;
-        foreach ($rows as $row) {
-            $this->importRow($fields, $row, $rowIdx);
-            $rowIdx++;
+        foreach ($sheet->nextRow() as $rowIdx => $row) {
+            if ($rowIdx == 1) {
+                continue;
+            } elseif ($rowIdx == 2) {
+                $fields = $row;
+                continue;
+            }
+            $values = $this->arrayCombineByIndex($fields, $row);
+            $this->importRow(array_keys($values), $values, $rowIdx);
         }
 
         return empty($this->_errors);
@@ -112,7 +95,6 @@ class CrudImport extends BaseObject
     /**
      * @param string $separator
      * @return bool
-     * @throws PhpSpreadsheetException
      */
     public function importCsv($separator = ';')
     {
@@ -192,6 +174,24 @@ class CrudImport extends BaseObject
     }
 
     /**
+     * @param array $keys
+     * @param array $values
+     * @return array
+     */
+    protected function arrayCombineByIndex($keys, $values)
+    {
+        $result = [];
+
+        foreach ($keys as $idx => $key) {
+            if (array_key_exists($idx, $values)) {
+                $result[$key] = $values[$idx];
+            }
+        }
+
+        return $result;
+    }
+
+    /**
      * @param $values array
      */
     public function prepareData(&$values)
@@ -208,19 +208,16 @@ class CrudImport extends BaseObject
                         $value = str_replace(',', '.', (float)$value);
                         break;
                     case Schema::TYPE_BOOLEAN:
-                        $value = in_array(mb_strtolower($value), ['', 'нет', 'ложь', false]) ? false : (boolean)$value;
+                        $value = !in_array(mb_strtolower($value), ['', 'нет', 'ложь', false]) && $value;
                         break;
                     case Schema::TYPE_DATE:
-                        $time = ($this->format == 'csv') || !is_numeric($value) ? strtotime($value) : PhpSpreadsheetDate::excelToTimestamp($value);
-                        $value = date('Y-m-d', $time);
+                        $value = date('Y-m-d', is_numeric($value) ? $value : strtotime($value));
                         break;
                     case Schema::TYPE_DATETIME:
-                        $time = ($this->format == 'csv') || !is_numeric($value) ? strtotime($value) : PhpSpreadsheetDate::excelToTimestamp($value);
-                        $value = date('Y-m-d H:i:s', $time);
+                        $value = date('Y-m-d H:i:s', is_numeric($value) ? $value : strtotime($value));
                         break;
                     case Schema::TYPE_TIME:
-                        $time = ($this->format == 'csv') || !is_numeric($value) ? strtotime($value) : PhpSpreadsheetDate::excelToTimestamp($value);
-                        $value = date('H:i:s', $time);
+                        $value = date('H:i:s', is_numeric($value) ? $value : strtotime($value));
                         break;
                     case 'upload-image':
                     case 'crop-image-upload':

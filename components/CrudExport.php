@@ -2,18 +2,13 @@
 
 namespace ereminmdev\yii2\crud\components;
 
-use PhpOffice\PhpSpreadsheet\Exception as PhpSpreadsheetException;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Writer\Ods;
-use PhpOffice\PhpSpreadsheet\Writer\Xls;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use avadim\FastExcelWriter\Excel;
 use Yii;
 use yii\base\BaseObject;
 use yii\data\ActiveDataProvider;
 use yii\db\ActiveRecord;
 use yii\grid\DataColumn;
 use yii\grid\GridView;
-use yii\web\RangeNotSatisfiableHttpException;
 use yii\web\Response;
 
 /**
@@ -53,18 +48,14 @@ class CrudExport extends BaseObject
     public static function fileFormats()
     {
         return [
-            'csv' => Yii::t('crud', 'CSV (delimiter - comma)') . ' (*.csv)',
             'xlsx' => Yii::t('crud', 'Excel') . ' (*.xlsx)',
-            'xls' => Yii::t('crud', 'Microsoft Excel 5.0/95') . ' (*.xls)',
-            'ods' => Yii::t('crud', 'Open Document Format') . ' (*.ods)',
+            'csv' => Yii::t('crud', 'CSV (delimiter - comma)') . ' (*.csv)',
             'html' => Yii::t('crud', 'Web page') . ' (*.html)',
         ];
     }
 
     /**
      * @return Response
-     * @throws PhpSpreadsheetException
-     * @throws RangeNotSatisfiableHttpException
      */
     public function export()
     {
@@ -74,10 +65,18 @@ class CrudExport extends BaseObject
             return $this->exportCsv();
         } elseif ($this->format == 'html') {
             return $this->exportHtml();
+        } else {
+            return $this->exportXlsx();
         }
+    }
 
-        $spreadsheet = new Spreadsheet();
-        $sheet = $spreadsheet->getActiveSheet();
+    /**
+     * @return Response
+     */
+    public function exportXlsx()
+    {
+        $excel = Excel::create();
+        $sheet = $excel->sheet();
 
         $gridView = new GridView([
             'dataProvider' => $this->dataProvider,
@@ -89,60 +88,39 @@ class CrudExport extends BaseObject
         /** @var DataColumn[] $columns */
         $columns = $gridView->columns;
 
-        $rowI = 1;
-
-        $colI = 1;
         $model = $this->model;
+        $rowValues = [];
         foreach ($columns as $column) {
             $headerValue = $this->needRenderData ? $this->renderCell($column->renderHeaderCell()) : $this->valueToString($model->getAttributeLabel($column->attribute));
-            $sheet->setCellValue([$colI, $rowI], $headerValue);
-            $sheet->setCellValue([$colI, $rowI + 1], $column->attribute);
-            $colI++;
+            $rowValues[] = $headerValue;
         }
-        $rowI = 2;
+        $sheet->writeRow($rowValues)->applyFontStyleBold();
+
+        $rowValues = [];
+        foreach ($columns as $column) {
+            $rowValues[] = $column->attribute;
+        }
+        $sheet->writeHeader($rowValues)->applyFontStyleBold();
 
         /** @var ActiveRecord[] $models */
         $models = $gridView->dataProvider->getModels();
         $keys = $gridView->dataProvider->getKeys();
+
         foreach ($models as $index => $model) {
-            $colI = 1;
-            $rowI++;
-            $key = $keys[$index];
+            $rowValues = [];
             foreach ($columns as $column) {
-                $value = $this->needRenderData ? $this->renderCell($column->renderDataCell($model, $key, $index)) : $this->valueToString($model->getAttribute($column->attribute));
-                $sheet->setCellValue([$colI, $rowI], $value);
-                $colI++;
+                $rowValues[] = $this->needRenderData ?
+                    $this->renderCell($column->renderDataCell($model, $keys[$index], $index)) :
+                    $this->valueToString($model->getAttribute($column->attribute));
             }
+            $sheet->writeRow($rowValues);
         }
 
-        $fileName = $this->fileName ?: 'Export_' . $this->model->formName() . '_' . date('d.m.Y');
+        $fileName = $this->fileName ?: 'Export_' . $this->model->formName() . '_' . date('d.m.Y') . '.xlsx';
+        $tempName = tempnam(sys_get_temp_dir(), 'crud-export-xlsx-');
+        $excel->save($tempName);
 
-        switch ($this->format) {
-            case 'xls':
-                $writer = new Xls($spreadsheet);
-                $fileName .= '.xls';
-                $mimeType = 'application/vnd.ms-excel';
-                break;
-            case 'ods':
-                $writer = new Ods($spreadsheet);
-                $fileName .= '.ods';
-                $mimeType = 'application/vnd.oasis.opendocument.spreadsheet';
-                break;
-            default:
-                $writer = new Xlsx($spreadsheet);
-                $fileName .= '.xlsx';
-                $mimeType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
-                break;
-        }
-
-        ob_start();
-        $writer->save('php://output');
-        $spreadsheet->disconnectWorksheets();
-        unset($spreadsheet);
-        $content = ob_get_contents();
-        ob_end_clean();
-
-        return Yii::$app->response->sendContentAsFile($content, $fileName, ['mimeType' => $mimeType]);
+        return Yii::$app->response->sendFile($tempName, $fileName, ['mimeType' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']);
     }
 
     /**

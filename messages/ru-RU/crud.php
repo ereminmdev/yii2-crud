@@ -28,8 +28,6 @@ return [
     'Render relative data' => 'Преобразовать зависимые данные',
 
     'Excel' => 'Книга Excel',
-    'Microsoft Excel 5.0/95' => 'Книга Microsoft Excel 5.0/95',
-    'Open Document Format' => 'Open Document Format (ODF)',
     'CSV (delimiter - comma)' => 'CSV (разделители - запятые)',
     'Web page' => 'Веб-страница',
 

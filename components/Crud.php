@@ -11,10 +11,10 @@ use ereminmdev\yii2\elfinder\Elfinder;
 use ereminmdev\yii2\tinymce\TinyMce;
 use Error;
 use Exception;
+use Throwable;
 use Yii;
 use yii\base\BaseObject;
 use yii\base\DynamicModel;
-use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
 use yii\bootstrap\ButtonDropdown;
 use yii\bootstrap\Html;
@@ -25,12 +25,11 @@ use yii\db\ActiveRecord;
 use yii\db\Schema;
 use yii\grid\CheckboxColumn;
 use yii\helpers\ArrayHelper;
-use yii\helpers\FileHelper;
 use yii\helpers\StringHelper;
 use yii\helpers\Url;
 use yii\web\Cookie;
 use yii\web\NotFoundHttpException;
-use yii\web\RangeNotSatisfiableHttpException;
+use yii\web\Response;
 use yii\web\UploadedFile;
 use yii\widgets\ActiveField;
 use yii\widgets\ActiveForm;
@@ -270,8 +269,8 @@ class Crud extends BaseObject
     }
 
     /**
-     * @return mixed
-     * @throws InvalidConfigException
+     * @return array
+     * @throws InvalidConfigException|Throwable
      */
     public function gridColumns()
     {
@@ -393,8 +392,8 @@ class Crud extends BaseObject
 
     /**
      * @param array $fields
-     * @return mixed
-     * @throws InvalidConfigException
+     * @return array
+     * @throws InvalidConfigException|Throwable
      */
     public function guessColumns($fields = null)
     {
@@ -836,7 +835,7 @@ class Crud extends BaseObject
      * @param array $schema
      * @param string $content
      * @return string
-     * @throws Exception
+     * @throws Exception|Throwable
      */
     public function renderFormField(ActiveForm $form, ActiveRecord $model, $field, $param, $schema, $content = '')
     {
@@ -1453,7 +1452,7 @@ JS
      */
     public function getTreeParentField()
     {
-        return $block = $this->getConfig('tree.parentField', 'parent_id');
+        return $this->getConfig('tree.parentField', 'parent_id');
     }
 
     /**
@@ -1461,7 +1460,7 @@ JS
      */
     public function getTreeChildrenRelation()
     {
-        return $block = $this->getConfig('tree.childrenRelation', 'children');
+        return $this->getConfig('tree.childrenRelation', 'children');
     }
 
     /**
@@ -1469,14 +1468,12 @@ JS
      */
     public function getTreeSortField()
     {
-        return $block = $this->getConfig('tree.sortField', 'position');
+        return $this->getConfig('tree.sortField', 'position');
     }
 
     /**
      * @param CrudExportForm $model
-     * @return $this|mixed
-     * @throws \PhpOffice\PhpSpreadsheet\Exception
-     * @throws InvalidConfigException|RangeNotSatisfiableHttpException
+     * @return Response
      */
     public function export(CrudExportForm $model)
     {
@@ -1495,8 +1492,6 @@ JS
      * @param CrudImportForm $model
      * @param UploadedFile $file
      * @return bool
-     * @throws \PhpOffice\PhpSpreadsheet\Exception
-     * @throws InvalidConfigException
      */
     public function import(CrudImportForm $model, UploadedFile $file)
     {
@@ -1562,7 +1557,7 @@ JS
      * @param ActiveRecord|string $class класс модели для выборки
      * @param string $title поле для значений массива (sql-запрос)
      * @param string $index поля для индекса массива
-     * @param callable (ActiveQuery $query) $queryFunc функция для настройки ActiveQuery
+     * @param callable $queryFunc (ActiveQuery $query) $queryFunc функция для настройки ActiveQuery
      * @return array
      */
     public static function getList($class, $title = 'title', $index = 'id', $queryFunc = null)
@@ -1588,7 +1583,7 @@ JS
      * @param ActiveRecord|string $class класс модели для выборки
      * @param string $title поле для значений массива (sql-запрос)
      * @param string $index поля для индекса массива
-     * @param callable (ActiveQuery $query) $queryFunc функция для настройки ActiveQuery
+     * @param callable $queryFunc (ActiveQuery $query) $queryFunc функция для настройки ActiveQuery
      * @param mixed $parentId id родителя
      * @return array
      */
