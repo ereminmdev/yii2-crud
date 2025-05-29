@@ -2,13 +2,10 @@
 
 namespace ereminmdev\yii2\crud\behaviors;
 
+use Exception;
 use Yii;
 use yii\base\Behavior;
-use yii\base\ErrorException;
-use yii\base\Event;
-use yii\caching\TagDependency;
 use yii\db\ActiveRecord;
-use yii\db\AfterSaveEvent;
 use yii\helpers\FileHelper;
 
 /**
@@ -43,23 +40,25 @@ class FilesBehavior extends Behavior
         ];
     }
 
-    public function beforeSave()
+    /*public function beforeSave()
     {
         $oldPath = $this->getFilesPath();
-    }
+    }*/
 
     public function afterSave()
     {
         $oldPath = $this->getFilesPath();
+
         if (is_dir($oldPath)) {
             $this->_path = null;
             $path = $this->getFilesPath();
+
             if ($path !== $oldPath) {
                 try {
                     FileHelper::copyDirectory($oldPath, $path);
                     FileHelper::removeDirectory($oldPath);
-                } catch (\Exception $e) {
-                    Yii::error($e, __METHOD__);
+                } catch (Exception $e) {
+                    Yii::error([$e, __FILE__ . ':' . __LINE__]);
                 }
             }
         }
@@ -68,10 +67,11 @@ class FilesBehavior extends Behavior
     public function afterDelete()
     {
         $path = $this->getFilesPath();
+
         try {
             FileHelper::removeDirectory($path);
-        } catch (\Exception $e) {
-            Yii::error($e, __METHOD__);
+        } catch (Exception $e) {
+            Yii::error([$e, __FILE__ . ':' . __LINE__]);
         }
     }
 
@@ -81,18 +81,18 @@ class FilesBehavior extends Behavior
     protected $_path;
 
     /**
-     * @param null|self $attribute
+     * @param null|string $attribute
      * @return string
      */
     public function getFilesPath($attribute = null)
     {
-        $bahavior = ($attribute === null) ? $this : $this->findBehavior($attribute);
+        $behavior = ($attribute === null) ? $this : $this->findBehavior($attribute);
 
-        if ($bahavior->_path === null) {
-            $bahavior->_path = is_callable($bahavior->path) ? call_user_func($bahavior->path, $bahavior->owner, $bahavior) : $bahavior->path;
+        if ($behavior->_path === null) {
+            $behavior->_path = is_callable($behavior->path) ? call_user_func($behavior->path, $behavior->owner, $behavior) : $behavior->path;
         }
 
-        return $bahavior->_path;
+        return $behavior->_path;
     }
 
     /**
@@ -101,18 +101,18 @@ class FilesBehavior extends Behavior
     protected $_url;
 
     /**
-     * @param null|self $attribute
+     * @param null|string $attribute
      * @return string
      */
     public function getFilesUrl($attribute = null)
     {
-        $bahavior = ($attribute === null) ? $this : $this->findBehavior($attribute);
+        $behavior = ($attribute === null) ? $this : $this->findBehavior($attribute);
 
-        if ($bahavior->_url === null) {
-            $bahavior->_url = is_callable($bahavior->url) ? call_user_func($bahavior->url, $bahavior->owner, $bahavior) : $bahavior->url;
+        if ($behavior->_url === null) {
+            $behavior->_url = is_callable($behavior->url) ? call_user_func($behavior->url, $behavior->owner, $behavior) : $behavior->url;
         }
 
-        return $bahavior->_url;
+        return $behavior->_url;
     }
 
     /**
@@ -123,14 +123,17 @@ class FilesBehavior extends Behavior
     {
         if ($this->attribute == $attribute) {
             return $this;
+
         } else {
             $owner = $this->owner;
+
             foreach ($owner->getBehaviors() as $behavior) {
                 if (($behavior instanceof self) && ($behavior->attribute == $attribute)) {
                     return $behavior;
                 }
             }
         }
+
         return null;
     }
 }
