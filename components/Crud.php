@@ -1334,11 +1334,12 @@ JS
     {
         // js/crud.js
         foreach ($setModel->attributes() as $field) {
-            $content .= $form->field($setModel, $field)->checkbox([
-                'label' => $model->getAttributeLabel($field),
-                'class' => 'js-toggle-block',
-                'data-destination' => 'field-' . Html::getInputId($model, $field),
-            ]);
+            $content .= $form->field($setModel, $field, ['enableClientValidation' => false])
+                ->checkbox([
+                    'label' => $model->getAttributeLabel($field),
+                    'class' => 'js-toggle-block',
+                    'data-destination' => 'field-' . Html::getInputId($model, $field),
+                ]);
         }
         return $content;
     }
