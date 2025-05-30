@@ -40,10 +40,10 @@ class FilesBehavior extends Behavior
         ];
     }
 
-    /*public function beforeSave()
+    public function beforeSave()
     {
         $oldPath = $this->getFilesPath();
-    }*/
+    }
 
     public function afterSave()
     {
