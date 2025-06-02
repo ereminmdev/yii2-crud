@@ -192,8 +192,7 @@ class DefaultController extends Controller
         set_time_limit(0);
 
         $crud = $this->getCrud();
-
-        $models = $this->getCrud()->getModels();
+        $models = $crud->getModels();
 
         foreach ($models as $model) {
             if ($crud->isViewAsTree()) {
@@ -297,9 +296,10 @@ class DefaultController extends Controller
      */
     public function actionDuplicate()
     {
-        $columnsSchema = $this->getCrud()->columnsSchema();
-        $modelClass = $this->getCrud()->modelClass;
-        $models = $this->getCrud()->getModels();
+        $crud = $this->getCrud();
+        $columnsSchema = $crud->columnsSchema();
+        $modelClass = $crud->modelClass;
+        $models = $crud->getModels();
 
         foreach ($models as $model) {
             /* @var $cloneModel ActiveRecord */
@@ -313,7 +313,7 @@ class DefaultController extends Controller
                 $cloneModel->setAttribute('position', null);
             }
 
-            $beforeDuplicate = $this->getCrud()->getConfig('onBeforeDuplicate');
+            $beforeDuplicate = $crud->getConfig('onBeforeDuplicate');
             if ($beforeDuplicate instanceof Closure) {
                 call_user_func($beforeDuplicate, $cloneModel, $model);
             }
@@ -328,7 +328,7 @@ class DefaultController extends Controller
                     }
                 }
 
-                $afterDuplicate = $this->getCrud()->getConfig('onAfterDuplicate');
+                $afterDuplicate = $crud->getConfig('onAfterDuplicate');
                 if ($afterDuplicate instanceof Closure) {
                     call_user_func($afterDuplicate, $cloneModel, $model);
                 }
@@ -349,8 +349,9 @@ class DefaultController extends Controller
      */
     public function actionSetvals()
     {
-        $model = $this->getCrud()->getFirstModel();
-        $setModel = $this->getCrud()->getSetvalsModel();
+        $crud = $this->getCrud();
+        $model = $crud->getFirstModel();
+        $setModel = $crud->getSetvalsModel();
 
         if (!$model || !$setModel) {
             Yii::$app->session->addFlash('info', Yii::t('yii', 'No results found.'));
@@ -363,8 +364,8 @@ class DefaultController extends Controller
                 $setModel->addError('summary', Yii::t('crud', 'Please choose a field(s)'));
             } else {
                 $setVals = $model->getAttributes($setAttributes);
-                $columnsSchema = $this->getCrud()->columnsSchema();
-                $models = $this->getCrud()->getModels();
+                $columnsSchema = $crud->columnsSchema();
+                $models = $crud->getModels();
 
                 foreach ($models as $saveModel) {
                     if ($saveModel->getPrimaryKey() == $model->getPrimaryKey()) {
@@ -389,8 +390,8 @@ class DefaultController extends Controller
             }
         }
 
-        return $this->render($this->getCrud()->getConfig('views.setvals.view', 'setvals'), [
-            'id' => $this->getCrud()->getRequestModelIds(),
+        return $this->render($crud->getConfig('views.setvals.view', 'setvals'), [
+            'id' => $crud->getRequestModelIds(),
             'model' => $model,
             'setModel' => $setModel,
         ]);
@@ -421,7 +422,7 @@ class DefaultController extends Controller
             return $this->redirect($url);
         }
 
-        return $this->render($this->getCrud()->getConfig('views.set-columns.view', 'set-columns'), [
+        return $this->render($crud->getConfig('views.set-columns.view', 'set-columns'), [
             'model' => $model,
             'columns' => $columns,
             'onlyColumns' => $onlyColumns,
@@ -455,9 +456,7 @@ class DefaultController extends Controller
                 $column = $this->request->post('column', '');
                 $value = $this->request->post('value', '');
 
-                $crud = $this->getCrud();
-
-                $model = $crud->findModel($id, 'update');
+                $model = $this->getCrud()->findModel($id, 'update');
                 $model->setAttribute($column, $value);
 
                 if ($model->save(true, [$column])) {
@@ -487,8 +486,7 @@ class DefaultController extends Controller
             return;
         }
 
-        $crud = $this->getCrud();
-        $modelClass = $crud->modelClass;
+        $modelClass = $this->getCrud()->modelClass;
         $models = $modelClass::find()->andWhere(['id' => $order])->indexBy('id')->all();
 
         $positions = [];
@@ -513,15 +511,16 @@ class DefaultController extends Controller
      */
     public function actionExport()
     {
+        $crud = $this->getCrud();
         $model = new CrudExportForm;
         $model->load($this->request->get());
 
         if ($model->load($this->request->post()) && $model->validate()) {
-            return $this->getCrud()->export($model);
+            return $crud->export($model);
         }
 
-        return $this->render($this->getCrud()->getConfig('views.export.view', 'export'), [
-            'id' => $this->getCrud()->getRequestModelIds(),
+        return $this->render($crud->getConfig('views.export.view', 'export'), [
+            'id' => $crud->getRequestModelIds(),
             'model' => $model,
         ]);
     }
@@ -531,6 +530,7 @@ class DefaultController extends Controller
      */
     public function actionImport()
     {
+        $crud = $this->getCrud();
         $model = new CrudImportForm;
         $model->load($this->request->get());
 
@@ -538,7 +538,7 @@ class DefaultController extends Controller
             $model->file = UploadedFile::getInstance($model, 'file');
 
             if ($model->validate()) {
-                $this->getCrud()->import($model, $model->file);
+                $crud->import($model, $model->file);
                 Yii::$app->session->addFlash('info', Yii::t('crud', 'Count of imported items') . ': ' . $model->count);
                 if (!$model->hasErrors()) {
                     $url = $this->getActionSuccessUrl('import', [
@@ -549,7 +549,7 @@ class DefaultController extends Controller
             }
         }
 
-        return $this->render($this->getCrud()->getConfig('views.import.view', 'import'), [
+        return $this->render($crud->getConfig('views.import.view', 'import'), [
             'model' => $model,
         ]);
     }
@@ -564,8 +564,7 @@ class DefaultController extends Controller
      */
     public function actionDeleteUploadFile($id, $field)
     {
-        $crud = $this->getCrud();
-        $model = $crud->findModel($id, 'update');
+        $model = $this->getCrud()->findModel($id, 'update');
 
         $behavior = $model->getBehavior($field) ?? $model;
 
@@ -599,8 +598,7 @@ class DefaultController extends Controller
      */
     public function actionDeleteUploadImage($id, $field)
     {
-        $crud = $this->getCrud();
-        $model = $crud->findModel($id, 'update');
+        $model = $this->getCrud()->findModel($id, 'update');
 
         if (($behavior = $model->getBehavior($field)) && $behavior->hasMethod('removeImage')) {
             $behavior->removeImage($field);
