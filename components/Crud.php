@@ -212,9 +212,9 @@ class Crud extends BaseObject
                             $query->with($relation);
                         }
                     } elseif ($schema['rtype'] == 'hasMany') {
-                        if ($schema['queryWith'] ?? false) {
-                            $query->with($relation);
-                            /*$query->with([
+                        if ($schema['queryWith'] ?? true) {
+                            //$query->with($relation);
+                            $query->with([
                                 $relation => function (ActiveQuery $query) use ($schema, $relation, $model) {
                                     $modelRelation = $model->getRelation($relation);
                                     $query->select(array_keys($modelRelation->link)[0]);
@@ -222,7 +222,7 @@ class Crud extends BaseObject
                                         $query->addSelect($modelRelation->indexBy);
                                     }
                                 },
-                            ]);*/
+                            ]);
                         }
                     } elseif ($schema['rtype'] == 'manyMany') {
                         if ($schema['queryWith'] ?? true) {
@@ -675,7 +675,12 @@ class Crud extends BaseObject
                                     $linkKey = array_keys($link)[0];
                                     $relatedKey = $link[$linkKey];
                                     $options = $schema['gridElOptions'] ?? [];
-                                    $count = ' <small>(' . $model->getRelation($relation)->count() . ')</small>';
+
+                                    if ($schema['queryWith'] ?? true) {
+                                        $count = ' <small>(' . count($model->$relation) . ')</small>';
+                                    } else {
+                                        $count = ' <small>(' . $model->getRelation($relation)->count() . ')</small>';
+                                    }
 
                                     return Html::a(Html::encode($schema['title']) . $count,
                                         ['index', 'model' => $relatedClass, $relatedPureClass . '[' . $linkKey . ']' => $model->$relatedKey], $options);
