@@ -28,6 +28,13 @@ $controller = $this->context;
     <?= $controller->crud->renderFormFields($form, $model) ?>
 
     <div class="form-group form-buttons">
+        <?php if (!$model->isNewRecord && $crud->getConfig('access.delete', true)): ?>
+            <div class="pull-right">
+                <?= Html::a('<span class="glyphicon glyphicon-remove"></span> ' . Yii::t('crud', 'Delete'), $controller->urlCreate(['delete', 'id' => $model->getPrimaryKey()]),
+                    ['class' => 'btn btn-danger', 'data-confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'), 'data-form' => 'delete record']) ?>
+            </div>
+        <?php endif; ?>
+
         <?php if ($crud->getConfig('access.save', true)): ?>
             <?= Html::submitButton('<span class="glyphicon glyphicon-ok"></span> ' . ($model->isNewRecord ? Yii::t('crud', 'Create') : Yii::t('crud', 'Save')), ['class' => 'btn btn-primary']) ?>
              
@@ -35,13 +42,6 @@ $controller = $this->context;
              
         <?php endif; ?>
         <?= Html::a(Yii::t('crud', 'Cancel'), $controller->getReturnUrl(), ['class' => 'btn btn-link']) ?>
-
-        <?php if (!$model->isNewRecord && $crud->getConfig('access.delete', true)): ?>
-            <div class="pull-right">
-                <?= Html::a('<span class="glyphicon glyphicon-remove"></span> ' . Yii::t('crud', 'Delete'), $controller->urlCreate(['delete', 'id' => $model->getPrimaryKey()]),
-                    ['class' => 'btn btn-danger', 'data-confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'), 'data-form' => 'delete record']) ?>
-            </div>
-        <?php endif; ?>
     </div>
 
     <?php ActiveForm::end(); ?>
