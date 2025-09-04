@@ -23,5 +23,6 @@ class CrudAsset extends AssetBundle
     public $depends = [
         'yii\web\YiiAsset',
         'yii\bootstrap\BootstrapAsset',
+        'ereminmdev\yii2\crud\assets\AutosizeAsset',
     ];
 }

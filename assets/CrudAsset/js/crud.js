@@ -139,25 +139,7 @@ jQuery(function ($) {
             return false;
         });
 
-        inputAutoHeight('.input-auto-height');
-
-        function inputAutoHeight(selector) {
-            document.querySelectorAll(selector).forEach(el => {
-                el.style.overflow = 'hidden';
-                el.style.resize = 'none';
-                el.addEventListener('input', autoResize, false);
-                el.addEventListener('focus', autoResize, false);
-                autoResize.bind(el)();
-            });
-
-            function autoResize() {
-                if (this.scrollHeight > 0) {
-                    this.style.height = 'auto';
-                    const style = getComputedStyle(this);
-                    this.style.height = (parseFloat(this.scrollHeight) + parseFloat(style.borderTopWidth) + parseFloat(style.borderBottomWidth)) + 'px';
-                }
-            }
-        }
+        autosize(document.querySelectorAll('.crm-crud-input-auto-height'));
     }
 
     // views/setvals

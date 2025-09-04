@@ -19,7 +19,8 @@
     "yiisoft/yii2": "~2.0.14",
     "ereminmdev/yii2-sortablejs": "^1.0",
     "avadim/fast-excel-reader": "^2.25",
-    "avadim/fast-excel-writer": "^6.5"
+    "avadim/fast-excel-writer": "^6.5",
+    "npm-asset/autosize": "^6.0"
   },
   "autoload": {
     "psr-4": {
