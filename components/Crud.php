@@ -737,14 +737,6 @@ class Crud extends BaseObject
                 }
 
                 if (isset($columns[$key]) && is_array($columns[$key])) {
-                    if (isset($schema['labelHint'])) {
-                        $columns[$key]['label'] = ($columns[$key]['label'] ?? Html::encode($model->getAttributeLabel($field)));
-                        if ($columns[$key]['encodeLabel'] ?? true) {
-                            $columns[$key]['label'] = Html::encode($columns[$key]['label']);
-                        }
-                        $columns[$key]['label'] = $columns[$key]['label'] . ' <span class="glyphicon glyphicon-question-sign text-muted" title="' . Html::encode($schema['labelHint']) . '"></span>';
-                        $columns[$key]['encodeLabel'] = false;
-                    }
                     if (isset($schema['gridColumnOptions'])) {
                         $columns[$key] = ArrayHelper::merge($columns[$key], (array)$schema['gridColumnOptions']);
                     }
@@ -1035,10 +1027,6 @@ class Crud extends BaseObject
         } else {
             $formField = $form->field($model, $field)->textInput($inputOptions);
         }
-        if (isset($schema['labelHint']) && ($formField instanceof ActiveField)) {
-            $label = Html::encode($model->getAttributeLabel($field));
-            $formField->label($label . ' <span class="glyphicon glyphicon-question-sign text-muted" title="' . Html::encode($schema['labelHint']) . '"></span>');
-        }
         if (isset($schema['hint']) && ($formField instanceof ActiveField)) {
             $formField->hint($schema['hint']);
         }
@@ -1157,7 +1145,7 @@ class Crud extends BaseObject
                 $columnsSchema['created_at']['type'] = 'datetime';
             }
             if (isset($columnsSchema['updated_at'])) {
-                $columnsSchema['created_at']['type'] = 'datetime';
+                $columnsSchema['updated_at']['type'] = 'datetime';
             }
             if (isset($columnsSchema['email'])) {
                 $columnsSchema['email']['type'] = 'email';
