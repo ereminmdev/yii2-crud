@@ -971,6 +971,7 @@ class Crud extends BaseObject
                             $schema['title'] = array_key_exists('title', $schema) ? $schema['title'] : $model->getAttributeLabel($field);
                             $link = $model->getRelation($relation)->link;
                             $linkKey = array_keys($link)[0];
+                            $relatedKey = $link[$linkKey];
 
                             if (array_key_exists('select2', $schema)) {
                                 $list = isset($schema['getList']) ? call_user_func($schema['getList']) : (isset($schema['listAsTree']) && $schema['listAsTree'] ? static::getTreeList($relatedClass, $schema['titleField']) : static::getList($relatedClass, $schema['titleField']));
@@ -985,7 +986,7 @@ class Crud extends BaseObject
                                     'template' => "{input}\n",
                                     'parts' => ['{input}' => Html::a(
                                         $schema['title'] . ' <small>(' . count($model->$relation) . ')</small>',
-                                        ['index', 'model' => $relatedClass, $relatedPureClass . '[' . $linkKey . ']' => $model->id])],
+                                        ['index', 'model' => $relatedClass, $relatedPureClass . '[' . $linkKey . ']' => $model->$relatedKey])],
                                 ]);
                             }
                         }
