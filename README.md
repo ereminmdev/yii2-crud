@@ -84,6 +84,7 @@ public static function crudConfig()
                 'type' => 'array',
                 'itemList' => fn() => static::statuses(),
                 'gridDropButton' => true,
+                'formFieldInputType' => 'radioList',
             ],
             'comment' => ['jsEditPrompt' => true],
             'colors3' => false,

@@ -937,7 +937,13 @@ class Crud extends BaseObject
                     break;
                 case 'array':
                     $itemList = $schema['itemList'] instanceof Closure ? call_user_func($schema['itemList']) : $schema['itemList'];
-                    $formField = $form->field($model, $field)->dropDownList($itemList, $inputOptions);
+                    $formField = $form->field($model, $field);
+                    $inputType = $schema['formFieldInputType'] ?? 'dropDownList';
+                    if ($inputType == 'radioList') {
+                        $formField->inline()->radioList($itemList, $inputOptions);
+                    } else {
+                        $formField->dropDownList($itemList, $inputOptions);
+                    }
                     break;
                 case 'list':
                     $items = call_user_func($schema['getList']);
