@@ -22,6 +22,9 @@ $controller = $this->context;
     } else {
         $template = $crud->getConfig('gridToolbarTemplate', "{checks}\n{create}\n{custom}\n{full}\n{filter}");
     }
+    if (!$crud->getConfig('access.save', true)) {
+        $template = str_replace('{create}', '', $template);
+    }
 
     $actions = [];
 
