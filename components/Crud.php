@@ -290,6 +290,7 @@ class Crud extends BaseObject
                             'label' => Yii::t('crud', 'Edit'),
                             'url' => $this->columnUrlCreator('update', $model, $key),
                             'linkOptions' => ['class' => 'js-store-page-scroll'],
+                            'visible' => $this->getConfig('access.save', true),
                         ],
                         '{delete}' => [
                             'label' => Yii::t('crud', 'Delete'),
@@ -1380,16 +1381,19 @@ JS
                 'label' => Yii::t('crud', 'Edit'),
                 'url' => $controller->urlCreate(['update', 'id' => $model->id]),
                 'linkOptions' => ['class' => 'js-store-page-scroll'],
+                'visible' => $this->getConfig('access.save', true),
             ],
             '{create1}' => [
                 'label' => Yii::t('crud', 'Create nearby'),
                 'url' => $controller->urlCreate(['create', $model->formName() => [$parentField => $model->$parentField], 'returnUrl' => $returnUrl]),
                 'linkOptions' => ['class' => 'js-store-page-scroll'],
+                'visible' => $this->getConfig('access.save', true),
             ],
             '{create2}' => [
                 'label' => Yii::t('crud', 'Create as sublevel') . ' →',
                 'url' => $controller->urlCreate(['create', $model->formName() => [$parentField => $model->id], 'returnUrl' => $returnUrl]),
                 'linkOptions' => ['class' => 'js-store-page-scroll'],
+                'visible' => $this->getConfig('access.save', true),
             ],
             '{delete}' => [
                 'label' => Yii::t('crud', 'Delete'),
