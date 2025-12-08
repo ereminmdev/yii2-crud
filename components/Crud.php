@@ -41,7 +41,7 @@ use yii\widgets\ActiveForm;
  * @property ActiveRecord $modelScenario
  * @property ActiveRecord|null $searchModel
  * @property mixed $fields
- * @property DynamicModel $setvalsModel
+ * @property DynamicModel $setValuesModel
  *
  * @property string $treeParentField
  * @property string $treeChildrenRelation
@@ -1239,14 +1239,14 @@ class Crud extends BaseObject
     public function checkedActions()
     {
         $template = $this->getConfig('gridCheckedActionsTemplate',
-            "{custom}\n{setvals}\n{duplicate}\n{export}\n{--}\n{delete}");
+            "{custom}\n{set_values}\n{duplicate}\n{export}\n{--}\n{delete}");
 
         $actions = [
             '{custom}' => '',
             '{--}' => '<li role="presentation" class="divider"></li>',
-            '{setvals}' => [
+            '{set_values}' => [
                 'label' => Yii::t('crud', 'Set values'),
-                'url' => $this->context->urlCreate(['setvals'], true),
+                'url' => $this->context->urlCreate(['set-values'], true),
                 'visible' => $this->getConfig('access.save', true),
             ],
             '{duplicate}' => [
@@ -1336,7 +1336,7 @@ JS
      * @param string $content
      * @return string
      */
-    public function renderFormSetvals($form, $model, $setModel, $content = '')
+    public function renderFormSetValues($form, $model, $setModel, $content = '')
     {
         // js/crud.js
         foreach ($setModel->attributes() as $field) {
@@ -1353,7 +1353,7 @@ JS
     /**
      * @return DynamicModel
      */
-    public function getSetvalsModel()
+    public function getSetValuesModel()
     {
         $formFields = $this->formFields();
         $setModel = new DynamicModel(array_fill_keys($formFields, 0));

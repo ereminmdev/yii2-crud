@@ -58,7 +58,7 @@ class DefaultController extends Controller
         $this->setCrud();
         $crud = $this->getCrud();
 
-        if (in_array($action->id, ['create', 'update', 'duplicate', 'setvals', 'js-edit-prompt', 'import']) && !$crud->getConfig('access.save', true)) {
+        if (in_array($action->id, ['create', 'update', 'duplicate', 'set-values', 'js-edit-prompt', 'import']) && !$crud->getConfig('access.save', true)) {
             throw new ForbiddenHttpException(Yii::t('yii', 'You are not allowed to perform this action.'));
         }
         if (in_array($action->id, ['delete', 'delete-upload-file', 'delete-upload-image']) && !$crud->getConfig('access.delete', true)) {
@@ -347,11 +347,11 @@ class DefaultController extends Controller
      * @return string|Response
      * @throws \yii\db\Exception
      */
-    public function actionSetvals()
+    public function actionSetValues()
     {
         $crud = $this->getCrud();
         $model = $crud->getFirstModel();
-        $setModel = $crud->getSetvalsModel();
+        $setModel = $crud->getSetValuesModel();
 
         if (!$model || !$setModel) {
             Yii::$app->session->addFlash('info', Yii::t('yii', 'No results found.'));
@@ -363,7 +363,7 @@ class DefaultController extends Controller
             if (empty($setAttributes)) {
                 $setModel->addError('summary', Yii::t('crud', 'Please choose a field(s)'));
             } else {
-                $setVals = $model->getAttributes($setAttributes);
+                $setValues = $model->getAttributes($setAttributes);
                 $columnsSchema = $crud->columnsSchema();
                 $models = $crud->getModels();
 
@@ -372,7 +372,7 @@ class DefaultController extends Controller
                         continue;
                     }
 
-                    $saveModel->setAttributes($setVals);
+                    $saveModel->setAttributes($setValues);
 
                     foreach ($setAttributes as $setAttribute) {
                         if (isset($columnsSchema[$setAttribute]['type']) && ($columnsSchema[$setAttribute]['type'] == 'cropper-image-upload')) {
@@ -383,14 +383,14 @@ class DefaultController extends Controller
                     $saveModel->save();
                 }
 
-                $url = $this->getActionSuccessUrl('setvals', [
+                $url = $this->getActionSuccessUrl('set-values', [
                     'models' => $models,
                 ]);
                 return $this->redirect($url);
             }
         }
 
-        return $this->render($crud->getConfig('views.setvals.view', 'setvals'), [
+        return $this->render($crud->getConfig('views.set-values.view', 'set-values'), [
             'id' => $crud->getRequestModelIds(),
             'model' => $model,
             'setModel' => $setModel,

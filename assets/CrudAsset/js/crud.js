@@ -142,8 +142,8 @@ jQuery(function ($) {
         autosize(document.querySelectorAll('.crm-crud-input-auto-height'));
     }
 
-    // views/setvals
-    if ($('.cms-crud-setvals').length) {
+    // views/set-values
+    if ($('.cms-crud-set-values').length) {
         $('.js-toggle-block').on('change', function () {
             const destination = $(this).data('destination');
 

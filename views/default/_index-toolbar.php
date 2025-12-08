@@ -38,7 +38,7 @@ $controller = $this->context;
     $items = [
         [
             'label' => Yii::t('crud', 'Set values'),
-            'url' => $controller->urlCreate(['setvals', 'id' => 'all']),
+            'url' => $controller->urlCreate(['set-values', 'id' => 'all']),
             'visible' => $crud->getConfig('access.save', true),
         ],
         '<li role="presentation" class="divider"></li>',

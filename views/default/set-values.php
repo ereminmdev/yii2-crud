@@ -20,7 +20,7 @@ $this->params['breadcrumbs'][] = ['label' => $controller->pageTitle, 'url' => $c
 $this->params['breadcrumbs'][] = Yii::t('crud', 'Set values');
 
 ?>
-<div class="cms-crud cms-crud-setvals">
+<div class="cms-crud cms-crud-set-values">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
@@ -33,8 +33,8 @@ $this->params['breadcrumbs'][] = Yii::t('crud', 'Set values');
             <div class="panel-heading"><?= Yii::t('crud', 'Select the required fields') ?></div>
             <div class="panel-body">
                 <?= $form->errorSummary($setModel) ?>
-                <div class="setvals-columns">
-                    <?= $controller->crud->renderFormSetvals($form, $model, $setModel) ?>
+                <div class="set-values-columns">
+                    <?= $controller->crud->renderFormSetValues($form, $model, $setModel) ?>
                 </div>
             </div>
         </div>

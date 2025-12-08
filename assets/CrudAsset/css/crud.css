@@ -136,18 +136,18 @@
 }
 
 /***********************************************************************************************************************
-    Setvals
+    Set-values
 ***********************************************************************************************************************/
 
-.setvals-columns {
+.set-values-columns {
     columns: 4;
 }
 
-.setvals-columns .checkbox {
+.set-values-columns .checkbox {
     margin: 0;
 }
 
-.setvals-columns .help-block:empty {
+.set-values-columns .help-block:empty {
     display: none;
 }
 
@@ -183,7 +183,7 @@
         gap: .5em;
     }
 
-    .setvals-columns {
+    .set-values-columns {
         columns: 2;
     }
 }
