@@ -162,7 +162,6 @@ class DefaultController extends Controller
     public function actionUpdate($id)
     {
         $crud = $this->getCrud();
-
         $model = $crud->findModel($id, 'update');
 
         if ($model->load($this->request->post()) && $model->save()) {
@@ -349,6 +348,8 @@ class DefaultController extends Controller
      */
     public function actionSetValues()
     {
+        set_time_limit(0);
+
         $crud = $this->getCrud();
         $model = $crud->getFirstModel();
         $setModel = $crud->getSetValuesModel();

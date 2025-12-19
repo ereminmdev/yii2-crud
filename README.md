@@ -45,6 +45,9 @@ public static function crudConfig()
             if ($dataProvider->pagination) {
                 $dataProvider->pagination->pageSize = 50;
             }
+            if (!Yii::$app->user->can('admin')) {
+                $dataProvider->query->andWhere(['or', ['role' => array_keys(User::roles())], ['id' => Yii::$app->user->id]]);
+            }
         },
         'gridShowColumns' => ['title', 'image'],
         'gridHideColumns' => ['content'],
