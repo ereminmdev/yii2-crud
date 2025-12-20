@@ -1103,9 +1103,7 @@ class Crud extends BaseObject
      */
     public function findModel($id, $scenario = 'crud')
     {
-        $models = $this->getModels();
-        $model = count($models) ? $models[array_key_first($models)] : null;
-        
+        $model = $this->getFirstModel();
         if ($model !== null) {
             $this->setModelScenario($model, $scenario);
             return $model;
