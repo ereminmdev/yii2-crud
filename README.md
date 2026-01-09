@@ -120,6 +120,7 @@ public static function crudConfig()
         ],
         'views.index.h1' => fn(Crud $crud, View $view) => '<h1>' . Html::encode($view->title) . '</h1>',
         'access.save' => false, // hide Create, Save and Update buttons
+        'access.edit' => true, // can edit
         'access.delete' => false, // hide Delete button
     ];
 }

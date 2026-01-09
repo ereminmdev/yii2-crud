@@ -58,10 +58,11 @@ class DefaultController extends Controller
         $this->setCrud();
         $crud = $this->getCrud();
 
-        if (in_array($action->id, ['create', 'update', 'duplicate', 'set-values', 'js-edit-prompt', 'import']) && !$crud->getConfig('access.save', true)) {
+        if (in_array($action->id, ['update']) && !$crud->getConfig('access.save', true) && !$crud->getConfig('access.edit', false)) {
             throw new ForbiddenHttpException(Yii::t('yii', 'You are not allowed to perform this action.'));
-        }
-        if (in_array($action->id, ['delete', 'delete-upload-file', 'delete-upload-image']) && !$crud->getConfig('access.delete', true)) {
+        } elseif (in_array($action->id, ['create', 'duplicate', 'set-values', 'js-edit-prompt', 'import']) && !$crud->getConfig('access.save', true)) {
+            throw new ForbiddenHttpException(Yii::t('yii', 'You are not allowed to perform this action.'));
+        } elseif (in_array($action->id, ['delete', 'delete-upload-file', 'delete-upload-image']) && !$crud->getConfig('access.delete', true)) {
             throw new ForbiddenHttpException(Yii::t('yii', 'You are not allowed to perform this action.'));
         }
 

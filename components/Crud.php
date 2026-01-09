@@ -290,7 +290,7 @@ class Crud extends BaseObject
                             'label' => Yii::t('crud', 'Edit'),
                             'url' => $this->columnUrlCreator('update', $model, $key),
                             'linkOptions' => ['class' => 'js-store-page-scroll'],
-                            'visible' => $this->getConfig('access.save', true),
+                            'visible' => $this->getConfig('access.save', true) || $this->getConfig('access.edit', false),
                         ],
                         '{delete}' => [
                             'label' => Yii::t('crud', 'Delete'),
@@ -1380,7 +1380,7 @@ JS
                 'label' => Yii::t('crud', 'Edit'),
                 'url' => $controller->urlCreate(['update', 'id' => $model->id]),
                 'linkOptions' => ['class' => 'js-store-page-scroll'],
-                'visible' => $this->getConfig('access.save', true),
+                'visible' => $this->getConfig('access.save', true) || $this->getConfig('access.edit', false),
             ],
             '{create1}' => [
                 'label' => Yii::t('crud', 'Create nearby'),

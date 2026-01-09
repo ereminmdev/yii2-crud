@@ -35,7 +35,7 @@ $controller = $this->context;
             </div>
         <?php endif; ?>
 
-        <?php if ($crud->getConfig('access.save', true)): ?>
+        <?php if ($crud->getConfig('access.save', true) || $crud->getConfig('access.edit', false)): ?>
             <?= Html::submitButton('<span class="glyphicon glyphicon-ok"></span> ' . ($model->isNewRecord ? Yii::t('crud', 'Create') : Yii::t('crud', 'Save')), ['class' => 'btn btn-primary']) ?>
              
             <?= Html::submitButton(Yii::t('crud', 'Apply'), ['class' => 'btn btn-default', 'name' => 'submit-apply', 'value' => 1]) ?>
