@@ -192,20 +192,21 @@ class DefaultController extends Controller
         set_time_limit(0);
 
         $crud = $this->getCrud();
-        $models = $crud->getModels();
+        $query = $crud->getDataProvider()->query;
 
-        foreach ($models as $model) {
-            if ($crud->isViewAsTree()) {
-                $this->deleteTreeChildModels($model);
-            }
-            if (($model->delete() === false) && $model->hasErrors()) {
-                Yii::$app->session->addFlash('error', implode('<br>', $model->getErrorSummary(false)));
+        /** @var ActiveRecord $model */
+        foreach ($query->batch() as $batchModels) {
+            foreach ($batchModels as $model) {
+                if ($crud->isViewAsTree()) {
+                    $this->deleteTreeChildModels($model);
+                }
+                if (($model->delete() === false) && $model->hasErrors()) {
+                    Yii::$app->session->addFlash('error', implode('<br>', $model->getErrorSummary(false)));
+                }
             }
         }
 
-        $url = $this->getActionSuccessUrl('delete', [
-            'models' => $models,
-        ]);
+        $url = $this->getActionSuccessUrl('delete');
         return $this->redirect($url);
     }
 
@@ -299,9 +300,10 @@ class DefaultController extends Controller
         $crud = $this->getCrud();
         $columnsSchema = $crud->columnsSchema();
         $modelClass = $crud->modelClass;
-        $models = $crud->getModels();
+        $query = $crud->getDataProvider()->query;
 
-        foreach ($models as $model) {
+        /** @var ActiveRecord $model */
+        foreach ($query->each() as $model) {
             /* @var $cloneModel ActiveRecord */
             $cloneModel = new $modelClass;
             $cloneModel->setAttributes($model->getAttributes());
@@ -367,28 +369,28 @@ class DefaultController extends Controller
             } else {
                 $setValues = $model->getAttributes($setAttributes);
                 $columnsSchema = $crud->columnsSchema();
-                $models = $crud->getModels();
+                $query = $crud->getDataProvider()->query;
 
-                foreach ($models as $saveModel) {
-                    if ($saveModel->getPrimaryKey() == $model->getPrimaryKey()) {
-                        continue;
-                    }
-
-                    $saveModel->setAttributes($setValues);
-
-                    foreach ($setAttributes as $setAttribute) {
-                        if (isset($columnsSchema[$setAttribute]['type']) && ($columnsSchema[$setAttribute]['type'] == 'cropper-image-upload')) {
-                            $saveModel->findCropperBehavior($setAttribute)->createFromUrl($model->getUploadPath($setAttribute));
+                /** @var ActiveRecord $saveModel */
+                foreach ($query->batch() as $batchModels) {
+                    foreach ($batchModels as $saveModel) {
+                        if ($saveModel->getPrimaryKey() == $model->getPrimaryKey()) {
+                            continue;
                         }
-                    }
 
-                    $saveModel->save();
+                        $saveModel->setAttributes($setValues);
+
+                        foreach ($setAttributes as $setAttribute) {
+                            if (isset($columnsSchema[$setAttribute]['type']) && ($columnsSchema[$setAttribute]['type'] == 'cropper-image-upload')) {
+                                $saveModel->findCropperBehavior($setAttribute)->createFromUrl($model->getUploadPath($setAttribute));
+                            }
+                        }
+
+                        $saveModel->save();
+                    }
                 }
 
-                $url = $this->getActionSuccessUrl('set-values', [
-                    'models' => $models,
-                ]);
-                return $this->redirect($url);
+                return $this->redirect($this->getActionSuccessUrl('set-values'));
             }
         }
 
@@ -834,8 +836,7 @@ class DefaultController extends Controller
     public function getActionSuccessUrl($action, $params = [])
     {
         $url = $this->getCrud()->getConfig('actionSuccessUrl.' . $action, $this->getReturnUrl());
-        $url = $url instanceof Closure ? call_user_func_array($url, $params) : $url;
-        return $url;
+        return $url instanceof Closure ? call_user_func_array($url, $params) : $url;
     }
 
     /**
