@@ -264,7 +264,7 @@ class DefaultController extends Controller
         $crud = $this->getCrud();
         $modelClass = $crud->modelClass;
         $sortField = $crud->treeSortField;
-        $positions = $modelClass::find()->andWhere(['id' => $order])->all();
+        $positions = $modelClass::find()->andWhere([$modelClass::tableName() . '.[[id]]' => $order])->all();
 
         $parent_id = 0;
         foreach ($positions as $position) {
@@ -491,7 +491,7 @@ class DefaultController extends Controller
         }
 
         $modelClass = $this->getCrud()->modelClass;
-        $models = $modelClass::find()->andWhere(['id' => $order])->indexBy('id')->all();
+        $models = $modelClass::find()->andWhere([$modelClass::tableName() . '.[[id]]' => $order])->indexBy('id')->all();
 
         $positions = [];
         foreach ($models as $model) {
