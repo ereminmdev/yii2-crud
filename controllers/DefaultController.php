@@ -339,9 +339,7 @@ class DefaultController extends Controller
             }
         }
 
-        $url = $this->getActionSuccessUrl('duplicate', [
-            'models' => $models,
-        ]);
+        $url = $this->getActionSuccessUrl('duplicate');
         return $this->redirect($url);
     }
 
