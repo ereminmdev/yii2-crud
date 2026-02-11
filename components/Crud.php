@@ -738,6 +738,14 @@ class Crud extends BaseObject
                 }
 
                 if (isset($columns[$key]) && is_array($columns[$key])) {
+                    if (isset($schema['labelHint'])) {
+                        $columns[$key]['label'] = ($columns[$key]['label'] ?? Html::encode($model->getAttributeLabel($field)));
+                        if ($columns[$key]['encodeLabel'] ?? true) {
+                            $columns[$key]['label'] = Html::encode($columns[$key]['label']);
+                        }
+                        $columns[$key]['label'] = $columns[$key]['label'] . ' <span class="glyphicon glyphicon-question-sign text-muted" title="' . Html::encode($schema['labelHint']) . '"></span>';
+                        $columns[$key]['encodeLabel'] = false;
+                    }
                     if (isset($schema['gridColumnOptions'])) {
                         $columns[$key] = ArrayHelper::merge($columns[$key], (array)$schema['gridColumnOptions']);
                     }
