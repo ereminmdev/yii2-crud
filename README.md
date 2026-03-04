@@ -126,6 +126,20 @@ public static function crudConfig()
 }
 ```
 
+Set only view for specific users:
+
+```
+if (!Yii::$app->user->can('admin')) {
+    $config['gridToolbarTemplate'] = '';
+    $config['gridActionsTemplate'] = '';
+    $config['gridCheckboxColumn'] = false;
+    $config['gridActionColumn'] = false;
+    $config['access.save'] = false;
+    $config['access.edit'] = false;
+    $config['access.delete'] = false;
+}
+```
+
 Set tree view:
 
 ```
