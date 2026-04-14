@@ -721,7 +721,7 @@ class DefaultController extends Controller
         $baseUrl = Yii::$app->urlManagerFrontend->getBaseUrl();
 
         $opts = ['debug' => YII_ENV_DEV, 'roots' => [
-            [
+            array_merge([
                 'driver' => 'LocalFileSystem',
                 'path' => $modelPath,
                 'URL' => $modelUrl,
@@ -732,7 +732,7 @@ class DefaultController extends Controller
                 'tmpPath' => '',
                 'quarantine' => $basePath . '/files/temp/elfinder/quarantine',
                 'uploadOverwrite' => false,
-            ],
+            ], $crud->getConfig('columnsSchema.' . $field . '.rootOpts', [])),
         ]];
 
         @mkdir($modelPath, 0777, true);
