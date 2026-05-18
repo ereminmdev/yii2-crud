@@ -998,10 +998,13 @@ class Crud extends BaseObject
                                 );
                             } else {
                                 $formField = $form->field($model, $field, [
-                                    'template' => "{input}\n",
-                                    'parts' => ['{input}' => Html::a(
-                                        $schema['title'] . ' <small>(' . count($model->$relation) . ')</small>',
-                                        ['index', 'model' => $relatedClass, $relatedPureClass . '[' . $linkKey . ']' => $model->$relatedKey])],
+                                    'template' => "{label}\n{input}",
+                                    'parts' => [
+                                        '{input}' => '<div>' . Html::a(
+                                                $schema['title'] . ' <small>(' . count($model->$relation) . ')</small>',
+                                                ['index', 'model' => $relatedClass, $relatedPureClass . '[' . $linkKey . ']' => $model->$relatedKey],
+                                                ['class' => 'btn btn-default btn-sm']) . '</div>',
+                                    ],
                                 ]);
                             }
                         }
