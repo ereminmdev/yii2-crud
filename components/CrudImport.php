@@ -49,7 +49,7 @@ class CrudImport extends BaseObject
     {
         return [
             'xlsx' => Yii::t('crud', 'Excel') . ' (*.xlsx)',
-            'csv' => Yii::t('crud', 'CSV (delimiter - comma)') . ' (*.csv)',
+            'csv' => Yii::t('crud', 'CSV (encoding: UTF-8; separator: semicolon)') . ' (*.csv)',
         ];
     }
 
@@ -77,12 +77,17 @@ class CrudImport extends BaseObject
     {
         $sheet = Excel::open($this->fileName)->getSheet();
         $fields = [];
+        $skipHeader = 0;
 
         foreach ($sheet->nextRow() as $rowIdx => $row) {
-            if ($rowIdx == 1) {
+            if (empty(array_filter($row))) {
                 continue;
-            } elseif ($rowIdx == 2) {
-                $fields = $row;
+            }
+            if ($skipHeader < 2) {
+                $skipHeader++;
+                if ($skipHeader == 2) {
+                    $fields = $row;
+                }
                 continue;
             }
             $values = $this->arrayCombineByIndex($fields, $row);
@@ -105,17 +110,27 @@ class CrudImport extends BaseObject
             return false;
         }
 
-        fgetcsv($handle, null, $separator);
-        $fields = fgetcsv($handle, null, $separator);
-        if ($fields === false) {
-            $this->_errors[] = Yii::t('crud', 'No data to import. Need more then 2 strings in file.');
-            return false;
-        }
+        $rowIdx = 0;
+        $skipHeader = 0;
+        $fields = [];
 
-        $rowIdx = 3;
         while (($row = fgetcsv($handle, null, $separator)) !== false) {
-            $this->importRow($fields, $row, $rowIdx);
             $rowIdx++;
+            if (empty(array_filter($row))) {
+                continue;
+            }
+            if ($skipHeader < 2) {
+                $skipHeader++;
+                if ($skipHeader == 2) {
+                    $fields = $row;
+                }
+                continue;
+            }
+            if (empty($fields)) {
+                $this->_errors[] = Yii::t('crud', 'No data to import. Need more then 2 strings in file.');
+                return false;
+            }
+            $this->importRow($fields, $row, $rowIdx);
         }
 
         fclose($handle);

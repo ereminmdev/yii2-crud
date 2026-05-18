@@ -28,7 +28,7 @@ return [
     'Render relative data' => 'Преобразовать зависимые данные',
 
     'Excel' => 'Книга Excel',
-    'CSV (delimiter - comma)' => 'CSV (разделители - запятые)',
+    'CSV (encoding: UTF-8; separator: semicolon)' => 'CSV (кодировка: UTF-8; разделитель: точка с запятой)',
     'Web page' => 'Веб-страница',
 
     'Export' => 'Экспорт',

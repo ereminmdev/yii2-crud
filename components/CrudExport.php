@@ -49,7 +49,7 @@ class CrudExport extends BaseObject
     {
         return [
             'xlsx' => Yii::t('crud', 'Excel') . ' (*.xlsx)',
-            'csv' => Yii::t('crud', 'CSV (delimiter - comma)') . ' (*.csv)',
+            'csv' => Yii::t('crud', 'CSV (encoding: UTF-8; separator: semicolon)') . ' (*.csv)',
             'html' => Yii::t('crud', 'Web page') . ' (*.html)',
         ];
     }
