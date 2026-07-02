@@ -118,7 +118,7 @@ class DefaultController extends Controller
         $crud->setViewAs(Crud::VIEW_AS_TREE);
 
         $openIds = $this->getTreeOpenIds();
-        $models = $this->findTreeModelsByParentId($openIds);
+        $models = $this->findTreeModelsByParentId($openIds, true);
 
         $view = $crud->getConfig('views.index.view', 'index-tree');
 
@@ -839,13 +839,14 @@ class DefaultController extends Controller
 
     /**
      * @param int|array $parent_id
+     * @param bool $filterParams
      * @return ActiveRecord[]
      */
-    public function findTreeModelsByParentId($parent_id)
+    public function findTreeModelsByParentId($parent_id, $filterParams = false)
     {
         $crud = $this->getCrud();
-        return ($crud->modelClass)::find()
-            ->andWhere([$crud->treeParentField => $parent_id])
+        $query = $crud->getDataProvider($filterParams, false, true, false)->query;
+        return $query->andWhere([$crud->treeParentField => $parent_id])
             ->with([$crud->treeChildrenRelation])
             ->all();
     }
