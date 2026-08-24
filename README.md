@@ -77,6 +77,7 @@ public static function crudConfig()
                     ->orderBy(['title' => SORT_ASC])
                     ->indexBy('id')
                     ->column(),
+                'formFieldInputOptions' => fn($form, self $model) => !$model->getIsNewRecord() ? ['disabled' => true] : [],
             ],
             'sizes' => [
                 'type' => 'relation',

@@ -859,6 +859,9 @@ class Crud extends BaseObject
             }
         }
         $inputOptions = $schema['formFieldInputOptions'] ?? [];
+        if ($inputOptions instanceof Closure) {
+            $inputOptions = call_user_func($inputOptions, $form, $model);
+        }
         if (isset($schema['type'])) {
             switch ($schema['type']) {
                 case false:
