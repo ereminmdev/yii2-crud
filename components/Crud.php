@@ -879,10 +879,16 @@ class Crud extends BaseObject
                     $formField = $form->field($model, $field)->checkbox($inputOptions);
                     break;
                 case Schema::TYPE_DATE:
-                    $formField = $form->field($model, $field)->input('date', $inputOptions);
+                    $value = $model->$field;
+                    $value = ($value && !is_numeric($value)) ? strtotime($value) : $value;
+                    $value = $value ? date('Y-m-d', $value) : '';
+                    $formField = $form->field($model, $field)->input('date', array_merge($inputOptions, ['value' => $value]));
                     break;
                 case Schema::TYPE_TIME:
-                    $formField = $form->field($model, $field)->input('time', $inputOptions);
+                    $value = $model->$field;
+                    $value = ($value && !is_numeric($value)) ? strtotime($value) : $value;
+                    $value = $value ? date('H:i:s', $value) : '';
+                    $formField = $form->field($model, $field)->input('time', array_merge($inputOptions, ['value' => $value]));
                     break;
                 case Schema::TYPE_DATETIME:
                     $value = $model->$field;
