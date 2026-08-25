@@ -58,6 +58,13 @@ public static function crudConfig()
                 'label' => 'Title',
                 'value' => fn(self $model) => $model->getBrandTitle() . ' ' . $model->title,
             ],
+            'title2' => function(Crud $crud, self $model, $field) {
+                return [
+                    'attribute' => 'title',
+                    'label' => 'Title',
+                    'value' => fn() => $model->getTitle2(),
+                ];
+            },
             'colors1' => false,
         ],
         'formFields' => [

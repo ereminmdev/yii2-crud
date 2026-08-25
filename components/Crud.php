@@ -406,7 +406,7 @@ class Crud extends BaseObject
 
         foreach ($columns as $key => $field) {
             if ($field instanceof Closure) {
-                $columns[$key] = call_user_func($field);
+                $columns[$key] = call_user_func($field, $this, $model, $field);
                 continue;
             } elseif (!is_string($field)) {
                 continue;
