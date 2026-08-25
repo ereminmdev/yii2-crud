@@ -396,12 +396,6 @@ class Crud extends BaseObject
         $paramColumns = $this->getConfig('gridColumns', []);
         $columnsSchema = $this->columnsSchema();
 
-        $prepend = $this->getConfig('gridColumnsPrepend', []);
-        $columns = ArrayHelper::merge($prepend, $columns);
-
-        $append = $this->getConfig('gridColumnsAppend', []);
-        $columns = ArrayHelper::merge($columns, $append);
-
         $columns = array_diff($columns, $this->getConfig('excludeColumns', []));
 
         foreach ($columns as $key => $field) {
