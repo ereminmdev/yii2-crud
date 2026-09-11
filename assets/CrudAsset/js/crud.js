@@ -138,8 +138,6 @@ jQuery(function ($) {
 
             return false;
         });
-
-        autosize(document.querySelectorAll('.crm-crud-input-auto-height'));
     }
 
     // views/set-values

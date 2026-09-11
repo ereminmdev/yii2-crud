@@ -6,6 +6,10 @@
     margin: 1em 0 2em;
 }
 
+.crm-crud-input-auto-height {
+    field-sizing: content;
+}
+
 .crud-hide-caret .caret {
     display: none;
 }
