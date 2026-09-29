@@ -380,7 +380,11 @@ class DefaultController extends Controller
 
                         foreach ($setAttributes as $setAttribute) {
                             if (isset($columnsSchema[$setAttribute]['type']) && ($columnsSchema[$setAttribute]['type'] == 'cropper-image-upload')) {
-                                $saveModel->findCropperBehavior($setAttribute)->createFromUrl($model->getUploadPath($setAttribute));
+                                if (!empty($setValues[$setAttribute])) {
+                                    $saveModel->findCropperBehavior($setAttribute)->createFromUrl($model->getUploadPath($setAttribute));
+                                } else {
+                                    $saveModel->setAttribute($setAttribute, 'action=delete');
+                                }
                             }
                         }
 
@@ -601,14 +605,8 @@ class DefaultController extends Controller
     public function actionDeleteUploadImage($id, $field)
     {
         $model = $this->getCrud()->findModel($id, 'update');
-
-        if (($behavior = $model->getBehavior($field)) && $behavior->hasMethod('removeImage')) {
-            $behavior->removeImage($field);
-        }
-
-        $model->detachBehavior($field);
-        $model->setAttribute($field, '');
-        $model->save(false, [$field]);
+        $model->setAttribute($field, 'action=delete');
+        $model->save();
 
         if ($this->request->isAjax) {
             $this->response->content = true;
