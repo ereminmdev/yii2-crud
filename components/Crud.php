@@ -115,8 +115,7 @@ class Crud extends BaseObject
     {
         $dataProvider = $this->getDataProvider($filterParams);
         $dataProvider->query->limit(1);
-        $models = $dataProvider->getModels();
-        return $models[0] ?? null;
+        return $dataProvider->getModels()[0] ?? null;
     }
 
     /**
@@ -1117,7 +1116,10 @@ class Crud extends BaseObject
      */
     public function findModel($id, $scenario = 'crud')
     {
-        $model = $this->getFirstModel();
+        $dataProvider = $this->getDataProvider(false, false, false, true);
+        $dataProvider->query->limit(1);
+        $model = $dataProvider->getModels()[0] ?? null;
+
         if ($model !== null) {
             $this->setModelScenario($model, $scenario);
             return $model;
