@@ -1314,19 +1314,30 @@ class Crud extends BaseObject
         $alertText = Yii::t('crud', 'Please select a one entry at least.');
 
         $this->context->view->registerJs(<<<JS
-$('.js-checked-action').on('click', function () {
-    let keys = [];
-    $('.js-check-action:checked').each((idx, el) => keys.push(el.value));
-    if (keys.length > 0) {
-        if ($(this).data('confirm') && !confirm($(this).data('confirm'))) {
-            return false;
+document.querySelectorAll('.js-checked-action, .js-checked-get-action').forEach(function(element) {
+    element.addEventListener('click', function(event) {
+        const valuesString = Array.from(
+            document.querySelectorAll('.js-check-action:checked')
+        ).map(checkbox => checkbox.value).join(',');
+
+        if (valuesString.length > 0) {
+            if (('confirm' in this.dataset) && !confirm(this.dataset.confirm)) {
+                event.preventDefault();
+                event.stopImmediatePropagation();
+            } else if (this.classList.contains('js-checked-get-action')) {
+                this.href = this.href.replace("__id__", valuesString);
+            } else {
+                const form = document.getElementById('crud_checked_form');
+                form.querySelector('input[name="id"]').value = valuesString;
+                form.action = this.href;
+                form.submit();
+            }
+        } else {
+            alert(`$alertText`);
+            event.preventDefault();
+            event.stopImmediatePropagation();
         }
-        $('#crud_checked_form input[name="id"]').val(keys.join(',')); 
-        $('#crud_checked_form').attr('action', $(this).attr('href')).submit();
-    } else {
-        alert(`$alertText`);
-    }
-    return false;
+    });
 });
 JS
         );
