@@ -123,7 +123,7 @@ class Crud extends BaseObject
      */
     public function getRequestModelIds()
     {
-        return Yii::$app->request->get('id', Yii::$app->request->post('id', 'all'));
+        return $this->context->request->get('id', $this->context->request->post('id', 'all'));
     }
 
     /**
@@ -142,7 +142,7 @@ class Crud extends BaseObject
         /** @var ActiveQuery $query */
         $query = $modelClass::find();
 
-        $filterParams = ($filterParams === true) ? Yii::$app->request->queryParams : ($filterParams !== false ? $filterParams : []);
+        $filterParams = ($filterParams === true) ? $this->context->request->queryParams : ($filterParams !== false ? $filterParams : []);
 
         if ($limitById) {
             $filterId = $this->getRequestModelIds();
@@ -354,8 +354,8 @@ class Crud extends BaseObject
      */
     public function getGridColumnsOnly($columns = [])
     {
-        $order = Yii::$app->request->cookies->getValue($this->getGridColumnsOnlyStoreKey() . '-order', []);
-        $only = Yii::$app->request->cookies->getValue($this->getGridColumnsOnlyStoreKey(), []) ?: array_diff($this->getConfig('gridShowColumns', $columns), $this->getConfig('gridHideColumns', []));
+        $order = $this->context->request->cookies->getValue($this->getGridColumnsOnlyStoreKey() . '-order', []);
+        $only = $this->context->request->cookies->getValue($this->getGridColumnsOnlyStoreKey(), []) ?: array_diff($this->getConfig('gridShowColumns', $columns), $this->getConfig('gridHideColumns', []));
         return $order ? array_intersect($order, $only) : ($only ?: $columns);
     }
 
@@ -1311,36 +1311,7 @@ class Crud extends BaseObject
             }
         }
 
-        $alertText = Yii::t('crud', 'Please select a one entry at least.');
-
-        $this->context->view->registerJs(<<<JS
-document.querySelectorAll('.js-checked-action, .js-checked-get-action').forEach(function(element) {
-    element.addEventListener('click', function(event) {
-        const valuesString = Array.from(
-            document.querySelectorAll('.js-check-action:checked')
-        ).map(checkbox => checkbox.value).join(',');
-
-        if (valuesString.length > 0) {
-            if (('confirm' in this.dataset) && !confirm(this.dataset.confirm)) {
-                event.preventDefault();
-                event.stopImmediatePropagation();
-            } else if (this.classList.contains('js-checked-get-action')) {
-                this.href = this.href.replace("__id__", valuesString);
-            } else {
-                const form = document.getElementById('crud_checked_form');
-                form.querySelector('input[name="id"]').value = valuesString;
-                form.action = this.href;
-                form.submit();
-            }
-        } else {
-            alert(`$alertText`);
-            event.preventDefault();
-            event.stopImmediatePropagation();
-        }
-    });
-});
-JS
-        );
+        $this->context->view->registerJs('window.crudCheckedActionAlertText = "' . Yii::t('crud', 'Please select one entry at least.') . '";');
 
         return ButtonDropdown::widget([
             'label' => '<span class="glyphicon glyphicon-check"></span>',
@@ -1384,7 +1355,7 @@ JS
         $formFields = $this->formFields();
         $setModel = new DynamicModel(array_fill_keys($formFields, 0));
         $setModel->addRule($formFields, 'boolean');
-        $setModel->load(Yii::$app->request->post());
+        $setModel->load($this->context->request->post());
         return $setModel;
     }
 

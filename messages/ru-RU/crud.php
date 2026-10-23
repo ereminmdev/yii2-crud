@@ -53,7 +53,7 @@ return [
 
     'Are you sure you want to delete this items?' => 'Вы уверены, что хотите удалить выбранные элементы?',
     'Are you sure you want to delete all items?' => 'Вы действительно уверены, что хотите удалить все элементы?',
-    'Please select a one entry at least.' => 'Выберите хотя бы одну запись.',
+    'Please select one entry at least.' => 'Выберите хотя бы одну запись.',
 
     '{variant, number} {variant, plural, one{item} other{items}} per page' => '{variant, number} {variant, plural, =1{запись} few{записи} many{записей} other{запись}} на страницу',
     'All items' => 'Все записи',
