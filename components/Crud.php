@@ -123,7 +123,7 @@ class Crud extends BaseObject
      */
     public function getRequestModelIds()
     {
-        return $this->context->request->get('id', $this->context->request->post('id', 'all'));
+        return $this->context->request->post('id', $this->context->request->get('id', 'all'));
     }
 
     /**
@@ -1261,21 +1261,21 @@ class Crud extends BaseObject
             '{--}' => '<li role="presentation" class="divider"></li>',
             '{set_values}' => [
                 'label' => Yii::t('crud', 'Set values'),
-                'url' => $this->context->urlCreate(['set-values'], true),
+                'url' => $this->context->urlCreate(['set-values', 'id' => '__id__'], true),
                 'visible' => $this->getConfig('access.save', true),
             ],
             '{duplicate}' => [
                 'label' => Yii::t('crud', 'Duplicate'),
-                'url' => $this->context->urlCreate(['duplicate'], true),
+                'url' => $this->context->urlCreate(['duplicate', 'id' => '__id__'], true),
                 'visible' => $this->getConfig('access.save', true),
             ],
             '{export}' => [
                 'label' => Yii::t('crud', 'Export'),
-                'url' => $this->context->urlCreate(['export'], true),
+                'url' => $this->context->urlCreate(['export', 'id' => '__id__'], true),
             ],
             '{delete}' => [
                 'label' => Yii::t('crud', 'Delete'),
-                'url' => $this->context->urlCreate(['delete'], true),
+                'url' => $this->context->urlCreate(['delete', 'id' => '__id__'], true),
                 'linkOptions' => [
                     'data-confirm' => Yii::t('crud', 'Are you sure you want to delete this items?'),
                 ],
@@ -1305,6 +1305,7 @@ class Crud extends BaseObject
     public function renderCheckedActions()
     {
         $checked = $this->checkedActions();
+
         foreach ($checked as $key => $check) {
             if (is_array($check)) {
                 Html::addCssClass($checked[$key]['linkOptions'], 'js-checked-action');
