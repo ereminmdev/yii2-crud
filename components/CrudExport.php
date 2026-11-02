@@ -117,10 +117,8 @@ class CrudExport extends BaseObject
         }
 
         $fileName = $this->fileName ?: 'Export_' . $this->model->formName() . '_' . date('d.m.Y') . '.xlsx';
-        $tempName = tempnam(sys_get_temp_dir(), 'crud-export-xlsx-');
-        $excel->save($tempName);
-
-        return Yii::$app->response->sendFile($tempName, $fileName, ['mimeType' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']);
+        $excel->download($fileName);
+        exit;
     }
 
     /**
