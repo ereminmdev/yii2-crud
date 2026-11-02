@@ -226,13 +226,16 @@ class CrudImport extends BaseObject
                         $value = !in_array(mb_strtolower($value), ['', 'нет', 'ложь', false]) && $value;
                         break;
                     case Schema::TYPE_DATE:
-                        $value = date('Y-m-d', is_numeric($value) ? $value : strtotime($value));
+                        $time = max(0, is_numeric($value) ? $value : strtotime($value));
+                        $value = date('Y-m-d', $time);
                         break;
                     case Schema::TYPE_DATETIME:
-                        $value = date('Y-m-d H:i:s', is_numeric($value) ? $value : strtotime($value));
+                        $time = max(0, is_numeric($value) ? $value : strtotime($value));
+                        $value = date('Y-m-d H:i:s', $time);
                         break;
                     case Schema::TYPE_TIME:
-                        $value = date('H:i:s', is_numeric($value) ? $value : strtotime($value));
+                        $time = max(0, is_numeric($value) ? $value : strtotime($value));
+                        $value = date('H:i:s', $time);
                         break;
                     case 'upload-image':
                     case 'crop-image-upload':

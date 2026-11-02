@@ -140,7 +140,8 @@ class CrudExport extends BaseObject
         $columns = $gridView->columns;
 
         ob_start();
-        $stream = fopen('php://output', 'w');
+        $stream = fopen('php://temp', 'r+');
+        fwrite($stream, "\xEF\xBB\xBF"); // Выводим BOM для корректного чтения кириллицы в Excel
 
         $model = $this->model;
         $values = [];
@@ -165,13 +166,14 @@ class CrudExport extends BaseObject
             fputcsv($stream, $values, $separator);
         }
 
-        fclose($stream);
-        $content = ob_get_contents();
-        ob_end_clean();
+        rewind($stream);
 
         $fileName = $this->fileName ?: 'Export_' . $this->model->formName() . '_' . date('d.m.Y') . '.csv';
 
-        return Yii::$app->response->sendContentAsFile($content, $fileName, ['mimeType' => 'text/csv']);
+        return Yii::$app->response->sendStreamAsFile($stream, $fileName, [
+            'mimeType' => 'text/csv',
+            'inline' => false,
+        ]);
     }
 
     /**
@@ -190,7 +192,7 @@ class CrudExport extends BaseObject
         $columns = $gridView->columns;
 
         ob_start();
-        $stream = fopen('php://output', 'w');
+        $stream = fopen('php://temp', 'r+');
 
         echo '<table border="1" cellpadding="5" cellspacing="0">';
 
