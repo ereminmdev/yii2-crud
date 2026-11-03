@@ -189,7 +189,7 @@ class DefaultController extends Controller
      */
     public function actionDelete()
     {
-        set_time_limit(0);
+        set_time_limit(300);
 
         $crud = $this->getCrud();
         $query = $crud->getDataProvider()->query;
@@ -349,7 +349,7 @@ class DefaultController extends Controller
      */
     public function actionSetValues()
     {
-        set_time_limit(0);
+        set_time_limit(300);
 
         $crud = $this->getCrud();
         $model = $crud->getFirstModel();

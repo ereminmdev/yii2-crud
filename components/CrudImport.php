@@ -58,7 +58,7 @@ class CrudImport extends BaseObject
      */
     public function import()
     {
-        set_time_limit(0);
+        set_time_limit(300);
 
         if ($this->format == 'xlsx') {
             return $this->importXlsx();
